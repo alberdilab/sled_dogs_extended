@@ -1,0 +1,140 @@
+# Prepare data
+
+Load the original data files outputted by the bioinformatic pipeline.
+
+### Reads
+```{r load_reads, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+read_counts <- read_tsv("https://sid.erda.dk/share_redirect/AvhSMDyzyU/counts.tsv") %>%
+    rename(genome=1) %>% 
+    rename_with(~ str_remove(.x, "_EKDL.*")) %>% 
+    rename_with(~ str_remove(.x, "_M$"))
+```
+
+### Sample metadata
+```{r load_sample_metadata, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+sample_metadata <- read_csv("data/sample_metadata.csv")
+```
+
+
+### Filter read counts
+
+```{r load_read_counts, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+read_counts <- read_counts %>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0))%>%
+    select(one_of(c("genome",sample_metadata$sample)))
+```
+
+### Genome taxonomy
+
+```{r load_genome_metadata, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+genome_taxonomy <- read_tsv("https://sid.erda.dk/share_redirect/AvhSMDyzyU/genome_taxonomy.tsv") %>% 
+  rename(genome = user_genome) %>% 
+  separate(
+    classification,
+    into  = c("domain", "phylum", "class", "order", "family", "genus","species"),
+    sep   = ";",          # split on the semicolons
+    fill  = "right",      # if a rank is missing, keep NA on the right
+    remove = TRUE
+  ) %>%
+  mutate(across(domain:species, ~ str_remove(., "^[a-z]__"))) %>% 
+  select(genome,domain,phylum,class,order,family,genus,species)
+
+genome_features <- read_csv("https://sid.erda.dk/share_redirect/AvhSMDyzyU/genomeInfo.csv") %>% 
+  mutate(genome = str_remove(genome, "\\.fa$"))
+
+genome_metadata <- inner_join(genome_taxonomy,genome_features, by="genome")
+```
+
+### Genome base hits
+
+```{r load_genome_hits, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+genome_coverage <- read_tsv("https://sid.erda.dk/share_redirect/AvhSMDyzyU/bases.tsv") %>%
+    rename(genome=1) %>% 
+    rename_with(~ str_remove(.x, "_EKDL.*")) %>% 
+    rename_with(~ str_remove(.x, "_M$"))
+```
+
+
+### Genome tree
+
+```{r load_genome_tree, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+genome_tree <- read_tree("https://sid.erda.dk/share_redirect/AvhSMDyzyU/gtdbtk.backbone.bac120.classify.tree")
+genome_tree$tip.label <- str_replace_all(genome_tree$tip.label,"'", "") #remove single quotes in MAG names
+genome_tree <- keep.tip(genome_tree, tip=genome_metadata$genome) # keep only MAG tips
+```
+
+### Genome annotations
+
+```{r load_genome_annotations, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+download.file("https://sid.erda.dk/share_redirect/AvhSMDyzyU/gene_annotations.tsv.xz", destfile = "data/gene_annotations.tsv.xz", mode = "wb")
+genome_annotations <- read_tsv("data/gene_annotations.tsv.xz") %>% 
+  mutate(genome = str_extract(gene, "^[^^]+")) %>% 
+  mutate(ec = str_c("[EC:",ec,"]"))
+```
+
+## Create working objects
+
+Transform the original data files into working objects for downstream analyses.
+
+### Filter reads by coverage
+
+```{r filter_coverage, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+min_coverage=0.3
+read_counts_filt <- genome_coverage %>%
+  mutate(across(where(is.numeric), ~ ifelse(. > min_coverage, 1, 0))) %>%
+  mutate(across(-1, ~ . * read_counts[[cur_column()]]))
+```
+
+### Transform reads into genome counts
+
+```{r calculate_genome_counts_unfiltered, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+readlength=150
+genome_counts <- read_counts %>%
+  mutate(across(where(is.numeric), ~ . / (genome_metadata$length / readlength) ))
+```
+
+```{r calculate_genome_counts_filtered, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+readlength=150
+genome_counts_filt <- read_counts_filt %>%
+  mutate(across(where(is.numeric), ~ . / (genome_metadata$length / readlength) ))
+```
+
+### Distill annotations into GIFTs
+
+```{r distill_annotations, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+genome_gifts <- distill(genome_annotations,GIFT_db,genomecol=14,annotcol=c(5,6), verbosity=F)
+genome_gifts <- genome_gifts[, !grepl("^S", colnames(genome_gifts))]
+```
+
+## Prepare color scheme
+
+[AlberdiLab](www.alberdilab.dk) projects use unified color schemes developed for the [Earth Hologenome Initiative](www.earthhologenome.org), to facilitate figure interpretation.
+
+```{r get_ehi_colors, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+phylum_colors <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv") %>%
+    mutate(phylum = str_remove(phylum, "^p__")) %>% 
+    right_join(genome_metadata, by=join_by(phylum == phylum)) %>%
+    arrange(match(genome, genome_tree$tip.label)) %>%
+    select(phylum, colors) %>%
+    unique() %>%
+    arrange(phylum) %>%
+    pull(colors, name=phylum)
+```
+
+
+## Wrap working objects
+
+All working objects are wrapped into a single Rdata object to facilitate downstream usage.
+
+```{r wrap_working_objects, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+save(sample_metadata,
+     genome_metadata,
+     read_counts,
+     genome_counts,
+     genome_counts_filt,
+     genome_tree,
+     genome_gifts,
+     phylum_colors,
+     file = "data/data.Rdata")
+```

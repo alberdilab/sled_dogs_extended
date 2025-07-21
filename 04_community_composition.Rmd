@@ -1,0 +1,481 @@
+# Community composition
+
+## Filter data
+
+```{r load_data_community, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+load("data/data.Rdata")
+```
+
+## Taxonomy overview 
+
+### Stacked barplot
+
+```{r taxonomy_barplot, fig.height=6, fig.width=10, fig.fullwidth=TRUE}
+genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS normalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
+  left_join(., genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
+  left_join(., sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
+  filter(count > 0) %>% #filter 0 counts
+  ggplot(., aes(x=sample,y=count, fill=phylum, group=phylum)) + #grouping enables keeping the same sorting of taxonomic units
+    geom_bar(stat="identity", colour="white", linewidth=0.1) + #plot stacked bars with white borders
+    scale_fill_manual(values=phylum_colors) +
+  facet_grid(~ country, scale="free", space = "free")+
+ #   facet_nested(. ~ region+diet,  scales="free") + #facet per day and treatment
+    guides(fill = guide_legend(ncol = 1)) +
+    theme(
+          axis.title.x = element_blank(),
+          panel.background = element_blank(),
+          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          strip.background = element_rect(fill = "white"),
+    strip.text = element_text(size = 12, lineheight = 0.6),
+    strip.placement = "outside",
+    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+          axis.line = element_line(linewidth = 0.5, linetype = "solid", colour = "black")) +
+   labs(fill="Phylum",y = "Relative abundance",x="Samples")
+```
+
+**Number of bacteria phyla**
+
+```{r phyla, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+genome_metadata %>% 
+  filter(domain == "d__Bacteria")%>%
+  dplyr::select(phylum) %>%
+  unique() %>%
+  pull() %>%
+  length()
+```
+
+**Bacteria phyla in wild individuals**
+
+```{r phyla_nat, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+
+wild_samples <- sample_metadata %>% 
+  filter(region=="Gipuzkoa") %>% 
+  dplyr::select(sample) %>% 
+  pull()
+
+wild_genomes <- genome_counts %>% 
+  column_to_rownames("genome") %>% 
+  select(all_of(wild_samples)) %>%
+  as.data.frame() %>%
+  filter(rowSums(across(where(is.numeric)))!=0)%>% 
+  rownames_to_column("genome")%>% 
+  dplyr::select(genome) %>% 
+  pull()
+
+genome_metadata %>% 
+  filter(genome %in% wild_genomes) %>% 
+  filter(domain == "d__Bacteria")%>%
+  dplyr::select(phylum) %>%
+  unique() %>%
+  pull() %>%
+  length() 
+```
+
+**Bacteria phyla captive animals**
+
+```{r phyla_cap, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+
+captive_samples <- sample_metadata %>% 
+  filter(region=="Nafarroa") %>% 
+  dplyr::select(sample) %>% 
+  pull()
+
+captive_genomes <- genome_counts %>% 
+  column_to_rownames("genome") %>% 
+  select(all_of(captive_samples)) %>%
+  as.data.frame() %>%
+  filter(rowSums(across(where(is.numeric)))!=0)%>% 
+  rownames_to_column("genome")%>% 
+  dplyr::select(genome) %>% 
+  pull()
+
+genome_metadata %>% 
+  filter(genome %in% captive_genomes) %>% 
+  filter(domain == "d__Bacteria")%>%
+  dplyr::select(phylum) %>%
+  unique() %>%
+  pull() %>%
+  length() 
+```
+
+**Bacteria phyla before grass is included in the diet**
+
+```{r phyla_pre, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+
+captive_pre_samples <- sample_metadata %>% 
+  filter(diet=="Pre_grass") %>% 
+  dplyr::select(sample) %>% 
+  pull()
+
+captive_pre_genomes <- genome_counts %>% 
+  column_to_rownames("genome") %>% 
+  select(all_of(captive_pre_samples)) %>%
+  as.data.frame() %>% 
+  mutate(row_sum = rowSums(.)) %>%
+  filter(row_sum != 0) %>%
+  select(-row_sum)%>% 
+  rownames_to_column("genome")%>% 
+  dplyr::select(genome) %>% 
+  pull()
+
+genome_metadata %>% 
+  filter(genome %in% captive_pre_genomes) %>% 
+  filter(domain == "d__Bacteria")%>%
+  dplyr::select(phylum) %>%
+  unique() %>%
+  pull() %>%
+  length() 
+```
+
+**Bacteria phyla after grass is included in the diet**
+
+```{r phyla_post, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+captive_post_samples <- sample_metadata %>% 
+  filter(diet=="Post_grass") %>% 
+  dplyr::select(sample) %>% 
+  pull()
+
+captive_post_genomes <- genome_counts %>% 
+  column_to_rownames("genome") %>% 
+  select(all_of(captive_post_samples)) %>%
+  as.data.frame() %>% 
+  mutate(row_sum = rowSums(.)) %>%
+  filter(row_sum != 0) %>%
+  select(-row_sum)%>% 
+  rownames_to_column("genome")%>% 
+  dplyr::select(genome) %>% 
+  pull()
+
+genome_metadata %>% 
+  filter(genome %in% captive_post_genomes) %>% 
+  filter(domain == "d__Bacteria")%>%
+  dplyr::select(phylum) %>%
+  unique() %>%
+  pull() %>%
+  length() 
+```
+
+**Number of Archaea phyla**
+
+```{r arch, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+genome_metadata %>% 
+  filter(domain == "d__Archaea")%>%
+  dplyr::select(phylum) %>%
+  unique() %>%
+  pull() %>%
+  length()
+```
+
+**Archaea phyla in wild individuals**
+
+```{r arch_nat, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+genome_metadata %>% 
+  filter(genome %in% wild_genomes) %>% 
+  filter(domain == "d__Archaea")%>%
+  dplyr::select(phylum) %>%
+  unique() %>%
+  pull() %>%
+  length()
+```
+
+**Archaea phyla before grass is included in the diet**
+
+```{r arch_pre, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+genome_metadata %>% 
+  filter(genome %in% captive_pre_genomes) %>% 
+  filter(domain == "d__Archaea")%>%
+  dplyr::select(phylum) %>%
+  unique() %>%
+  pull()
+```
+
+**Archaea phyla after grass is included in the diet**
+
+```{r arch_post, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+genome_metadata %>% 
+  filter(genome %in% captive_post_genomes) %>% 
+  filter(domain == "d__Archaea")%>%
+  dplyr::select(phylum) %>%
+  unique() %>%
+  pull()
+```
+
+### Genus and species annotation
+
+**Number of MAGs without species-level annotation**
+```{r nonspe, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+genome_metadata %>%
+  filter(species == "s__") %>%
+  summarize(Mag_nospecies = n())%>%
+  select(Mag_nospecies) %>% 
+  pull()
+
+```
+```{r nonspe_phylum, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+total_mag_phylum <- genome_metadata %>%
+  group_by(phylum) %>%
+  summarize(count_total = n())
+genome_metadata %>%
+  filter(species == "s__") %>%
+  group_by(phylum) %>%
+  summarize(count_nospecies = n()) %>% 
+  left_join(total_mag_phylum, by = join_by(phylum == phylum)) %>% 
+  mutate(percentage=100*count_nospecies/count_total) %>% 
+  tt()
+
+```
+
+**Percentage of MAGs without species-level annotation**
+```{r sp_percet, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+nmags <- nrow(genome_counts)
+nonspecies <- genome_metadata %>%
+    filter(species == "s__") %>%
+    nrow()
+perct <- nonspecies*100/nmags
+perct
+```
+
+**Number of MAGs without genera-level annotation**
+```{r nongenera, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+nongenera <- genome_metadata %>%
+    filter(genus == "g__") %>%
+    nrow()
+cat(nongenera)
+```
+
+
+### Phylum relative abundances
+
+```{r taxonomy_phylum_summary, warning=FALSE, comments="", message=FALSE}
+phylum_summary <- genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  left_join(genome_metadata, by = join_by(genome == genome)) %>%
+  group_by(sample,phylum,region, diet) %>%
+  summarise(relabun=sum(count))
+```
+
+```{r taxonomy_boxplot_phylum, warning=FALSE, comments="", message=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+phylum_arrange <- phylum_summary %>%
+    group_by(phylum) %>%
+    summarise(mean=mean(relabun)) %>%
+    arrange(-mean) %>%
+    select(phylum) %>%
+    pull()
+
+phylum_summary %>%
+    filter(phylum %in% phylum_arrange) %>%
+    mutate(phylum=factor(phylum,levels=rev(phylum_arrange))) %>%
+    ggplot(aes(x=relabun, y=phylum, group=phylum, color=phylum)) +
+        scale_color_manual(values=phylum_colors[rev(phylum_arrange)]) +
+        geom_jitter(alpha=0.5) + 
+        theme_minimal() + 
+        theme(legend.position="none") +
+        labs(y="Phylum",x="Relative abundance")
+```
+
+#### Origin: Wild vs Captive
+```{r taxonomy_phylum_summary_origin, warning=FALSE, comments="", message=FALSE}
+phylum_summary %>%
+    group_by(phylum) %>%
+    summarise(total_mean=mean(relabun*100, na.rm=T),
+              total_sd=sd(relabun*100, na.rm=T),
+              Wild_mean=mean(relabun[diet=="Wild"]*100, na.rm=T),
+              Wild_sd=sd(relabun[diet=="Wild"]*100, na.rm=T),
+              Captive_mean=mean(relabun[diet=="Pre_grass"]*100, na.rm=T),
+              Captive_sd=sd(relabun[diet=="Pre_grass"]*100, na.rm=T)) %>%
+    mutate(total=str_c(round(total_mean,3),"±",round(total_sd,3)),
+           Wild=str_c(round(Wild_mean,3),"±",round(Wild_sd,3)),
+           Captive=str_c(round(Captive_mean,3),"±",round(Captive_sd,3))) %>% 
+    arrange(-total_mean) %>% 
+    dplyr::select(phylum,total,Wild,Captive)
+```
+
+#### Origin and diet
+```{r taxonomy_phylum_summary_origin_diet, warning=FALSE, comments="", message=FALSE}
+phylum_summary %>%
+    group_by(phylum) %>%
+    summarise(total_mean=mean(relabun*100, na.rm=T),
+              total_sd=sd(relabun*100, na.rm=T),
+              Wild_mean=mean(relabun[diet=="Wild"]*100, na.rm=T),
+              Wild_sd=sd(relabun[diet=="Wild"]*100, na.rm=T),
+              Pre_grass_mean=mean(relabun[diet=="Pre_grass"]*100, na.rm=T),
+              Pre_grass_sd=sd(relabun[diet=="Pre_grass"]*100, na.rm=T),
+              Post_grass_mean=mean(relabun[diet=="Post_grass"]*100, na.rm=T),
+              Post_grass_sd=sd(relabun[diet=="Post_grass"]*100, na.rm=T))  %>%
+    mutate(total=str_c(round(total_mean,2),"±",round(total_sd,2)),
+           Wild=str_c(round(Wild_mean,2),"±",round(Wild_sd,2)),
+           Pre_grass=str_c(round(Pre_grass_mean,6),"±",round(Pre_grass_sd,6)),
+           Post_grass=str_c(round(Post_grass_mean,2),"±",round(Post_grass_sd,2))) %>% 
+    arrange(-total_mean) %>% 
+    dplyr::select(phylum,total,Wild,Pre_grass,Post_grass)
+```
+
+
+
+```{r taxonomy_jitterplot_phylum, warning=FALSE, comments="", message=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+phylum_arrange <- phylum_summary %>%
+    group_by(phylum) %>%
+    summarise(mean=sum(relabun)) %>%
+    arrange(-mean) %>%
+    select(phylum) %>%
+    pull()
+
+phylum_summary %>%
+    left_join(genome_metadata %>% select(phylum,phylum) %>% unique(),by=join_by(phylum==phylum)) %>%
+#    left_join(sample_metadata,by=join_by(sample==sample)) %>%
+    filter(phylum %in% phylum_arrange[1:20]) %>%
+    mutate(phylum=factor(phylum,levels=rev(phylum_arrange[1:20]))) %>%
+    filter(relabun > 0) %>%
+    ggplot(aes(x=relabun, y=phylum, group=phylum, color=phylum)) +
+        scale_color_manual(values=phylum_colors[-8]) +
+        geom_jitter(alpha=0.5) + 
+        facet_grid(.~diet)+
+        theme_minimal() + 
+        labs(y="phylum", x="Relative abundance", color="Phylum")
+```
+
+## Taxonomy boxplot
+
+### Family
+
+```{r taxonomy_family_summary, warning=FALSE, comments="", message=FALSE}
+family_summary <- genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
+  left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
+  left_join(., genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
+  group_by(sample,family, diet,region) %>%
+  summarise(relabun=sum(count))
+family_summary$diet <- factor(family_summary$diet, levels=c("Pre_grass", "Post_grass", "Wild"))
+```
+
+#### Origin: Wild vs Captive
+```{r taxonomy_family_summary_origin, warning=FALSE, comments="", message=FALSE}
+family_summary %>%
+    group_by(family) %>%
+    summarise(total_mean=mean(relabun*100, na.rm=T),
+              total_sd=sd(relabun*100, na.rm=T),
+              Wild_mean=mean(relabun[diet=="Wild"]*100, na.rm=T),
+              Wild_sd=sd(relabun[diet=="Wild"]*100, na.rm=T),
+              Cap_mean=mean(relabun[region=="Nafarroa"]*100, na.rm=T),
+              Cap_sd=sd(relabun[region=="Nafarroa"]*100, na.rm=T))  %>%
+    mutate(Total=str_c(round(total_mean,2),"±",round(total_sd,2)),
+           Wild=str_c(round(Wild_mean,2),"±",round(Wild_sd,2)),
+           Captive=str_c(round(Cap_mean,2),"±",round(Cap_sd,2))) %>% 
+    arrange(-total_mean) %>% 
+    dplyr::select(family,Total,Wild,Captive) %>% 
+    paged_table()
+```
+
+#### Origin and Diet
+```{r taxonomy_family_summary_type, warning=FALSE, comments="", message=FALSE}
+family_summary %>%
+    group_by(family) %>%
+    summarise(total_mean=mean(relabun*100, na.rm=T),
+              total_sd=sd(relabun*100, na.rm=T),
+              Wild_mean=mean(relabun[diet=="Wild"]*100, na.rm=T),
+              Wild_sd=sd(relabun[diet=="Wild"]*100, na.rm=T),
+              Pre_grass_mean=mean(relabun[diet=="Pre_grass"]*100, na.rm=T),
+              Pre_grass_sd=sd(relabun[diet=="Pre_grass"]*100, na.rm=T),
+              Post_grass_mean=mean(relabun[diet=="Post_grass"]*100, na.rm=T),
+              Post_grass_sd=sd(relabun[diet=="Post_grass"]*100, na.rm=T))  %>%
+    mutate(Total=str_c(round(total_mean,2),"±",round(total_sd,2)),
+           Wild=str_c(round(Wild_mean,2),"±",round(Wild_sd,2)),
+           Pre_grass=str_c(round(Pre_grass_mean,2),"±",round(Pre_grass_sd,2)),
+           Post_grass=str_c(round(Post_grass_mean,2),"±",round(Post_grass_sd,2))) %>% 
+    arrange(-total_mean) %>% 
+    dplyr::select(family,Total,Wild,Pre_grass,Post_grass) %>% 
+    paged_table()
+```
+
+```{r taxonomy_jitterplot_family, warning=FALSE, comments="", message=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+family_arrange <- family_summary %>%
+    group_by(family) %>%
+    summarise(mean=sum(relabun)) %>%
+    arrange(-mean) %>%
+    select(family) %>%
+    pull()
+
+family_summary %>%
+    left_join(genome_metadata %>% select(family,phylum) %>% unique(),by=join_by(family==family)) %>%
+    filter(family %in% family_arrange[1:20]) %>%
+    mutate(family=factor(family,levels=rev(family_arrange[1:20]))) %>%
+    filter(relabun > 0) %>%
+    ggplot(aes(x=relabun, y=family, group=family, color=phylum)) +
+        scale_color_manual(values=phylum_colors[-8]) +
+        geom_jitter(alpha=0.5) + 
+        facet_grid(.~diet)+
+        theme_minimal() + 
+        labs(y="Family", x="Relative abundance", color="Phylum")
+```
+
+### Genus
+
+```{r taxonomy_genus_summary, warning=FALSE, comments="", message=FALSE}
+genus_summary <- genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
+  left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
+  left_join(genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
+  group_by(sample,phylum,genus, diet) %>%
+  summarise(relabun=sum(count)) %>%
+  filter(genus != "g__") %>%
+  mutate(genus= sub("^g__", "", genus))
+genus_summary$diet <- factor(genus_summary$diet, levels=c("Pre_grass", "Post_grass", "Wild"))
+```
+
+### origin and diet
+```{r taxonomy_genera_summary_oridiet, warning=FALSE, comments="", message=FALSE}
+genus_summary %>%
+    group_by(genus) %>%
+    summarise(total_mean=mean(relabun*100, na.rm=T),
+              total_sd=sd(relabun*100, na.rm=T),
+              Wild_mean=mean(relabun[diet=="Wild"]*100, na.rm=T),
+              Wild_sd=sd(relabun[diet=="Wild"]*100, na.rm=T),
+              Pre_grass_mean=mean(relabun[diet=="Pre_grass"]*100, na.rm=T),
+              Pre_grass_sd=sd(relabun[diet=="Pre_grass"]*100, na.rm=T),
+              Post_grass_mean=mean(relabun[diet=="Post_grass"]*100, na.rm=T),
+              Post_grass_sd=sd(relabun[diet=="Post_grass"]*100, na.rm=T))  %>%
+    mutate(Total=str_c(round(total_mean,2),"±",round(total_sd,2)),
+           Wild=str_c(round(Wild_mean,2),"±",round(Wild_sd,2)),
+           Pre_grass=str_c(round(Pre_grass_mean,2),"±",round(Pre_grass_sd,2)),
+           Post_grass=str_c(round(Post_grass_mean,2),"±",round(Post_grass_sd,2))) %>% 
+    arrange(-total_mean) %>% 
+    dplyr::select(genus,Total,Wild,Pre_grass,Post_grass) %>% 
+    paged_table()
+```
+
+```{r taxonomy_jitterplot_genus, fig.height=14, fig.width=10, fig.fullwidth=TRUE}
+genus_arrange <- genus_summary %>%
+    group_by(genus) %>%
+    summarise(mean=sum(relabun)) %>%
+    filter(genus != "g__")%>%
+    arrange(-mean) %>%
+    select(genus) %>%
+    mutate(genus= sub("^g__", "", genus)) %>%
+    pull()
+
+genus_summary_sort <- genus_summary %>%
+    group_by(genus) %>%
+    summarise(mean=mean(relabun, na.rm=T),sd=sd(relabun, na.rm=T)) %>%
+    arrange(-mean) 
+
+genus_summary %>%
+  mutate(genus=factor(genus, levels=rev(genus_summary_sort %>% pull(genus)))) %>%
+  filter(relabun > 0) %>%
+  ggplot(aes(x=relabun, y=genus, group=genus, color=phylum)) +
+  scale_color_manual(values=phylum_colors) +
+  geom_jitter(alpha=0.5) + 
+  facet_grid(.~diet)+
+  theme_minimal() + 
+  theme(axis.text.y = element_text(size=6))+
+  labs(y="Family", x="Relative abundance", color="Phylum")
+
+```
+

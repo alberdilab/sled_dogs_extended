@@ -1,0 +1,169 @@
+# AMR and VF
+
+```{r load_data_beta, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+load("data/data.Rdata")
+```
+
+```{r load_genome_annotations, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+genome_annotations <- read_tsv("data/gene_annotations.tsv.xz") %>% 
+  mutate(genome = str_extract(gene, "^[^^]+")) %>% 
+  mutate(ec = str_c("[EC:",ec,"]"))
+```
+
+## Genome size
+
+```{r size_per_sample, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+sample_genome_size <- genome_counts_filt %>% 
+  mutate(across(-genome,~ .x / sum(.x, na.rm = TRUE))) %>% 
+  inner_join(genome_metadata %>% select(genome,length), by = "genome") %>%
+  pivot_longer(
+    cols = -c(genome, length),
+    names_to  = "sample",
+    values_to = "rel_abundance"
+  ) %>%
+  group_by(sample) %>%
+  summarise(
+    size = weighted.mean(length, w = rel_abundance, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  left_join(sample_metadata,by="sample")
+```
+
+```{r size_per_sample_plot, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+sample_genome_size %>% 
+  ggplot(aes(x=country,y=size,color=country)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter()
+
+sample_genome_size %>% 
+  ggplot(aes(x=breed,y=size,color=breed)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter()
+
+sample_genome_size %>% 
+  ggplot(aes(x=locality,y=size,color=locality)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter()
+```
+
+## AMR
+
+```{r amr_per_genome, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+genome_amr <- genome_annotations %>% 
+  group_by(genome) %>%
+  summarise(AMR = sum(resistance_type == "AMR", na.rm = TRUE), .groups = "drop")
+```
+
+```{r amr_per_sample, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+sample_amr <- genome_counts_filt %>% 
+  mutate(across(-genome,~ .x / sum(.x, na.rm = TRUE))) %>% 
+  inner_join(genome_amr, by = "genome") %>%
+  pivot_longer(
+    cols = -c(genome, AMR),
+    names_to  = "sample",
+    values_to = "rel_abundance"
+  ) %>%
+  group_by(sample) %>%
+  summarise(
+    AMR = weighted.mean(AMR, w = rel_abundance, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  left_join(sample_metadata,by="sample")
+```
+
+```{r amr_per_sample_plot, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+sample_amr %>% 
+  ggplot(aes(x=country,y=AMR,color=country)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter()
+
+sample_amr %>% 
+  ggplot(aes(x=breed,y=AMR,color=breed)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter()
+
+sample_amr %>% 
+  ggplot(aes(x=locality,y=AMR,color=locality)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter()
+```
+
+## Virulence factors
+
+```{r vf_per_genome, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+genome_vf <- genome_annotations %>% 
+  group_by(genome) %>%
+  summarise(vf = sum(!is.na(vf_type), na.rm = TRUE), .groups = "drop")
+```
+
+```{r vf_per_sample, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+sample_vf <- genome_counts_filt %>% 
+  mutate(across(-genome,~ .x / sum(.x, na.rm = TRUE))) %>% 
+  inner_join(genome_vf, by = "genome") %>%
+  pivot_longer(
+    cols = -c(genome, vf),
+    names_to  = "sample",
+    values_to = "rel_abundance"
+  ) %>%
+  group_by(sample) %>%
+  summarise(
+    vf = weighted.mean(vf, w = rel_abundance, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  left_join(sample_metadata,by="sample")
+```
+
+```{r vf_per_sample_plot, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+sample_vf %>% 
+  ggplot(aes(x=country,y=vf,color=country)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter()
+
+sample_vf %>% 
+  ggplot(aes(x=breed,y=vf,color=breed)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter()
+
+sample_vf %>% 
+  ggplot(aes(x=locality,y=vf,color=locality)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter()
+```
+
+## Size-function correlations
+
+```{r size_function_correlation, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+sample_genome_size %>% 
+  left_join(sample_amr %>% select(sample,AMR),by="sample") %>% 
+  left_join(sample_vf %>% select(sample,vf),by="sample") %>% 
+  left_join(alpha_div,by="sample") %>% 
+  summarise(
+    size_AMR = cor(size, AMR,  use = "complete.obs"),
+    size_vf  = cor(size, vf,   use = "complete.obs"),
+    size_richness  = cor(size, richness,   use = "complete.obs"),
+    size_neutral  = cor(size, neutral,   use = "complete.obs"),
+    size_phylogenetic  = cor(size, phylogenetic,   use = "complete.obs"),
+    neutral_AMR = cor(neutral, AMR,   use = "complete.obs")
+  )
+```
+
+```{r size_amr_correlation_plot, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+sample_genome_size %>% 
+  left_join(sample_amr %>% select(sample,AMR),by="sample") %>% 
+  left_join(sample_vf %>% select(sample,vf),by="sample") %>% 
+  left_join(alpha_div,by="sample") %>% 
+  ggplot(aes(x=size,y=AMR, color=country)) + 
+    geom_point() +
+    geom_smooth(method = "lm", se = TRUE)
+```
+
+```{r size_vf_correlation_plot, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+sample_genome_size %>% 
+  left_join(sample_amr %>% select(sample,AMR),by="sample") %>% 
+  left_join(sample_vf %>% select(sample,vf),by="sample") %>% 
+  left_join(alpha_div,by="sample") %>% 
+  ggplot(aes(x=size,y=vf, color=country)) + 
+    geom_point() +
+    geom_smooth(method = "lm", se = TRUE)
+```
+
