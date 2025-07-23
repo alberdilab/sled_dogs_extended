@@ -1,0 +1,469 @@
+# Greenlandic sled dogs in summer
+
+## Filter data
+
+```{r load_data_G_community, comment="", message=FALSE, warning=FALSE}
+load("data/data.Rdata")
+```
+
+```{r load_data_host_filt, comment="", message=FALSE, warning=FALSE}
+sample_metadata <- read_csv("data/sample_metadata.csv")
+
+sample_metadata <- sample_metadata%>%
+  filter(country== "Greenland")
+
+sample_metadata$individual <- sub("[0-9]{2}$", "", sample_metadata$animal)
+
+sample_metadata_illu <- read_csv("data/metadata_illu.csv")
+sample_metadata <- sample_metadata %>% 
+  left_join(sample_metadata_illu[c(1,4,9)], by=join_by("sample"=="DogID")) %>% 
+  filter(!Samples %in% c("Blank","Saliva")) %>% 
+  filter(individual!="GL_02_") %>% 
+  filter(season!="winter")
+
+genome_counts_filt <- genome_counts_filt %>% 
+    select(one_of(c("genome",sample_metadata$sample)))%>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0))
+
+genome_metadata <- genome_metadata %>% 
+  semi_join(., genome_counts_filt, by = "genome") %>% 
+  arrange(match(genome,genome_counts_filt$genome))
+
+genome_tree <- keep.tip(genome_tree, tip=genome_metadata$genome) # keep only MAG tips
+
+#load("data/genome_gifts.Rdata")
+```
+
+
+## Taxonomy overview 
+
+### Stacked barplot
+
+```{r taxonomy_G_barplot, fig.height=6, fig.width=10, fig.fullwidth=TRUE}
+genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS normalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
+  left_join(., genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
+  left_join(., sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
+  filter(count > 0) %>% #filter 0 counts
+  ggplot(., aes(x=sample,y=count, fill=phylum, group=phylum)) + #grouping enables keeping the same sorting of taxonomic units
+    geom_bar(stat="identity", colour="white", linewidth=0.1) + #plot stacked bars with white borders
+    scale_fill_manual(values=phylum_colors) +
+  facet_grid(~ locality, scale="free", space = "free")+
+#    facet_nested(. ~ locality+season,  scales="free") + #facet per day and treatment
+    guides(fill = guide_legend(ncol = 1)) +
+    theme(
+          axis.title.x = element_blank(),
+          panel.background = element_blank(),
+          panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          strip.background = element_rect(fill = "white"),
+    strip.text = element_text(size = 12, lineheight = 0.6),
+    strip.placement = "outside",
+    axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+          axis.line = element_line(linewidth = 0.5, linetype = "solid", colour = "black")) +
+   labs(fill="Phylum",y = "Relative abundance",x="Samples")
+```
+
+### Phylum relative abundances
+
+```{r taxonomy_phylum_summary, warning=FALSE, comments="", message=FALSE}
+phylum_summary <- genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  left_join(genome_metadata, by = join_by(genome == genome)) %>%
+  group_by(sample,phylum,locality) %>%
+  summarise(relabun=sum(count))
+```
+
+```{r taxonomy_boxplot_phylum, warning=FALSE, comments="", message=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+phylum_arrange <- phylum_summary %>%
+    group_by(phylum) %>%
+    summarise(mean=mean(relabun)) %>%
+    arrange(-mean) %>%
+    select(phylum) %>%
+    pull()
+```
+```{r taxonomy_phylum_summary_origin, warning=FALSE, comments="", message=FALSE}
+phylum_summary %>%
+  group_by(phylum) %>%
+  summarise(
+    total_mean = mean(relabun * 100, na.rm = T),
+    total_sd = sd(relabun * 100, na.rm = T),
+    Wild_mean = mean(relabun[locality == "Daneborg"] * 100, na.rm =T),
+    Wild_sd = sd(relabun[locality == "Daneborg"] * 100, na.rm =T),
+    Captive_mean = mean(relabun[locality == "Disko"] * 100, na.rm = T),
+    Captive_sd = sd(relabun[locality == "Disko"] * 100, na.rm =T),
+    Illulissat_mean = mean(relabun[locality == "Illulissat"] * 100, na.rm = T),
+    Illulissat_sd = sd(relabun[locality == "Illulissat"] * 100, na.rm = T),
+    Ittoqqortoormiit_mean = mean(relabun[locality == "Ittoqqortoormiit"] * 100, na.rm = T),
+    Ittoqqortoormiit_sd = sd(relabun[locality == "Ittoqqortoormiit"] * 100, na.rm = T)) %>%
+  mutate(
+    total = str_c(round(total_mean, 4), "±", round(total_sd, 3)),
+    Wild = str_c(round(Wild_mean, 4), "±", round(Wild_sd, 3)),
+    Captive = str_c(round(Captive_mean, 4), "±", round(Captive_sd, 3)),
+    Illulissat = str_c(round(Illulissat_mean, 4), "±", round(Illulissat_sd, 3)),
+    Ittoqqortoormiit = str_c(round(Ittoqqortoormiit_mean, 4), "±", round(Ittoqqortoormiit_sd, 3))
+  ) %>%
+  arrange(-total_mean) %>%
+  dplyr::select(phylum, total, Wild, Captive,Illulissat,Ittoqqortoormiit)
+```
+
+```{r alpha_G_div, comment="", message=FALSE, warning=FALSE}
+# Calculate Hill numbers
+richness <- genome_counts_filt %>%
+  column_to_rownames(var = "genome") %>%
+  dplyr::select(where(~ !all(. == 0))) %>%
+  hilldiv(., q = 0) %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(richness = 1) %>%
+  rownames_to_column(var = "sample")
+
+neutral <- genome_counts_filt %>%
+  column_to_rownames(var = "genome") %>%
+  dplyr::select(where(~ !all(. == 0))) %>%
+  hilldiv(., q = 1) %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(neutral = 1) %>%
+  rownames_to_column(var = "sample")
+
+phylogenetic <- genome_counts_filt %>%
+  column_to_rownames(var = "genome") %>%
+  dplyr::select(where(~ !all(. == 0))) %>%
+  hilldiv(., q = 1, tree = genome_tree) %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(phylogenetic = 1) %>%
+  rownames_to_column(var = "sample")
+
+# Merge all metrics
+alpha_div <- richness %>%
+  full_join(neutral, by = join_by(sample == sample)) %>%
+  full_join(phylogenetic, by = join_by(sample == sample))
+```
+
+### Plots
+
+```{r alpha_div_G_boxplot, comment="",echo=FALSE, message=FALSE, warning=FALSE}
+#Richness
+plot1 <- alpha_div %>%
+  pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  filter(metric=="richness") %>%
+  ggplot(aes(y = value, x = locality, group=locality, color=locality, fill=locality)) +
+      geom_jitter(width = 0.2, show.legend = FALSE) +
+      geom_boxplot(width = 0.5, alpha=0.5,outlier.shape = NA, show.legend = FALSE) +
+coord_cartesian(xlim = c(1, NA)) +
+  theme_classic() +
+  theme(
+    strip.background = element_blank(),
+    panel.grid.minor.x = element_line(size = .1, color = "grey"),
+    axis.text = element_text(size=10),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))
+    )+
+  labs(x = "Origin", y = "Richness")
+
+#Neutral
+plot2 <- alpha_div %>%
+  pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%∫
+  filter(metric=="neutral") %>%
+  ggplot(aes(y = value, x = locality, group=locality, color=locality, fill=locality)) +
+      geom_jitter(width = 0.2, show.legend = FALSE) +
+      geom_boxplot(width = 0.5, alpha=0.5,outlier.shape = NA, show.legend = FALSE) +
+coord_cartesian(xlim = c(1, NA)) +
+  theme_classic() +
+  theme(
+    strip.background = element_blank(),
+    panel.grid.minor.x = element_line(size = .1, color = "grey"),
+    axis.text = element_text(size=10),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))
+    )+
+  labs(x = "Origin", y = "Neutral")
+
+#Phylogenetic
+plot3 <- alpha_div %>%
+  pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  filter(metric=="phylogenetic") %>%
+  ggplot(aes(y = value, x = locality, group=locality, color=locality, fill=locality)) +
+      geom_jitter(width = 0.2, show.legend = FALSE) +
+      geom_boxplot(width = 0.5, alpha=0.5,outlier.shape = NA, show.legend = FALSE) +
+coord_cartesian(xlim = c(1, NA)) +
+  theme_classic() +
+  theme(
+    strip.background = element_blank(),
+    panel.grid.minor.x = element_line(size = .1, color = "grey"),
+    axis.text = element_text(size=10),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))
+    )+
+  labs(x = "Origin", y = "Phylogenetic")
+```
+
+```{r div_plot_G, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+grid.arrange(arrangeGrob(plot1,plot2,plot3, ncol = 3))
+```
+
+### Mixed models
+
+```{r mixed_rich_prepost, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+alpha_div_meta <- alpha_div %>%
+  left_join(sample_metadata, by = join_by(sample == sample))
+
+Model_richness <- glmer.nb(richness ~ locality, data = alpha_div_meta)
+summary(Model_richness)
+
+Model_neutral <- lme(fixed = neutral ~ locality, data = alpha_div_meta,
+               random = ~ 1 | individual)#log(seq_depth)+
+anova(Model_neutral)
+summary(Model_neutral)
+emmeans(Model_neutral, pairwise ~ locality)
+
+
+Model_phylo <- lme(fixed = phylogenetic ~ locality, data = alpha_div_meta,
+               random = ~ 1 | individual)
+summary(Model_phylo)
+
+Model_funct <- lme(fixed = functional ~ locality, data = alpha_div_meta,
+               random = ~ 1 | individual)
+summary(Model_funct)
+```
+
+```{r beta_div_G, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+beta_q0n <- genome_counts_filt %>%
+  column_to_rownames(., "genome") %>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0)) %>%
+  hillpair(., q = 0)
+
+beta_q1n <- genome_counts_filt %>%
+  column_to_rownames(., "genome") %>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0)) %>%
+  hillpair(., q = 1)
+
+genome_counts <- genome_counts_filt %>%
+  column_to_rownames(., "genome") %>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0))%>%
+  rownames_to_column(., "genome")
+
+genome_tree <- keep.tip(genome_tree, tip=genome_counts_filt$genome)
+
+beta_q1p <- genome_counts_filt %>%
+  column_to_rownames(., "genome") %>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0)) %>%
+  hillpair(., q = 1, tree = genome_tree)
+
+genome_counts_filt_beta <- genome_counts_filt[genome_counts_filt$genome %in% rownames(genome_gifts),]
+genome_counts_filt_beta <- genome_counts_filt_beta %>%
+  column_to_rownames(., "genome") %>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0))%>%
+  rownames_to_column(., "genome")
+
+genome_gifts1 <- genome_gifts[rownames(genome_gifts) %in% genome_counts_filt_beta$genome,]
+genome_gifts1 <- genome_gifts1[, colSums(genome_gifts1 != 0) > 0]
+
+dist <- genome_gifts1 %>%
+  to.elements(., GIFT_db) %>%
+  traits2dist(., method = "gower")
+
+beta_q1f <- genome_counts_filt_beta %>%
+  column_to_rownames(., "genome") %>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0)) %>%
+  hillpair(., q = 1, dist = dist)
+```
+
+```{r save_beta_G, comment="", message=FALSE,echo=FALSE,warning=FALSE, eval=FALSE}
+save(beta_q0n, 
+     beta_q1n, 
+     beta_q1p,
+     beta_q1f,
+     file = "data/beta_greenland_summer.Rdata")
+```
+
+### Beta diversity plots
+
+#### Richness
+
+```{r beta_div_nmds_neutral_plot_G, comment="", message=FALSE, warning=FALSE, fig.height=7, fig.width=10, fig.fullwidth=TRUE, eval=FALSE}
+beta_q0n$S %>%
+  vegan::metaMDS(., trymax = 500, k = 2, trace=0) %>%
+  vegan::scores() %>%
+  as_tibble(., rownames = "sample") %>%
+  dplyr::left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  group_by(locality) %>%
+  mutate(x_cen = mean(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(x = NMDS1, y = NMDS2, color = locality)) +
+    geom_point(size = 4) +
+    geom_segment(aes(x = x_cen, y = y_cen, xend = NMDS1, yend = NMDS2), alpha = 0.9, show.legend = FALSE) +
+    theme_classic() +
+    theme(
+      axis.text.x = element_text(size = 12),
+      axis.text.y = element_text(size = 12),
+      axis.title = element_text(size = 12, face = "bold"),
+      axis.text = element_text(face = "bold", size = 12),
+      panel.background = element_blank(),
+      axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+      legend.text = element_text(size = 12),
+      legend.title = element_text(size = 14),
+      legend.position = "right", legend.box = "vertical"
+    ) +labs(color='Origin')
+```
+
+#### Neutral
+
+```{r beta_div_neutral_G, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=7, fig.width=10, fig.fullwidth=TRUE}
+beta_q1n$S %>%
+  vegan::metaMDS(., trymax = 500, k = 2, trace=0) %>%
+  vegan::scores() %>%
+  as_tibble(., rownames = "sample") %>%
+  dplyr::left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  group_by(locality) %>%
+  mutate(x_cen = mean(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(x = NMDS1, y = NMDS2, color = locality)) +
+    geom_point(size = 4) +
+    geom_segment(aes(x = x_cen, y = y_cen, xend = NMDS1, yend = NMDS2), alpha = 0.9, show.legend = FALSE) +
+    theme_classic() +
+    theme(
+      axis.text.x = element_text(size = 12),
+      axis.text.y = element_text(size = 12),
+      axis.title = element_text(size = 12, face = "bold"),
+      axis.text = element_text(face = "bold", size = 12),
+      panel.background = element_blank(),
+      axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+      legend.text = element_text(size = 12),
+      legend.title = element_text(size = 14),
+      legend.position = "right", legend.box = "vertical"
+    ) +
+  labs(color='Locality')
+# +
+#   geom_text_repel(aes(label = animal), size=3)
+
+```
+
+
+#### Phylogenetic
+
+```{r beta_div_nmds_phylo1_plot_G, comment="", message=FALSE, warning=FALSE, fig.height=7, fig.width=10, fig.fullwidth=TRUE, eval=FALSE}
+beta_q1p$S %>%
+  vegan::metaMDS(., trymax = 500, k = 2, trace=0) %>%
+  vegan::scores() %>%
+  as_tibble(., rownames = "sample") %>%
+  dplyr::left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  group_by(locality) %>%
+  mutate(x_cen = median(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = median(NMDS2, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(x = NMDS1, y = NMDS2, color = diet)) +
+    geom_point(size = 4) +
+    geom_segment(aes(x = x_cen, y = y_cen, xend = NMDS1, yend = NMDS2), alpha = 0.9, show.legend = FALSE) +
+    theme_classic() +
+    theme(
+      axis.text.x = element_text(size = 12),
+      axis.text.y = element_text(size = 12),
+      axis.title = element_text(size = 20, face = "bold"),
+      axis.text = element_text(face = "bold", size = 18),
+      panel.background = element_blank(),
+      axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+      legend.text = element_text(size = 16),
+      legend.title = element_text(size = 18),
+      legend.position = "right", legend.box = "vertical"
+    ) +
+    labs(color='Origin')
+```
+
+#### Functional
+```{r beta_div_nmds_func_plot_G, comment="", message=FALSE, warning=FALSE}
+beta_q1f$S %>%
+  vegan::metaMDS(., trymax = 500, k = 2, trace=0) %>%
+  vegan::scores() %>%
+  as_tibble(., rownames = "sample") %>%
+  dplyr::left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  group_by(locality) %>%
+  mutate(x_cen = median(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = median(NMDS2, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(x = NMDS1, y = NMDS2, color = diet)) +
+  geom_point(size = 4) +
+  geom_segment(aes(x = x_cen, y = y_cen, xend = NMDS1, yend = NMDS2), alpha = 0.9, show.legend = FALSE) +
+  theme_classic() +
+  theme(
+      axis.text.x = element_text(size = 12),
+      axis.text.y = element_text(size = 12),
+      axis.title = element_text(size = 20, face = "bold"),
+      axis.text = element_text(face = "bold", size = 18),
+      panel.background = element_blank(),
+      axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+      legend.text = element_text(size = 16),
+      legend.title = element_text(size = 18),
+      legend.position = "right", legend.box = "vertical"
+    ) +
+    labs(color='Origin')
+```
+
+### Permanova analysis
+```{r}
+sample_metadata_row<- column_to_rownames(sample_metadata, "sample") 
+sample_metadata_row <- sample_metadata_row[labels(beta_q1n$S), ]
+```
+
+**Richness**
+```{r permanova_wildcap_q0, comment="", message=FALSE, warning=FALSE}
+betadisper(beta_q0n$S, sample_metadata_row$locality) %>% permutest(., pairwise = TRUE) 
+
+adonis2(beta_q0n$S ~ locality, 
+        data = sample_metadata %>% arrange(match(sample,labels(beta_q0n$S))), 
+        permutations = 999) %>%
+        broom::tidy() %>%
+        tt()
+```
+
+**Neutral**
+```{r permanova_wildcap_q1, comment="", message=FALSE, warning=FALSE}
+betadisper(beta_q1n$S, sample_metadata_row$locality) %>% permutest(., pairwise = TRUE) 
+
+adonis2(beta_q1n$S ~ place*locality, 
+        data = sample_metadata %>% arrange(match(sample,labels(beta_q1n$S))), 
+        permutations = 999, by="terms") %>%
+        broom::tidy() %>%
+        tt()
+```
+```{r pairwise_neutral, comment="", message=FALSE, warning=FALSE}
+pairwise.adonis(beta_q1n$S, sample_metadata$locality, perm = 999)
+```
+
+**Phylogenetic**
+```{r permanova_wildcap_qP, comment="", message=FALSE, warning=FALSE}
+betadisper(beta_q1p$S, sample_metadata_row$locality) %>% permutest(., pairwise = TRUE) 
+adonis2(beta_q1p$S ~ locality, 
+        data = sample_metadata %>% arrange(match(sample,labels(beta_q1p$S))), 
+        permutations = 999) %>%
+        broom::tidy() %>%
+        tt()
+```
+
+**Functional**
+```{r permanova_wildcap_qF, comment="", message=FALSE, warning=FALSE}
+betadisper(beta_q1f$S, sample_metadata_row$locality) %>% permutest(., pairwise = TRUE) 
+adonis2(beta_q1f$S ~ locality,
+        data = sample_metadata %>% arrange(match(sample,labels(beta_q1f$S))),
+        permutations = 999) %>%
+        broom::tidy() %>%
+        tt()
+```

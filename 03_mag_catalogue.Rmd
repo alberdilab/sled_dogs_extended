@@ -17,7 +17,7 @@ phylum_heatmap <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EH
 
 # Generate new species table
 newspecies_table <- genome_metadata %>% 
-  mutate(newspecies=ifelse(species=="s__","Y","N")) %>% 
+  mutate(newspecies=ifelse(species=="","Y","N")) %>% 
   select(genome,newspecies) %>% 
   column_to_rownames(var = "genome")
 
@@ -41,7 +41,7 @@ circular_tree <- circular_tree +
                 data=genome_metadata,
                 geom=geom_bar,
                 mapping = aes(x=completeness, y=genome, fill=contamination),
-                offset = 0.3,
+                offset = 0.15,
                 pwidth = 0.1,
                 orientation="y",
               stat="identity")
@@ -49,16 +49,15 @@ circular_tree <- circular_tree +
 # Add genome-size ring
 circular_tree <- circular_tree + new_scale_fill()
 
-circular_tree <- gheatmap(circular_tree, newspecies_table, offset=1.2, width=0.05, colnames=FALSE) +
+circular_tree <- gheatmap(circular_tree, newspecies_table, offset=0.5, width=0.05, colnames=FALSE) +
         scale_fill_manual(values=c("#f4f4f4","#666666"))
         theme(legend.position = "none", plot.margin = margin(0, 0, 0, 0), panel.margin = margin(0, 0, 0, 0))
 
 # Add text
 circular_tree <-  circular_tree +
-        annotate('text', x=2.9, y=0, label='              Phylum', family='arial', size=3.5) +
-        annotate('text', x=3.3, y=0, label='            Group', family='arial', size=3.5) +
-        annotate('text', x=3.8, y=0, label='                         Genome quality', family='arial', size=3.5) +
-        annotate('text', x=4.2, y=0, label='                     New species', family='arial', size=3.5)
+        annotate('text', x=2.2, y=0, label='              Phylum', family='arial', size=3.5) +
+        annotate('text', x=2.4, y=0, label='                         Genome quality', family='arial', size=3.5) +
+        annotate('text', x=2.6, y=0, label='                     New species', family='arial', size=3.5)
 
 #Plot circular tree
 circular_tree %>% open_tree(30) %>% rotate_tree(90)
