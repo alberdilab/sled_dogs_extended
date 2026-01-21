@@ -1,7 +1,40 @@
 # Beta diversity
 
-```{r load_data_beta, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r load_data_beta1, comment="", message=FALSE, warning=FALSE, eval=FALSE}
 load("data/data.Rdata")
+load("data/beta.Rdata")
+sample_metadata <- read_csv("data/sample_metadata.csv")
+ 
+sample_metadata$individual <- sub("[0-9]{2}$", "", sample_metadata$animal)
+
+sample_metadata_illu <- read_csv("data/metadata_illu.csv")
+sample_metadata <- sample_metadata %>% 
+  left_join(sample_metadata_illu[c(1,4,9)], by=join_by("sample"=="DogID")) 
+
+samples_to_remove <- sample_metadata %>% 
+  filter(individual == "GL_02_" | Samples %in% c("Blank", "Saliva") | group2 %in% c("Unknown") | season=="winter" ) %>% #!day %in% c("day_1", "Unknown")
+  select(sample) %>% 
+  pull()
+
+beta_q1n_mat <- as.matrix(beta_q1n$S)
+beta_q1n_filtered <- beta_q1n_mat[!rownames(beta_q1n_mat) %in% samples_to_remove,
+                        !colnames(beta_q1n_mat) %in% samples_to_remove]
+beta_q1n <- as.dist(beta_q1n_filtered)
+
+sample_metadata <- sample_metadata %>% 
+  filter(!sample %in% samples_to_remove)
+
+genome_counts_filt <- genome_counts_filt %>% 
+  select(one_of(c("genome",sample_metadata$sample)))%>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0))
+
+genome_metadata <- genome_metadata %>% 
+  semi_join(., genome_counts_filt, by = "genome") %>% 
+  arrange(match(genome,genome_counts_filt$genome))
+
+genome_tree <- keep.tip(genome_tree, tip=genome_metadata$genome)
+
 ```
 
 
@@ -50,9 +83,9 @@ set.seed(1234)
 sample_metadata_row<- column_to_rownames(sample_metadata, "sample") 
 sample_metadata_row <- sample_metadata_row[labels(beta_q0n$S), ]
 
-betadisper(beta_q0n$S, sample_metadata_row$diet) %>% permutest(., pairwise = TRUE) 
+betadisper(beta_q0n$S, sample_metadata_row$country) %>% permutest(., pairwise = TRUE) 
 
-adonis2(beta_q0n$S ~ diet, 
+adonis2(beta_q0n$S ~ country, 
         data = sample_metadata %>% arrange(match(sample,labels(beta_q0n$S))), 
         permutations = 999) %>%
         broom::tidy() %>%
@@ -61,19 +94,26 @@ adonis2(beta_q0n$S ~ diet,
 
 **Neutral**
 ```{r permanova_wildcap_q1, comment="", message=FALSE, warning=FALSE}
-betadisper(beta_q1n$S, sample_metadata_row$diet) %>% permutest(., pairwise = TRUE) 
+sample_metadata_row<- column_to_rownames(sample_metadata, "sample") 
+sample_metadata_row <- sample_metadata_row[labels(beta_q1n), ]
+sample_metadata_ordered <- sample_metadata_row %>% 
+  rownames_to_column("sample")
 
-adonis2(beta_q1n$S ~ diet, 
-        data = sample_metadata %>% arrange(match(sample,labels(beta_q1n$S))), 
+betadisper(beta_q1n, sample_metadata_row$country) %>% permutest(., pairwise = TRUE) 
+
+        data = sample_metadata %>% arrange(match(sample,labels(beta_q1n))), 
         permutations = 999) %>%
         broom::tidy() %>%
         tt()
+
+pairwise.adonis(beta_q1n, sample_metadata_ordered$country, perm = 999)
+
 ```
 
 **Phylogenetic**
 ```{r permanova_wildcap_qP, comment="", message=FALSE, warning=FALSE}
-betadisper(beta_q1p$S, sample_metadata_row$diet) %>% permutest(., pairwise = TRUE) 
-adonis2(beta_q1p$S ~ diet, 
+betadisper(beta_q1p$S, sample_metadata_row$country) %>% permutest(., pairwise = TRUE) 
+adonis2(beta_q1p$S ~ country, 
         data = sample_metadata %>% arrange(match(sample,labels(beta_q1p$S))), 
         permutations = 999) %>%
         broom::tidy() %>%
@@ -82,8 +122,8 @@ adonis2(beta_q1p$S ~ diet,
 
 **Functional**
 ```{r permanova_wildcap_qF, comment="", message=FALSE, warning=FALSE}
-betadisper(beta_q1f$S, sample_metadata_row$diet) %>% permutest(., pairwise = TRUE) 
-adonis2(beta_q1f$S ~ diet,
+betadisper(beta_q1f$S, sample_metadata_row$country) %>% permutest(., pairwise = TRUE) 
+adonis2(beta_q1f$S ~ country,
         data = sample_metadata %>% arrange(match(sample,labels(beta_q1f$S))),
         permutations = 999) %>%
         broom::tidy() %>%

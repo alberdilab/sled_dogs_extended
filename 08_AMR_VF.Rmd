@@ -1,6 +1,6 @@
 # AMR and VF
 
-```{r load_data_beta, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r load_data_amr, comment="", message=FALSE, warning=FALSE, eval=FALSE}
 load("data/data.Rdata")
 ```
 
@@ -72,10 +72,21 @@ sample_amr <- genome_counts_filt %>%
 ```
 
 ```{r amr_per_sample_plot, warning=FALSE, comments="", message=FALSE, eval=FALSE}
-sample_amr %>% 
-  ggplot(aes(x=country,y=AMR,color=country)) +
-    geom_boxplot(outlier.shape = NA) +
-    geom_jitter()
+amr_plot <- sample_amr %>% 
+  ggplot(aes(x=group2,y=AMR,color=group2,fill=group2)) +
+        geom_jitter(width = 0.3, show.legend = FALSE) +
+      geom_boxplot(width = 0.7, alpha=0.5,outlier.shape = NA, show.legend = FALSE) +
+      theme_classic() +
+  theme(
+      axis.title = element_text(size = 12, face = "bold"),
+      axis.text = element_text(face = "bold", size = 12),
+    strip.background = element_blank(),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))
+    )
+png(filename="amr_all.png", width = 680, height = 380,)
+plot(amr_plot)
+dev.off()
 
 sample_amr %>% 
   ggplot(aes(x=breed,y=AMR,color=breed)) +
@@ -114,10 +125,21 @@ sample_vf <- genome_counts_filt %>%
 ```
 
 ```{r vf_per_sample_plot, warning=FALSE, comments="", message=FALSE, eval=FALSE}
-sample_vf %>% 
-  ggplot(aes(x=country,y=vf,color=country)) +
-    geom_boxplot(outlier.shape = NA) +
-    geom_jitter()
+vf_plot <- sample_vf %>% 
+  ggplot(aes(x=group2,y=vf,color=group2,fill=group2)) +
+        geom_jitter(width = 0.3, show.legend = FALSE) +
+      geom_boxplot(width = 0.7, alpha=0.5,outlier.shape = NA, show.legend = FALSE) +
+      theme_classic() +
+  theme(
+      axis.title = element_text(size = 12, face = "bold"),
+      axis.text = element_text(face = "bold", size = 12),
+    strip.background = element_blank(),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))
+    )
+png(filename="vf_all.png", width = 680, height = 380,)
+plot(vf_plot)
+dev.off()
 
 sample_vf %>% 
   ggplot(aes(x=breed,y=vf,color=breed)) +

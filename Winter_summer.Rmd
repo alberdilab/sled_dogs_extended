@@ -1,0 +1,1052 @@
+# Winter vs summer in eastern Greenland
+
+```{r load_data_host_filt_season, comment="", message=FALSE, warning=FALSE}
+load("data/data.Rdata")
+
+sample_metadata <- read_csv("data/sample_metadata.csv")
+ 
+sample_metadata$individual <- sub("[0-9]{2}$", "", sample_metadata$animal)
+
+sample_metadata_illu <- read_csv("data/metadata_illu.csv")
+sample_metadata <- sample_metadata %>% 
+  left_join(sample_metadata_illu[c(1,4,9)], by=join_by("sample"=="DogID")) 
+
+# sample_metadata <- sample_metadata%>%
+#   filter(country== "Greenland")
+
+load("data/beta.Rdata")
+
+samples_to_keep <- sample_metadata %>% 
+  filter(locality == "Ittoqqortoormiit") %>% 
+#  filter(group2=="Wolf" | locality%in% c("Ittoqqortoormiit", "Daneborg")) %>%
+  filter(day %in% c("day_1", "Unknown")) %>% 
+# filter(individual != "SD03126") %>% 
+  # filter(!Samples %in% c("Blank", "Saliva"))%>% 
+  select(sample) %>% 
+  pull()
+
+beta_q1n_mat <- as.matrix(beta_q1n$S)
+beta_q1n_filtered <- beta_q1n_mat[rownames(beta_q1n_mat) %in% samples_to_keep,
+                        colnames(beta_q1n_mat) %in% samples_to_keep]
+beta_q1n <- as.dist(beta_q1n_filtered)
+
+sample_metadata <- sample_metadata %>% 
+  filter(sample %in% samples_to_keep)
+
+genome_counts_filt <- genome_counts_filt %>% 
+  select(one_of(c("genome",sample_metadata$sample)))%>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0))
+
+genome_metadata <- genome_metadata %>% 
+  semi_join(., genome_counts_filt, by = "genome") %>% 
+  arrange(match(genome,genome_counts_filt$genome))
+
+genome_tree <- keep.tip(genome_tree, tip=genome_metadata$genome)
+
+
+# sample_metadata <- sample_metadata %>% 
+#   left_join(sample_metadata_illu[c(1,4,9)], by=join_by("sample"=="DogID")) %>% 
+#   filter(!Samples %in% c("Blank","Saliva")) %>% 
+#   filter(individual!="GL_02_") %>% 
+#   filter(group2 %in% c("Wolf", "Sled_dogs")) %>% #, "Daneborg"
+# #  filter(season=="winter") %>% 
+#   filter(day %in% c("day_1", "Unknown"))
+
+genome_counts_filt <- genome_counts_filt %>% 
+    select(one_of(c("genome",sample_metadata$sample)))%>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0))
+
+genome_metadata <- genome_metadata %>% 
+  semi_join(., genome_counts_filt, by = "genome") %>% 
+  arrange(match(genome,genome_counts_filt$genome))
+
+genome_tree <- keep.tip(genome_tree, tip=genome_metadata$genome)
+
+```
+
+```{r alpha_div_season, comment="", message=FALSE, warning=FALSE}
+# Calculate Hill numbers
+richness <- genome_counts_filt %>%
+  column_to_rownames(var = "genome") %>%
+  dplyr::select(where(~ !all(. == 0))) %>%
+  hilldiv(., q = 0) %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(richness = 1) %>%
+  rownames_to_column(var = "sample")
+
+neutral <- genome_counts_filt %>%
+  column_to_rownames(var = "genome") %>%
+  dplyr::select(where(~ !all(. == 0))) %>%
+  hilldiv(., q = 1) %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(neutral = 1) %>%
+  rownames_to_column(var = "sample")
+
+phylogenetic <- genome_counts_filt %>%
+  column_to_rownames(var = "genome") %>%
+  dplyr::select(where(~ !all(. == 0))) %>%
+  hilldiv(., q = 1, tree = genome_tree) %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(phylogenetic = 1) %>%
+  rownames_to_column(var = "sample")
+
+# Merge all metrics
+alpha_div <- richness %>%
+  full_join(neutral, by = join_by(sample == sample)) %>%
+  full_join(phylogenetic, by = join_by(sample == sample))
+```
+
+
+```{r alpha_div_boxplot_season, comment="",echo=FALSE, message=FALSE, warning=FALSE}
+#Richness
+plot1 <- alpha_div %>%
+  pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  filter(metric=="richness") %>%
+  ggplot(aes(y = value, x = season, group=season, color=season, fill=season)) +
+      geom_jitter(width = 0.2, show.legend = FALSE) +
+      geom_boxplot(width = 0.5, alpha=0.5,outlier.shape = NA, show.legend = FALSE) +
+  stat_compare_means(show.legend = FALSE) +
+coord_cartesian(xlim = c(1, NA)) +
+  theme_classic() +
+  theme(
+    strip.background = element_blank(),
+    panel.grid.minor.x = element_line(size = .1, color = "grey"),
+    axis.text = element_text(size=10),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))
+    )+
+  labs(x = "Origin", y = "Richness")
+
+#Neutral
+plot2 <- alpha_div %>%
+  pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  filter(metric=="neutral") %>%
+  ggplot(aes(y = value, x = season, group=season, color=season, fill=season)) +
+      geom_jitter(width = 0.2, show.legend = FALSE) +
+      geom_boxplot(width = 0.5, alpha=0.5,outlier.shape = NA, show.legend = FALSE) +
+  stat_compare_means(show.legend = FALSE) +
+coord_cartesian(xlim = c(1, NA)) +
+  theme_classic() +
+  theme(
+    strip.background = element_blank(),
+    panel.grid.minor.x = element_line(size = .1, color = "grey"),
+    axis.text = element_text(size=10),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))
+    )+
+  labs(x = "Origin", y = "Neutral")
+
+#Phylogenetic
+plot3 <- alpha_div %>%
+  pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  filter(metric=="phylogenetic") %>%
+  ggplot(aes(y = value, x = season, group=season, color=season, fill=season)) +
+      geom_jitter(width = 0.2, show.legend = FALSE) +
+      geom_boxplot(width = 0.5, alpha=0.5,outlier.shape = NA, show.legend = FALSE) +
+  stat_compare_means(show.legend = FALSE) +
+coord_cartesian(xlim = c(1, NA)) +
+  theme_classic() +
+  theme(
+    strip.background = element_blank(),
+    panel.grid.minor.x = element_line(size = .1, color = "grey"),
+    axis.text = element_text(size=10),
+    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
+    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))
+    )+
+  labs(x = "Origin", y = "Phylogenetic")
+```
+
+```{r div_plot_season, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=6, fig.width=10, fig.fullwidth=TRUE}
+grid.arrange(arrangeGrob(plot1,plot2,plot3, ncol = 3))
+```
+
+```{r beta_div_season, comment="", message=FALSE, warning=FALSE}
+beta_q1n <- genome_counts_filt %>%
+  column_to_rownames(., "genome") %>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0)) %>%
+  hillpair(., q = 1)
+
+```
+
+
+### Beta diversity plots
+
+
+#### Neutral
+
+```{r beta_div_neutral_season, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=7, fig.width=10, fig.fullwidth=TRUE}
+beta_q1n %>%
+  vegan::metaMDS(., trymax = 500, k = 2, trace=0) %>%
+  vegan::scores() %>%
+  as_tibble(., rownames = "sample") %>%
+  dplyr::left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  group_by(group1) %>%
+  mutate(x_cen = mean(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(x = NMDS1, y = NMDS2, color = group1)) +
+    geom_point(size = 4) +
+    geom_segment(aes(x = x_cen, y = y_cen, xend = NMDS1, yend = NMDS2), alpha = 0.9, show.legend = FALSE) +
+    theme_classic() +
+    theme(
+      axis.text.x = element_text(size = 12),
+      axis.text.y = element_text(size = 12),
+      axis.title = element_text(size = 12, face = "bold"),
+      axis.text = element_text(face = "bold", size = 12),
+      panel.background = element_blank(),
+      axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+      legend.text = element_text(size = 12),
+      legend.title = element_text(size = 14),
+      legend.position = "right", legend.box = "vertical"
+    ) +
+  labs(color='Group') +
+   geom_text_repel(aes(label = individual), size=3)
+
+```
+
+### Permanova analysis
+```{r}
+sample_metadata_row<- column_to_rownames(sample_metadata, "sample") 
+sample_metadata_row <- sample_metadata_row[labels(beta_q1n), ]
+```
+
+**Neutral**
+```{r permanova_season_q1n, comment="", message=FALSE, warning=FALSE}
+betadisper(beta_q1n, sample_metadata_row$group1 %>% arrange(match(rownames,labels(beta_q1n)))) %>% permutest(., pairwise = TRUE) 
+
+adonis2(beta_q1n ~ group1, 
+        data = sample_metadata %>% arrange(match(sample,labels(beta_q1n))), 
+        permutations = 999, by="terms") %>%
+        broom::tidy() %>%
+        tt()
+```
+
+```{r pairwise_neutral_locality, comment="", message=FALSE, warning=FALSE}
+# sample_metadata <- sample_metadata %>% arrange(match(sample,labels(beta_q1n)))
+# pairwise.adonis(beta_q1n, sample_metadata$group1, perm = 999)
+```
+
+
+## Enrichment analysis: Ancombc2
+
+```{r zero_phylo1_season, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+#phyloseq object considering structual zeros
+phylo_samples <- sample_metadata %>%
+  column_to_rownames("sample") %>%
+  sample_data()
+phylo_genome <- genome_counts_filt %>%
+  select(one_of(c("genome", rownames(phylo_samples)))) %>%
+  column_to_rownames("genome") %>%
+  otu_table(., taxa_are_rows = TRUE)
+phylo_taxonomy <- genome_metadata %>%
+  filter(genome %in% rownames(phylo_genome)) %>% 
+  mutate(genome2 = genome) %>% 
+  column_to_rownames("genome2") %>%
+  dplyr::select(domain, phylum, class, order, family, genus, species, genome) %>% 
+  as.matrix() %>%
+  tax_table() 
+
+physeq_genome_itto <- phyloseq(phylo_genome, phylo_taxonomy, phylo_samples)
+physeq_genome_itto <- prune_taxa(taxa_sums(physeq_genome_itto)>0, physeq_genome_itto)
+
+```
+
+```{r load_ancombc_season, warning=FALSE, comments="", message=FALSE}
+load("data/ancombc_results_itto.Rdata") #ancombc_results_wolves.Rdata
+```
+
+#### MAG level
+```{r ancom_rand_mag_season, comment="", echo=FALSE, message=FALSE, warning=FALSE, eval=FALSE}
+ancom_rand_output_mag_itto = ancombc2(
+  data = physeq_genome_itto,
+  assay_name = "counts",
+  tax_level = NULL,
+  fix_formula = "season",
+  p_adj_method = "holm",
+  pseudo_sens = TRUE,
+  prv_cut = 0,
+  lib_cut = 0,
+  s0_perc = 0.05,
+  group = "season",
+  struc_zero = TRUE,
+  neg_lb = FALSE,
+  alpha = 0.05,
+  n_cl = 2,
+  verbose = TRUE,
+  global = FALSE,
+  pairwise = FALSE,
+  dunnet = FALSE,
+  trend = FALSE,
+  iter_control = list(
+    tol = 1e-5,
+    max_iter = 20,
+    verbose = FALSE
+  ),
+  em_control = list(tol = 1e-5, max_iter = 100),
+  mdfdr_control = list(fwer_ctrl_method = "holm", B = 100),
+  trend_control = NULL
+)
+```
+
+#### Structural zeros
+
+***Total number of structural zeros***
+```{r}
+# Extract structural zeros
+structural_zeros <- ancom_rand_output_mag_itto$zero_ind
+
+# Convert to a data frame for better readability
+structural_zeros_df <- as.data.frame(structural_zeros) %>% 
+  column_to_rownames(., "taxon")
+
+structural_zero_taxa <- rownames(structural_zeros_df)[apply(structural_zeros_df, 1, any)]
+
+# Identify in which groups each taxon is a structural zero
+structural_zero_groups <- structural_zeros_df[structural_zero_taxa, , drop = FALSE] %>% 
+  rename("summer"=1) %>% 
+  rename("winter"=2)
+
+# Total number of structural zeros
+nrow(structural_zero_groups)
+
+```
+
+***Structural zeros in summer***
+```{r}
+structural_zero_groups %>% 
+  filter(summer==TRUE) %>% 
+  nrow()
+
+structural_zero_groups %>% 
+  filter(summer==TRUE) %>% 
+  rownames_to_column(., "genome") %>% 
+  left_join(., genome_metadata, by="genome") %>% 
+  count(phylum, name = "sample_count") %>%
+  arrange(desc(sample_count)) 
+```
+
+***Structural zeros in winter***
+```{r}
+structural_zero_groups %>% 
+  filter(winter==TRUE) %>% 
+  nrow()
+
+structural_zero_groups %>% 
+  filter(winter==TRUE) %>% 
+  rownames_to_column(., "genome") %>% 
+  left_join(., genome_metadata, by="genome") %>% 
+  count(phylum, name = "sample_count") %>%
+  arrange(desc(sample_count)) 
+```
+
+***Structural zeros in wolves***
+```{r}
+structural_zero_groups %>% 
+  filter(Wolf==TRUE) %>% 
+  nrow()
+
+structural_zero_groups %>% 
+  filter(Wolf==TRUE) %>% 
+  rownames_to_column(., "genome") %>% 
+  left_join(., genome_metadata, by="genome") %>% 
+  count(phylum, name = "sample_count") %>%
+  arrange(desc(sample_count)) 
+```
+
+```{r ancom_table_season, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+taxonomy <- data.frame(physeq_genome_itto@tax_table) %>%
+  rownames_to_column(., "taxon") %>%
+  mutate_at(vars(phylum, order, family, genus, species), ~ str_replace(., "[dpcofgs]__", ""))
+
+ancombc_rand_table_mag_itto <- ancom_rand_output_mag_itto$res %>%
+  dplyr::select(taxon, lfc_seasonwinter, q_seasonwinter) %>%
+  filter(q_seasonwinter < 0.05) %>%
+  dplyr::arrange(q_seasonwinter) %>%
+  left_join(taxonomy, by = join_by(taxon == taxon)) %>%
+  mutate_at(vars(phylum, species), ~ str_replace(., "[dpcofgs]__", ""))%>%
+  dplyr::arrange(lfc_seasonwinter)
+  
+colors_alphabetic <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv") %>%
+    mutate_at(vars(phylum), ~ str_replace(., "[dpcofgs]__", ""))  %>%
+  right_join(taxonomy, by=join_by(phylum == phylum)) %>%
+  dplyr::select(phylum, colors) %>%
+  mutate(colors = str_c(colors, "80"))  %>% #add 80% alpha
+	unique() %>%
+	dplyr::arrange(phylum)
+
+tax_table <- as.data.frame(unique(ancombc_rand_table_mag_itto$phylum))
+  
+colnames(tax_table)[1] <- "phylum"
+tax_color <- merge(tax_table, colors_alphabetic, by="phylum")%>%
+	dplyr::arrange(phylum) %>%
+	dplyr::select(colors) %>%
+	pull()
+```
+
+```{r ancombc_rand_plot_season, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=10, fig.width=8, fig.fullwidth=TRUE}
+ancombc_rand_table_mag_itto%>%
+      mutate(genome=factor(genome,levels=ancombc_rand_table_mag_itto$genome)) %>%
+ggplot(., aes(x=lfc_seasonwinter, y=forcats::fct_reorder(genome,lfc_seasonwinter), fill=phylum)) + #forcats::fct_rev()
+  geom_col() + 
+  scale_fill_manual(values=tax_color) + 
+  geom_hline(yintercept=0) + 
+  theme(panel.background = element_blank(),
+        axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 6),
+        axis.title = element_text(size = 14, face = "bold"),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14, face = "bold"),
+        legend.position = "right", legend.box = "vertical")+
+  geom_text(aes(4, 20), label = "Enriched\nin winter", color="#666666") +
+  geom_text(aes(-3.5, 15), label = "Enriched\nin summer", color="#666666")+
+  xlab("log2FoldChange") + 
+  ylab("Genome")+
+  guides(fill=guide_legend(title="Phylum"))
+```
+
+### Phylum level
+```{r ancom_rand_phylum_season, comment="", echo=FALSE, message=FALSE, warning=FALSE, eval=FALSE}
+ancom_rand_output_phylum_itto = ancombc2(
+  data = physeq_genome_itto,
+  assay_name = "counts",
+  tax_level = "phylum",
+  fix_formula = "season",
+  p_adj_method = "holm",
+  pseudo_sens = TRUE,
+  prv_cut = 0,
+  lib_cut = 0,
+  s0_perc = 0.05,
+  group = "season",
+  struc_zero = TRUE,
+  neg_lb = FALSE,
+  alpha = 0.05,
+  n_cl = 2,
+  verbose = TRUE,
+  global = TRUE,
+  pairwise = TRUE,
+  dunnet = FALSE,
+  trend = FALSE,
+  iter_control = list(
+    tol = 1e-5,
+    max_iter = 20,
+    verbose = FALSE
+  ),
+  em_control = list(tol = 1e-5, max_iter = 100),
+  mdfdr_control = list(fwer_ctrl_method = "holm", B = 100),
+  trend_control = NULL
+)
+```
+
+```{r}
+res_pair_phylum_itto <- ancom_rand_output_phylum_itto$res_pair
+
+ancom_rand_output_phylum_itto$res %>%
+  dplyr::select(taxon, lfc_seasonwinter, q_seasonwinter) %>%
+  filter(q_seasonwinter < 0.05) %>%
+  dplyr::arrange(q_seasonwinter)
+
+```
+
+
+### Genus level
+```{r ancom_rand_genus_season, comment="", echo=FALSE, message=FALSE, warning=FALSE, eval=FALSE}
+ancom_rand_output_genus_itto = ancombc2(
+  data = physeq_genome_itto,
+  assay_name = "counts",
+  tax_level = "genus",
+  fix_formula = "season",
+  p_adj_method = "holm",
+  pseudo_sens = TRUE,
+  prv_cut = 0,
+  lib_cut = 0,
+  s0_perc = 0.05,
+  group = "season",
+  struc_zero = TRUE,
+  neg_lb = FALSE,
+  alpha = 0.05,
+  n_cl = 2,
+  verbose = TRUE,
+  global = TRUE,
+  pairwise = TRUE,
+  dunnet = FALSE,
+  trend = FALSE,
+  iter_control = list(
+    tol = 1e-5,
+    max_iter = 20,
+    verbose = FALSE
+  ),
+  em_control = list(tol = 1e-5, max_iter = 100),
+  mdfdr_control = list(fwer_ctrl_method = "holm", B = 100),
+  trend_control = NULL
+)
+```
+
+```{r}
+# ancom_rand_output_genus_itto$res %>%
+#   dplyr::select(taxon, lfc_seasonwinter, q_seasonwinter) %>%
+#   filter(q_seasonwinter < 0.05) %>%
+#   dplyr::arrange(q_seasonwinter)%>%
+#   mutate(taxon_clean = sub(".*:", "", taxon)) %>% 
+#   left_join(., genome_metadata %>% select(genus, family, phylum) %>% distinct(), by =join_by("taxon_clean"=="genus"))%>% 
+#   left_join(., genome_metadata %>% select(family, phylum)%>% distinct(), by =join_by("taxon_clean"=="family")) %>%
+#   mutate(phylum.x = coalesce(phylum.x, phylum.y)) %>% 
+#   select(-family,-phylum.y) %>% 
+#   rename(phylum=phylum.x)
+
+taxonomy <- data.frame(physeq_genome_itto@tax_table) %>%
+  rownames_to_column(., "taxon")
+
+colors_alphabetic <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv") %>%
+  mutate_at(vars(phylum), ~ str_replace(., "[dpcofgs]__", ""))  %>%
+  right_join(taxonomy, by=join_by(phylum == phylum)) %>%
+  dplyr::select(phylum, colors) %>%
+  mutate(colors = str_c(colors, "80"))  %>% #add 80% alpha
+	unique() %>%
+	dplyr::arrange(phylum)
+
+ancombc_rand_table_genus_itto <- ancom_rand_output_genus_itto$res %>%
+  dplyr::select(taxon, lfc_seasonwinter, q_seasonwinter) %>%
+  filter(q_seasonwinter < 0.05) %>%
+  dplyr::arrange(q_seasonwinter)%>%
+  mutate(taxon_clean = sub(".*:", "", taxon)) %>% 
+  left_join(., genome_metadata %>% select(genus, family, phylum) %>% distinct(), by =join_by("taxon_clean"=="genus"))%>% 
+  left_join(., genome_metadata %>% select(family, phylum)%>% distinct(), by =join_by("taxon_clean"=="family")) %>%
+  mutate(phylum.x = coalesce(phylum.x, phylum.y)) %>% 
+  select(-family,-phylum.y) %>% 
+  rename(phylum=phylum.x)
+  
+colors_alphabetic <- read_tsv("https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv") %>%
+    mutate_at(vars(phylum), ~ str_replace(., "[dpcofgs]__", ""))  %>%
+  right_join(taxonomy, by=join_by(phylum == phylum)) %>%
+  dplyr::select(phylum, colors) %>%
+  mutate(colors = str_c(colors, "80"))  %>% #add 80% alpha
+	unique() %>%
+	dplyr::arrange(phylum)
+
+tax_table <- as.data.frame(unique(ancombc_rand_table_genus_itto$phylum))
+  
+colnames(tax_table)[1] <- "phylum"
+tax_color <- merge(tax_table, colors_alphabetic, by="phylum")%>%
+	dplyr::arrange(phylum) %>%
+	dplyr::select(colors) %>%
+	pull()
+```
+```{r}
+ancombc_rand_table_mag_itto%>%
+      mutate(genome=factor(genome,levels=ancombc_rand_table_mag_itto$genome)) %>%
+ggplot(., aes(x=lfc_seasonwinter, y=forcats::fct_reorder(genome,lfc_seasonwinter), fill=phylum)) + #forcats::fct_rev()
+  geom_col() + 
+  scale_fill_manual(values=tax_color) + 
+  geom_hline(yintercept=0) + 
+  theme(panel.background = element_blank(),
+        axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 6),
+        axis.title = element_text(size = 14, face = "bold"),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14, face = "bold"),
+        legend.position = "right", legend.box = "vertical")+
+  xlab("log2FoldChange") + 
+  ylab("Genome")+
+  guides(fill=guide_legend(title="Phylum"))
+
+
+ggplot(ancombc_rand_table_genus_itto, aes(x=lfc_seasonwinter, y=forcats::fct_reorder(taxon_clean,lfc_seasonwinter), fill=phylum))  +
+    geom_bar(stat = "identity") +
+  theme(panel.background = element_blank(),
+        axis.line = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 6),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14, face = "bold"),
+        legend.position = "right", legend.box = "vertical",
+        plot.title = element_text(size = 16, face = "bold", hjust = 0.5))+   
+      scale_fill_manual(values=tax_color) + 
+    labs(
+      x = "Taxa",
+      y = "Log-Fold Change",
+      fill = "Direction"
+    )
+```
+
+
+
+```{r save_ancombc_season, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+save(ancom_rand_output_mag_itto,
+     ancom_rand_output_phylum_itto,
+     ancom_rand_output_genus_itto,
+     file = "data/ancombc_results_itto.Rdata") #ancombc_results_wolves.Rdata
+```
+
+```{r gift_analysis_season, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+genome_counts_filt <- genome_counts_filt[genome_counts_filt$genome %in% rownames(genome_gifts),]
+genome_counts_filt <- genome_counts_filt %>%
+  column_to_rownames(., "genome") %>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0))%>%
+  rownames_to_column(., "genome")
+
+genome_gifts <- genome_gifts[rownames(genome_gifts) %in% genome_counts_filt$genome,]
+genome_gifts <- genome_gifts[, colSums(genome_gifts != 0) > 0]
+
+#Aggregate bundle-level GIFTs into the compound level
+GIFTs_elements <- to.elements(genome_gifts,GIFT_db)
+GIFTs_elements_filtered <- GIFTs_elements[rownames(GIFTs_elements) %in% genome_counts_filt$genome,]
+GIFTs_elements_filtered <- as.data.frame(GIFTs_elements_filtered) %>% 
+  select_if(~ !is.numeric(.) || sum(.) != 0)
+
+#Aggregate element-level GIFTs into the function level
+GIFTs_functions <- to.functions(GIFTs_elements_filtered,GIFT_db)
+
+#Aggregate function-level GIFTs into overall Biosynthesis, Degradation and Structural GIFTs
+GIFTs_domains <- to.domains(GIFTs_functions,GIFT_db)
+
+#Get community-weighed average GIFTs per sample
+genome_counts_row <- genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% 
+  column_to_rownames(., "genome") 
+# genome_counts_row <- rownames_to_column(genome_counts_row, "genome")
+GIFTs_elements_community <- to.community(GIFTs_elements_filtered,genome_counts_row,GIFT_db)
+GIFTs_functions_community <- to.community(GIFTs_functions,genome_counts_row,GIFT_db)
+GIFTs_domains_community <- to.community(GIFTs_domains,genome_counts_row,GIFT_db)
+```
+
+## Groups MCI
+```{r gitfs_functional_season, echo=TRUE,results=TRUE}
+GIFTs_functions_community %>%
+  rowMeans() %>%
+  as_tibble(., rownames = "sample") %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  group_by(season) %>%
+  summarise(MCI = mean(value), sd = sd(value)) %>%
+  tt()
+  
+```
+
+***Shapiro test***
+```{r}
+MCI <- GIFTs_functions_community %>%
+  rowMeans() %>%
+  as_tibble(., rownames = "sample") %>%
+  left_join(sample_metadata, by = join_by(sample == sample))
+
+shapiro.test(MCI$value)
+wilcox.test(value ~ season, data=MCI)
+```
+
+### Community elements differences:
+```{r comunity_elem_season, comment="", message=FALSE, warning=FALSE}
+element_gift <- GIFTs_elements_community %>% 
+  as.data.frame() %>% 
+  rownames_to_column(., "sample") %>% 
+  left_join(., sample_metadata[c(1,8)], by=join_by("sample"=="sample"))
+```
+
+```{r commun_wilcox_elem_season, comment="", message=FALSE, warning=FALSE}
+uniqueGIFT_db<- unique(GIFT_db[c(2,4,5,6)]) %>% unite("Function",Function:Element, sep= "_", remove=FALSE)
+
+significant_elements <- element_gift %>%
+    pivot_longer(-c(sample,season), names_to = "trait", values_to = "value") %>%
+    group_by(trait) %>%
+    summarise(p_value = wilcox.test(value ~ season)$p.value) %>%
+    mutate(p_adjust=p.adjust(p_value, method="BH")) %>%
+    filter(p_adjust < 0.05)%>%
+  rownames_to_column(., "Elements")  %>%
+  left_join(.,uniqueGIFT_db[c(1,3)],by = join_by(trait == Code_element))
+
+element_gift_t <- element_gift  %>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)  %>%
+  rownames_to_column(., "trait")
+
+element_gift_filt <- subset(element_gift_t, trait %in% significant_elements$trait) %>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)  %>%
+  rownames_to_column(., "sample")%>% 
+  left_join(., sample_metadata[c(1,8)], by = join_by(sample == sample))
+
+element_gift_filt %>%
+  select(-sample)%>%
+  group_by(season)  %>%
+  summarise(across(everything(), mean))%>%
+   t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)  %>%
+  rownames_to_column(., "Elements")  %>%
+  left_join(.,uniqueGIFT_db[c(1,3)],by = join_by(Elements == Code_element))
+
+difference_table <- element_gift_filt %>%
+  select(-sample) %>%
+  group_by(season) %>%
+  summarise(across(everything(), mean)) %>%
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric) %>%
+  rownames_to_column(., "Elements") %>%
+  left_join(.,uniqueGIFT_db[c(1,3,4)],by = join_by(Elements == Code_element)) %>% 
+  arrange(Function) %>% 
+  mutate(Difference=summer-winter)%>% 
+  mutate(group_color = ifelse(Difference <0, "winter","summer")) 
+```
+
+```{r plot3_season, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=5, fig.width=10, fig.fullwidth=TRUE}
+uniqueGIFT <- unique(GIFT_db[c(2,3,4,5,6)])
+
+code_function2 <- difference_table %>%
+  left_join(uniqueGIFT[c(1:3)], by=join_by(Elements==Code_element))
+
+unique_codes<-unique(code_function2$Code_function)
+
+gift_colors <- read_tsv("data/gift_colors.tsv") %>% 
+  filter(Code_function %in% unique_codes)%>% 
+  mutate(legend=str_c(Code_function," - ",Function))
+```
+
+```{r final_plot_season, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=8, fig.width=12, fig.fullwidth=TRUE}
+code_function2 %>%
+  left_join(gift_colors[c(1,3,4)], by=join_by(Code_function==Code_function))%>%
+  ggplot(aes(x=forcats::fct_reorder(Function,Difference), y=Difference, fill=legend)) + 
+  geom_col() +
+  scale_color_manual(values = gift_colors$Color)+
+  geom_hline(yintercept=0) + 
+  coord_flip()+
+  geom_text(aes(2, 0.028), label = "Enriched in\n summer", color="#666666") +
+  geom_text(aes(1.7, -0.025), label = "Enriched in\n winter ", color="#666666") +
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12),
+        legend.position = "right", 
+        panel.background = element_blank())+
+  xlab("Microbial Functional Capacity") + 
+  ylab("Mean difference")+
+  labs(fill="Season")
+```
+
+```{r}
+function_gift <- GIFTs_functions_community %>% 
+  as.data.frame() %>% 
+  rownames_to_column(., "sample") %>% 
+  left_join(sample_metadata[c(1,12)], by="sample")
+
+uniqueFuncGIFT_db<- unique(GIFT_db[c(3,4,5)])
+
+significant_functions <- function_gift %>%
+    pivot_longer(-c(sample,group1), names_to = "trait", values_to = "value") %>%
+    group_by(trait) %>%
+  summarise(p_value = kruskal.test(value ~ group1)$p.value) %>%
+  mutate(p_adjust=p.adjust(p_value, method="BH")) %>%
+    filter(p_adjust < 0.05)%>%
+  rownames_to_column(., "functions")  %>% 
+  select(-functions) %>% 
+  left_join(., uniqueFuncGIFT_db, by=join_by(trait==Code_function))
+
+
+function_gift_t <- function_gift  %>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)  %>%
+  rownames_to_column(., "trait")
+
+function_gift_filt <- subset(function_gift_t, trait %in% significant_functions$trait) %>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)  %>%
+  rownames_to_column(., "sample")%>% 
+  left_join(., sample_metadata[c(1,8)], by = join_by(sample == sample))
+
+function_gift_filt %>%
+  select(-sample)%>%
+  group_by(season)  %>%
+  summarise(across(everything(), mean))%>%
+   t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)  %>%
+  rownames_to_column(., "trait")  %>%
+  left_join(., uniqueFuncGIFT_db, by=join_by(trait==Code_function))
+
+difference_table <- function_gift_filt %>%
+  select(-sample) %>%
+  group_by(season) %>%
+  summarise(across(everything(), mean)) %>%
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric) %>%
+  rownames_to_column(., "trait")  %>%
+  left_join(., uniqueFuncGIFT_db, by=join_by(trait==Code_function)) %>% 
+  mutate(Difference=summer-winter)%>% 
+  mutate(group_color = ifelse(Difference <0, "winter","summer")) 
+
+  ggplot(difference_table, aes(x=forcats::fct_reorder(Function,Difference), y=Difference, fill=legend)) + 
+  geom_col() +
+  scale_color_manual(values = gift_colors$Color)+
+  geom_hline(yintercept=0) + 
+  coord_flip()+
+  geom_text(aes(2, 0.028), label = "Enriched in\n summer", color="#666666") +
+  geom_text(aes(1.7, -0.025), label = "Enriched in\n winter ", color="#666666") +
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12),
+        legend.position = "right", 
+        panel.background = element_blank())+
+  xlab("Microbial Functional Capacity") + 
+  ylab("Mean difference")+
+  labs(fill="Season")
+
+
+
+selected_data <- function_gift %>%
+  pivot_longer(-c(sample, group1), names_to = "trait", values_to = "value") %>%
+  filter(trait %in% significant_functions$trait)%>% 
+  left_join(., uniqueFuncGIFT_db, by=join_by(trait==Code_function))
+```
+```{r}
+selected_data %>%
+  ggplot(aes(x=forcats::fct_reorder(Function,Difference), y=Difference, fill=legend)) + 
+  geom_col() +
+  scale_color_manual(values = gift_colors$Color)+
+  geom_hline(yintercept=0) + 
+  coord_flip()+
+  geom_text(aes(2, 0.028), label = "Enriched in\n summer", color="#666666") +
+  geom_text(aes(1.7, -0.025), label = "Enriched in\n winter ", color="#666666") +
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12),
+        legend.position = "right", 
+        panel.background = element_blank())+
+  xlab("Microbial Functional Capacity") + 
+  ylab("Mean difference")+
+  labs(fill="Season")
+```
+
+# bacteria differences
+```{r}
+ecoli <- genome_metadata %>%
+  filter(species=="Escherichia coli") %>%
+  select(genome) %>%
+  pull()
+
+ecoli_counts <- genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% 
+  filter(genome %in% ecoli)
+
+ecoli_means <- ecoli_counts %>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)%>%
+  rowMeans() %>%
+  as_tibble(., rownames = "sample") %>%
+  left_join(sample_metadata[c(1, 12)], by = join_by(sample == sample))
+
+shapiro.test(ecoli_means$value)
+wilcox.test(value ~ group1, data=ecoli_means)
+
+ecoli_means <- ecoli_counts %>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)%>%
+  rownames_to_column(., "sample") %>% 
+  mutate(
+    row_mean = rowMeans(select(., -sample), na.rm = TRUE),
+    row_median = apply(select(., -sample), 1, median, na.rm = TRUE)
+  ) %>% 
+  select(sample, row_mean, row_median) %>%
+  left_join(sample_metadata[c(1, 12)], by = join_by(sample == sample))
+
+shapiro.test(ecoli_means$row_mean)
+wilcox.test(row_mean ~ group1, data=ecoli_means)
+
+shapiro.test(ecoli_means$row_median)
+wilcox.test(row_median ~ group1, data=ecoli_means)
+```
+
+```{r plot3_season, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+ecoli_counts%>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)  %>%
+  rownames_to_column(., "sample")%>% 
+  mutate(row_median = apply(select(., -sample), 1, median, na.rm = TRUE)) %>% 
+  select(sample, row_median) %>% 
+  left_join(., sample_metadata[c(1,12)], by = join_by(sample == sample)) %>% 
+  ggplot(., aes(x = group1, y = row_median, fill = group1)) +
+  geom_violin(outlier.shape = NA, alpha = 0.7) +
+  geom_jitter(width = 0.2, size = 1, alpha = 0.4) +
+  theme_minimal(base_size = 16) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  labs(
+    title = "E. coli Distributions Across Groups",
+    x = "Groups",
+    y = "E. coli" )
+```
+
+```{r plot3_season, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
+ecoli_counts%>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)  %>%
+  rownames_to_column(., "sample")%>% 
+  mutate(row_mean = rowMeans(select(., -sample), na.rm = TRUE)) %>% 
+  select(sample, row_mean) %>% 
+  left_join(., sample_metadata[c(1,12)], by = join_by(sample == sample))%>% 
+  ggplot(., aes(x = group1, y = row_mean, fill = group1)) +
+  geom_violin(alpha = 0.7) +
+  geom_jitter(width = 0.2, size = 1, alpha = 0.4) +
+  theme_minimal(base_size = 16) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  labs(
+    title = "Trait Distributions Across Localities",
+    x = "Locality",
+    y = "Trait Value" )
+```
+
+```{r}
+bacteria <- genome_metadata %>%  filter(species=="Campylobacter_D jejuni") %>%  select(genome) %>%  pull()
+
+bacteria_counts <- genome_counts_filt %>% filter(genome %in% bacteria)
+
+
+bacteria_counts %>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)  %>%
+  rownames_to_column(., "sample")%>% 
+  left_join(., sample_metadata[c(1,12)], by = join_by(sample == sample))%>%
+  group_by(group1) %>% 
+  summarise(mean=mean(SRR14842419_bin_269, na.rm = TRUE))
+```
+```{r}
+bacteria <- genome_metadata %>%
+  filter(species=="Klebsiella pneumoniae") %>%
+  select(genome) %>%
+  pull()
+
+bacteria_counts <- genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% 
+  filter(genome %in% bacteria)
+
+bacteria_means <- bacteria_counts %>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)%>%
+  rownames_to_column(., "sample") %>% 
+  mutate(
+    row_mean = rowMeans(select(., -sample), na.rm = TRUE),
+    row_median = apply(select(., -sample), 1, median, na.rm = TRUE)
+  ) %>% 
+  select(sample, row_mean, row_median) %>%
+  left_join(sample_metadata[c(1, 12)], by = join_by(sample == sample))
+
+shapiro.test(bacteria_means$row_mean)
+wilcox.test(row_mean ~ group1, data=bacteria_means)
+
+shapiro.test(bacteria_means$row_median)
+wilcox.test(row_median ~ group1, data=bacteria_means)
+```
+
+```{r}
+bacteria <- genome_metadata %>%  filter(species=="Klebsiella pneumoniae") %>%  select(genome) %>%  pull()
+
+bacteria_counts <- genome_counts_filt %>% filter(genome %in% bacteria)
+
+bacteria_counts %>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)  %>%
+  rownames_to_column(., "sample")%>% 
+  mutate(row_mean = rowMeans(select(., -sample), na.rm = TRUE)) %>% 
+  select(sample, row_mean) %>% 
+  left_join(., sample_metadata[c(1,12)], by = join_by(sample == sample))%>%
+  group_by(group1) %>% 
+  summarise(mean=mean(row_mean, na.rm = TRUE))
+
+bacteria_counts %>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric) %>%
+  rownames_to_column("sample") %>%
+  mutate(
+    row_mean = rowMeans(select(., -sample), na.rm = TRUE),
+    row_median = apply(select(., -sample), 1, median, na.rm = TRUE)
+  ) %>%
+  select(sample, row_mean, row_median) %>%
+  left_join(sample_metadata[c(1, 12)], by = join_by(sample == sample)) %>%
+  group_by(group1) %>%
+  summarise(
+    group_mean_of_means = mean(row_mean, na.rm = TRUE),
+    group_median_of_medians = median(row_median, na.rm = TRUE),
+    group_mean_of_medians = mean(row_median, na.rm = TRUE)
+  )
+
+bacteria_counts %>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric) %>%
+  rownames_to_column("sample") %>%
+  mutate(
+    row_sum = rowSums(select(., -sample), na.rm = TRUE),
+  ) %>%
+  select(sample, row_sum) %>%
+  left_join(sample_metadata[c(1, 12)], by = join_by(sample == sample)) %>%
+  group_by(group1) %>%
+  summarise(
+    group_mean_of_means = mean(row_sum, na.rm = TRUE),
+    group_median_of_medians = median(row_sum, na.rm = TRUE),
+  )
+
+```
+```{r}
+bacteria <- genome_metadata %>%
+  filter(species=="Sarcina perfringens") %>%
+  select(genome) %>%
+  pull()
+
+bacteria_counts <- genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% 
+  filter(genome %in% bacteria)
+
+bacteria_means <- bacteria_counts %>% 
+  t() %>%
+  row_to_names(row_number = 1) %>%
+  as.data.frame() %>%
+  mutate_if(is.character, as.numeric)%>%
+  rownames_to_column(., "sample") %>% 
+  mutate(
+    row_mean = rowMeans(select(., -sample), na.rm = TRUE),
+    row_median = apply(select(., -sample), 1, median, na.rm = TRUE)
+  ) %>% 
+  select(sample, row_mean, row_median) %>%
+  left_join(sample_metadata[c(1, 12)], by = join_by(sample == sample))
+
+shapiro.test(bacteria_means$row_mean)
+wilcox.test(row_mean ~ group1, data=bacteria_means)
+
+shapiro.test(bacteria_means$row_median)
+wilcox.test(row_median ~ group1, data=bacteria_means)
+```

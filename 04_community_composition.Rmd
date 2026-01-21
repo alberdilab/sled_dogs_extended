@@ -4,6 +4,36 @@
 
 ```{r load_data_community, comment="", message=FALSE, warning=FALSE, eval=FALSE}
 load("data/data.Rdata")
+
+sample_metadata <- read_csv("data/sample_metadata.csv")
+ 
+sample_metadata$individual <- sub("[0-9]{2}$", "", sample_metadata$animal)
+
+sample_metadata_illu <- read_csv("data/metadata_illu.csv")
+sample_metadata <- sample_metadata %>% 
+  left_join(sample_metadata_illu[c(1,4,9)], by=join_by("sample"=="DogID")) 
+
+load("data/beta.Rdata")
+#samples to remove
+samples_to_remove <- sample_metadata %>% 
+  filter(individual == "GL_02_" | Samples %in% c("Blank", "Saliva") | group2 %in% c("Unknown") | season=="winter" ) %>% #!day %in% c("day_1", "Unknown")
+  select(sample) %>% 
+  pull()
+
+sample_metadata <- sample_metadata %>% 
+  filter(!sample %in% samples_to_remove)
+  #filter(individual != "GL_02_" | !Samples %in% c("Blank", "Saliva") | group2 != "Unknown" | season!="winter") 
+
+genome_counts_filt <- genome_counts_filt %>% 
+  select(one_of(c("genome",sample_metadata$sample)))%>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0))
+
+genome_metadata <- genome_metadata %>% 
+  semi_join(., genome_counts_filt, by = "genome") %>% 
+  arrange(match(genome,genome_counts_filt$genome))
+
+genome_tree <- keep.tip(genome_tree, tip=genome_metadata$genome)
 ```
 
 ## Taxonomy overview 
@@ -107,7 +137,7 @@ genome_metadata %>%
 ```{r phyla_pre, comment="", echo=FALSE, message=FALSE, warning=FALSE}
 
 captive_pre_samples <- sample_metadata %>% 
-  filter(diet=="Pre_grass") %>% 
+  filter(diet=="Sled_dog") %>% 
   dplyr::select(sample) %>% 
   pull()
 
@@ -256,88 +286,28 @@ phylum_summary <- genome_counts_filt %>%
   pivot_longer(-genome, names_to = "sample", values_to = "count") %>%
   left_join(sample_metadata, by = join_by(sample == sample)) %>%
   left_join(genome_metadata, by = join_by(genome == genome)) %>%
-  group_by(sample,phylum,region, diet) %>%
+  group_by(sample,phylum,group2) %>%
   summarise(relabun=sum(count))
 ```
 
-```{r taxonomy_boxplot_phylum, warning=FALSE, comments="", message=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
-phylum_arrange <- phylum_summary %>%
-    group_by(phylum) %>%
-    summarise(mean=mean(relabun)) %>%
-    arrange(-mean) %>%
-    select(phylum) %>%
-    pull()
-
-phylum_summary %>%
-    filter(phylum %in% phylum_arrange) %>%
-    mutate(phylum=factor(phylum,levels=rev(phylum_arrange))) %>%
-    ggplot(aes(x=relabun, y=phylum, group=phylum, color=phylum)) +
-        scale_color_manual(values=phylum_colors[rev(phylum_arrange)]) +
-        geom_jitter(alpha=0.5) + 
-        theme_minimal() + 
-        theme(legend.position="none") +
-        labs(y="Phylum",x="Relative abundance")
-```
-
-#### Origin: Wild vs Captive
+#### Origin: Dogs vs Sled dogs vs Wolves
 ```{r taxonomy_phylum_summary_origin, warning=FALSE, comments="", message=FALSE}
 phylum_summary %>%
     group_by(phylum) %>%
     summarise(total_mean=mean(relabun*100, na.rm=T),
               total_sd=sd(relabun*100, na.rm=T),
-              Wild_mean=mean(relabun[diet=="Wild"]*100, na.rm=T),
-              Wild_sd=sd(relabun[diet=="Wild"]*100, na.rm=T),
-              Captive_mean=mean(relabun[diet=="Pre_grass"]*100, na.rm=T),
-              Captive_sd=sd(relabun[diet=="Pre_grass"]*100, na.rm=T)) %>%
+              Dog_mean=mean(relabun[group2=="Dog"]*100, na.rm=T),
+              Dog_sd=sd(relabun[group2=="Dog"]*100, na.rm=T),
+              Sled_dog_mean=mean(relabun[group2=="Sled_dog"]*100, na.rm=T),
+              Sled_dog_sd=sd(relabun[group2=="Sled_dog"]*100, na.rm=T),
+              Wolf_mean=mean(relabun[group2=="Wolf"]*100, na.rm=T),
+              Wolf_sd=sd(relabun[group2=="Wolf"]*100, na.rm=T)) %>%
     mutate(total=str_c(round(total_mean,3),"±",round(total_sd,3)),
-           Wild=str_c(round(Wild_mean,3),"±",round(Wild_sd,3)),
-           Captive=str_c(round(Captive_mean,3),"±",round(Captive_sd,3))) %>% 
+           Dog=str_c(round(Dog_mean,3),"±",round(Dog_sd,3)),
+           Sled_dog=str_c(round(Sled_dog_mean,3),"±",round(Sled_dog_sd,3)),
+           Wolf=str_c(round(Wolf_mean,3),"±",round(Wolf_sd,3))) %>% 
     arrange(-total_mean) %>% 
-    dplyr::select(phylum,total,Wild,Captive)
-```
-
-#### Origin and diet
-```{r taxonomy_phylum_summary_origin_diet, warning=FALSE, comments="", message=FALSE}
-phylum_summary %>%
-    group_by(phylum) %>%
-    summarise(total_mean=mean(relabun*100, na.rm=T),
-              total_sd=sd(relabun*100, na.rm=T),
-              Wild_mean=mean(relabun[diet=="Wild"]*100, na.rm=T),
-              Wild_sd=sd(relabun[diet=="Wild"]*100, na.rm=T),
-              Pre_grass_mean=mean(relabun[diet=="Pre_grass"]*100, na.rm=T),
-              Pre_grass_sd=sd(relabun[diet=="Pre_grass"]*100, na.rm=T),
-              Post_grass_mean=mean(relabun[diet=="Post_grass"]*100, na.rm=T),
-              Post_grass_sd=sd(relabun[diet=="Post_grass"]*100, na.rm=T))  %>%
-    mutate(total=str_c(round(total_mean,2),"±",round(total_sd,2)),
-           Wild=str_c(round(Wild_mean,2),"±",round(Wild_sd,2)),
-           Pre_grass=str_c(round(Pre_grass_mean,6),"±",round(Pre_grass_sd,6)),
-           Post_grass=str_c(round(Post_grass_mean,2),"±",round(Post_grass_sd,2))) %>% 
-    arrange(-total_mean) %>% 
-    dplyr::select(phylum,total,Wild,Pre_grass,Post_grass)
-```
-
-
-
-```{r taxonomy_jitterplot_phylum, warning=FALSE, comments="", message=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
-phylum_arrange <- phylum_summary %>%
-    group_by(phylum) %>%
-    summarise(mean=sum(relabun)) %>%
-    arrange(-mean) %>%
-    select(phylum) %>%
-    pull()
-
-phylum_summary %>%
-    left_join(genome_metadata %>% select(phylum,phylum) %>% unique(),by=join_by(phylum==phylum)) %>%
-#    left_join(sample_metadata,by=join_by(sample==sample)) %>%
-    filter(phylum %in% phylum_arrange[1:20]) %>%
-    mutate(phylum=factor(phylum,levels=rev(phylum_arrange[1:20]))) %>%
-    filter(relabun > 0) %>%
-    ggplot(aes(x=relabun, y=phylum, group=phylum, color=phylum)) +
-        scale_color_manual(values=phylum_colors[-8]) +
-        geom_jitter(alpha=0.5) + 
-        facet_grid(.~diet)+
-        theme_minimal() + 
-        labs(y="phylum", x="Relative abundance", color="Phylum")
+    dplyr::select(phylum,total,Dog,Sled_dog,Wolf)
 ```
 
 ## Taxonomy boxplot
@@ -350,69 +320,29 @@ family_summary <- genome_counts_filt %>%
   pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
   left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
   left_join(., genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
-  group_by(sample,family, diet,region) %>%
+  group_by(sample,family, group2) %>%
   summarise(relabun=sum(count))
-family_summary$diet <- factor(family_summary$diet, levels=c("Pre_grass", "Post_grass", "Wild"))
+family_summary$group2 <- factor(family_summary$group2, levels=c("Sled_dog", "Dog", "Wolf"))
 ```
 
-#### Origin: Wild vs Captive
+#### Origin: Dog vs Captive
 ```{r taxonomy_family_summary_origin, warning=FALSE, comments="", message=FALSE}
 family_summary %>%
     group_by(family) %>%
     summarise(total_mean=mean(relabun*100, na.rm=T),
               total_sd=sd(relabun*100, na.rm=T),
-              Wild_mean=mean(relabun[diet=="Wild"]*100, na.rm=T),
-              Wild_sd=sd(relabun[diet=="Wild"]*100, na.rm=T),
-              Cap_mean=mean(relabun[region=="Nafarroa"]*100, na.rm=T),
-              Cap_sd=sd(relabun[region=="Nafarroa"]*100, na.rm=T))  %>%
-    mutate(Total=str_c(round(total_mean,2),"±",round(total_sd,2)),
-           Wild=str_c(round(Wild_mean,2),"±",round(Wild_sd,2)),
-           Captive=str_c(round(Cap_mean,2),"±",round(Cap_sd,2))) %>% 
-    arrange(-total_mean) %>% 
-    dplyr::select(family,Total,Wild,Captive) %>% 
-    paged_table()
-```
-
-#### Origin and Diet
-```{r taxonomy_family_summary_type, warning=FALSE, comments="", message=FALSE}
-family_summary %>%
-    group_by(family) %>%
-    summarise(total_mean=mean(relabun*100, na.rm=T),
-              total_sd=sd(relabun*100, na.rm=T),
-              Wild_mean=mean(relabun[diet=="Wild"]*100, na.rm=T),
-              Wild_sd=sd(relabun[diet=="Wild"]*100, na.rm=T),
-              Pre_grass_mean=mean(relabun[diet=="Pre_grass"]*100, na.rm=T),
-              Pre_grass_sd=sd(relabun[diet=="Pre_grass"]*100, na.rm=T),
-              Post_grass_mean=mean(relabun[diet=="Post_grass"]*100, na.rm=T),
-              Post_grass_sd=sd(relabun[diet=="Post_grass"]*100, na.rm=T))  %>%
-    mutate(Total=str_c(round(total_mean,2),"±",round(total_sd,2)),
-           Wild=str_c(round(Wild_mean,2),"±",round(Wild_sd,2)),
-           Pre_grass=str_c(round(Pre_grass_mean,2),"±",round(Pre_grass_sd,2)),
-           Post_grass=str_c(round(Post_grass_mean,2),"±",round(Post_grass_sd,2))) %>% 
-    arrange(-total_mean) %>% 
-    dplyr::select(family,Total,Wild,Pre_grass,Post_grass) %>% 
-    paged_table()
-```
-
-```{r taxonomy_jitterplot_family, warning=FALSE, comments="", message=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
-family_arrange <- family_summary %>%
-    group_by(family) %>%
-    summarise(mean=sum(relabun)) %>%
-    arrange(-mean) %>%
-    select(family) %>%
-    pull()
-
-family_summary %>%
-    left_join(genome_metadata %>% select(family,phylum) %>% unique(),by=join_by(family==family)) %>%
-    filter(family %in% family_arrange[1:20]) %>%
-    mutate(family=factor(family,levels=rev(family_arrange[1:20]))) %>%
-    filter(relabun > 0) %>%
-    ggplot(aes(x=relabun, y=family, group=family, color=phylum)) +
-        scale_color_manual(values=phylum_colors[-8]) +
-        geom_jitter(alpha=0.5) + 
-        facet_grid(.~diet)+
-        theme_minimal() + 
-        labs(y="Family", x="Relative abundance", color="Phylum")
+              Dog_mean=mean(relabun[group2=="Dog"]*100, na.rm=T),
+              Dog_sd=sd(relabun[group2=="Dog"]*100, na.rm=T),
+              Sled_dog_mean=mean(relabun[group2=="Sled_dog"]*100, na.rm=T),
+              Sled_dog_sd=sd(relabun[group2=="Sled_dog"]*100, na.rm=T),
+              Wolf_mean=mean(relabun[group2=="Wolf"]*100, na.rm=T),
+              Wolf_sd=sd(relabun[group2=="Wolf"]*100, na.rm=T)) %>%
+    mutate(total=str_c(round(total_mean,3),"±",round(total_sd,3)),
+           Dog=str_c(round(Dog_mean,3),"±",round(Dog_sd,3)),
+           Sled_dog=str_c(round(Sled_dog_mean,3),"±",round(Sled_dog_sd,3)),
+           Wolf=str_c(round(Wolf_mean,3),"±",round(Wolf_sd,3))) %>% 
+    arrange(-Sled_dog_mean) %>% 
+    dplyr::select(family,total,Dog,Sled_dog,Wolf)
 ```
 
 ### Genus
@@ -423,32 +353,50 @@ genus_summary <- genome_counts_filt %>%
   pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
   left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
   left_join(genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
-  group_by(sample,phylum,genus, diet) %>%
+  group_by(sample,phylum,genus, group2) %>%
   summarise(relabun=sum(count)) %>%
   filter(genus != "g__") %>%
   mutate(genus= sub("^g__", "", genus))
-genus_summary$diet <- factor(genus_summary$diet, levels=c("Pre_grass", "Post_grass", "Wild"))
+genus_summary$group2 <- factor(genus_summary$group2, levels=c("Sled_dog", "Wolf", "Dog"))
+```
+```{r}
+genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
+  left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
+  left_join(genome_metadata, by = join_by(genome == genome)) %>% 
+  filter(genome=="ERR1915648_bin_35072")%>% #append genome metadata
+  group_by(group2) %>%
+  summarise(relabun=sum(count))
+```
+```{r}
+genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
+  left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
+  left_join(genome_metadata, by = join_by(genome == genome)) %>% 
+  filter(genus=="Cetobacterium_A")%>% #append genome metadata
+  group_by(genome, group2) %>%
+  summarise(relabun=sum(count), sd=sd(count))
 ```
 
-### origin and diet
-```{r taxonomy_genera_summary_oridiet, warning=FALSE, comments="", message=FALSE}
+```{r taxonomy_genera_summary_origroup2, warning=FALSE, comments="", message=FALSE}
 genus_summary %>%
     group_by(genus) %>%
     summarise(total_mean=mean(relabun*100, na.rm=T),
               total_sd=sd(relabun*100, na.rm=T),
-              Wild_mean=mean(relabun[diet=="Wild"]*100, na.rm=T),
-              Wild_sd=sd(relabun[diet=="Wild"]*100, na.rm=T),
-              Pre_grass_mean=mean(relabun[diet=="Pre_grass"]*100, na.rm=T),
-              Pre_grass_sd=sd(relabun[diet=="Pre_grass"]*100, na.rm=T),
-              Post_grass_mean=mean(relabun[diet=="Post_grass"]*100, na.rm=T),
-              Post_grass_sd=sd(relabun[diet=="Post_grass"]*100, na.rm=T))  %>%
-    mutate(Total=str_c(round(total_mean,2),"±",round(total_sd,2)),
-           Wild=str_c(round(Wild_mean,2),"±",round(Wild_sd,2)),
-           Pre_grass=str_c(round(Pre_grass_mean,2),"±",round(Pre_grass_sd,2)),
-           Post_grass=str_c(round(Post_grass_mean,2),"±",round(Post_grass_sd,2))) %>% 
-    arrange(-total_mean) %>% 
-    dplyr::select(genus,Total,Wild,Pre_grass,Post_grass) %>% 
-    paged_table()
+              Dog_mean=mean(relabun[group2=="Dog"]*100, na.rm=T),
+              Dog_sd=sd(relabun[group2=="Dog"]*100, na.rm=T),
+              Sled_dog_mean=mean(relabun[group2=="Sled_dog"]*100, na.rm=T),
+              Sled_dog_sd=sd(relabun[group2=="Sled_dog"]*100, na.rm=T),
+              Wolf_mean=mean(relabun[group2=="Wolf"]*100, na.rm=T),
+              Wolf_sd=sd(relabun[group2=="Wolf"]*100, na.rm=T)) %>%
+    mutate(total=str_c(round(total_mean,3),"±",round(total_sd,3)),
+           Dog=str_c(round(Dog_mean,3),"±",round(Dog_sd,3)),
+           Sled_dog=str_c(round(Sled_dog_mean,3),"±",round(Sled_dog_sd,3)),
+           Wolf=str_c(round(Wolf_mean,3),"±",round(Wolf_sd,3))) %>% 
+    arrange(genus) %>% 
+    dplyr::select(genus,total,Dog,Sled_dog,Wolf)
 ```
 
 ```{r taxonomy_jitterplot_genus, fig.height=14, fig.width=10, fig.fullwidth=TRUE}
@@ -472,7 +420,7 @@ genus_summary %>%
   ggplot(aes(x=relabun, y=genus, group=genus, color=phylum)) +
   scale_color_manual(values=phylum_colors) +
   geom_jitter(alpha=0.5) + 
-  facet_grid(.~diet)+
+  facet_grid(.~group2)+
   theme_minimal() + 
   theme(axis.text.y = element_text(size=6))+
   labs(y="Family", x="Relative abundance", color="Phylum")

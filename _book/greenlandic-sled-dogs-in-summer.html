@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 9 Greenlandic sled dogs in summer | AlberdiLab | Brenner et al. 2025</title>
+  <meta name="description" content="Data analysis code for the study on the study of gut microbiomes of sled dogs and beyond." />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 9 Greenlandic sled dogs in summer | AlberdiLab | Brenner et al. 2025" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Data analysis code for the study on the study of gut microbiomes of sled dogs and beyond." />
+  <meta name="github-repo" content="alberdilab/sled_dogs_extended" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 9 Greenlandic sled dogs in summer | AlberdiLab | Brenner et al. 2025" />
+  
+  <meta name="twitter:description" content="Data analysis code for the study on the study of gut microbiomes of sled dogs and beyond." />
+  
+
+<meta name="author" content="Elsa Brenner, Antton Alberdi, Ostaizka Aizpurua" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="amr-and-vf.html"/>
+<link rel="next" href="top-10.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#prepare-the-r-environment"><i class="fa fa-check"></i><b>1.1</b> Prepare the R environment</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#environment"><i class="fa fa-check"></i><b>1.1.1</b> Environment</a></li>
+<li class="chapter" data-level="1.1.2" data-path="index.html"><a href="index.html#libraries"><i class="fa fa-check"></i><b>1.1.2</b> Libraries</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="prepare-data.html"><a href="prepare-data.html"><i class="fa fa-check"></i><b>2</b> Prepare data</a>
+<ul>
+<li class="chapter" data-level="2.0.1" data-path="prepare-data.html"><a href="prepare-data.html#reads"><i class="fa fa-check"></i><b>2.0.1</b> Reads</a></li>
+<li class="chapter" data-level="2.0.2" data-path="prepare-data.html"><a href="prepare-data.html#sample-metadata"><i class="fa fa-check"></i><b>2.0.2</b> Sample metadata</a></li>
+<li class="chapter" data-level="2.0.3" data-path="prepare-data.html"><a href="prepare-data.html#filter-read-counts"><i class="fa fa-check"></i><b>2.0.3</b> Filter read counts</a></li>
+<li class="chapter" data-level="2.0.4" data-path="prepare-data.html"><a href="prepare-data.html#genome-taxonomy"><i class="fa fa-check"></i><b>2.0.4</b> Genome taxonomy</a></li>
+<li class="chapter" data-level="2.0.5" data-path="prepare-data.html"><a href="prepare-data.html#genome-base-hits"><i class="fa fa-check"></i><b>2.0.5</b> Genome base hits</a></li>
+<li class="chapter" data-level="2.0.6" data-path="prepare-data.html"><a href="prepare-data.html#genome-tree"><i class="fa fa-check"></i><b>2.0.6</b> Genome tree</a></li>
+<li class="chapter" data-level="2.0.7" data-path="prepare-data.html"><a href="prepare-data.html#genome-annotations"><i class="fa fa-check"></i><b>2.0.7</b> Genome annotations</a></li>
+<li class="chapter" data-level="2.1" data-path="prepare-data.html"><a href="prepare-data.html#create-working-objects"><i class="fa fa-check"></i><b>2.1</b> Create working objects</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="prepare-data.html"><a href="prepare-data.html#filter-reads-by-coverage"><i class="fa fa-check"></i><b>2.1.1</b> Filter reads by coverage</a></li>
+<li class="chapter" data-level="2.1.2" data-path="prepare-data.html"><a href="prepare-data.html#transform-reads-into-genome-counts"><i class="fa fa-check"></i><b>2.1.2</b> Transform reads into genome counts</a></li>
+<li class="chapter" data-level="2.1.3" data-path="prepare-data.html"><a href="prepare-data.html#distill-annotations-into-gifts"><i class="fa fa-check"></i><b>2.1.3</b> Distill annotations into GIFTs</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="prepare-data.html"><a href="prepare-data.html#prepare-color-scheme"><i class="fa fa-check"></i><b>2.2</b> Prepare color scheme</a></li>
+<li class="chapter" data-level="2.3" data-path="prepare-data.html"><a href="prepare-data.html#wrap-working-objects"><i class="fa fa-check"></i><b>2.3</b> Wrap working objects</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-statistics.html"><a href="data-statistics.html"><i class="fa fa-check"></i><b>3</b> Data statistics</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="data-statistics.html"><a href="data-statistics.html#filter-samples-with-high-host-data"><i class="fa fa-check"></i><b>3.1</b> filter samples with high host data</a></li>
+<li class="chapter" data-level="3.2" data-path="data-statistics.html"><a href="data-statistics.html#sequencing-reads-statistics"><i class="fa fa-check"></i><b>3.2</b> Sequencing reads statistics</a></li>
+<li class="chapter" data-level="3.3" data-path="data-statistics.html"><a href="data-statistics.html#dna-fractions"><i class="fa fa-check"></i><b>3.3</b> DNA fractions</a></li>
+<li class="chapter" data-level="3.4" data-path="data-statistics.html"><a href="data-statistics.html#recovered-microbial-fraction"><i class="fa fa-check"></i><b>3.4</b> Recovered microbial fraction</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="mag-catalogue.html"><a href="mag-catalogue.html"><i class="fa fa-check"></i><b>4</b> MAG catalogue</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="mag-catalogue.html"><a href="mag-catalogue.html#genome-phylogeny"><i class="fa fa-check"></i><b>4.1</b> Genome phylogeny</a></li>
+<li class="chapter" data-level="4.2" data-path="mag-catalogue.html"><a href="mag-catalogue.html#taxonomy-overview"><i class="fa fa-check"></i><b>4.2</b> Taxonomy overview</a></li>
+<li class="chapter" data-level="4.3" data-path="mag-catalogue.html"><a href="mag-catalogue.html#mag-size-mb"><i class="fa fa-check"></i><b>4.3</b> Mag size (MB)</a></li>
+<li class="chapter" data-level="4.4" data-path="mag-catalogue.html"><a href="mag-catalogue.html#genome-quality"><i class="fa fa-check"></i><b>4.4</b> Genome quality</a></li>
+<li class="chapter" data-level="4.5" data-path="mag-catalogue.html"><a href="mag-catalogue.html#functional-overview"><i class="fa fa-check"></i><b>4.5</b> Functional overview</a></li>
+<li class="chapter" data-level="4.6" data-path="mag-catalogue.html"><a href="mag-catalogue.html#functional-ordination"><i class="fa fa-check"></i><b>4.6</b> Functional ordination</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="community-composition.html"><a href="community-composition.html"><i class="fa fa-check"></i><b>5</b> Community composition</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="community-composition.html"><a href="community-composition.html#filter-data"><i class="fa fa-check"></i><b>5.1</b> Filter data</a></li>
+<li class="chapter" data-level="5.2" data-path="community-composition.html"><a href="community-composition.html#taxonomy-overview-1"><i class="fa fa-check"></i><b>5.2</b> Taxonomy overview</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="community-composition.html"><a href="community-composition.html#stacked-barplot"><i class="fa fa-check"></i><b>5.2.1</b> Stacked barplot</a></li>
+<li class="chapter" data-level="5.2.2" data-path="community-composition.html"><a href="community-composition.html#genus-and-species-annotation"><i class="fa fa-check"></i><b>5.2.2</b> Genus and species annotation</a></li>
+<li class="chapter" data-level="5.2.3" data-path="community-composition.html"><a href="community-composition.html#phylum-relative-abundances"><i class="fa fa-check"></i><b>5.2.3</b> Phylum relative abundances</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="community-composition.html"><a href="community-composition.html#taxonomy-boxplot"><i class="fa fa-check"></i><b>5.3</b> Taxonomy boxplot</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="community-composition.html"><a href="community-composition.html#family"><i class="fa fa-check"></i><b>5.3.1</b> Family</a></li>
+<li class="chapter" data-level="5.3.2" data-path="community-composition.html"><a href="community-composition.html#genus"><i class="fa fa-check"></i><b>5.3.2</b> Genus</a></li>
+<li class="chapter" data-level="5.3.3" data-path="community-composition.html"><a href="community-composition.html#origin-and-diet-2"><i class="fa fa-check"></i><b>5.3.3</b> origin and diet</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="alpha-diversity.html"><a href="alpha-diversity.html"><i class="fa fa-check"></i><b>6</b> Alpha diversity</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="alpha-diversity.html"><a href="alpha-diversity.html#summary-table"><i class="fa fa-check"></i><b>6.1</b> Summary table</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="alpha-diversity.html"><a href="alpha-diversity.html#plots"><i class="fa fa-check"></i><b>6.1.1</b> Plots</a></li>
+<li class="chapter" data-level="6.1.2" data-path="alpha-diversity.html"><a href="alpha-diversity.html#mixed-models"><i class="fa fa-check"></i><b>6.1.2</b> Mixed models</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="beta-diversity.html"><a href="beta-diversity.html"><i class="fa fa-check"></i><b>7</b> Beta diversity</a>
+<ul>
+<li class="chapter" data-level="7.0.1" data-path="beta-diversity.html"><a href="beta-diversity.html#permanova-analysis"><i class="fa fa-check"></i><b>7.0.1</b> Permanova analysis</a></li>
+<li class="chapter" data-level="7.0.2" data-path="beta-diversity.html"><a href="beta-diversity.html#beta-diversity-plots"><i class="fa fa-check"></i><b>7.0.2</b> Beta diversity plots</a></li>
+<li class="chapter" data-level="7.1" data-path="beta-diversity.html"><a href="beta-diversity.html#before-and-after-grass"><i class="fa fa-check"></i><b>7.1</b> Before and after grass</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="beta-diversity.html"><a href="beta-diversity.html#permanova-analysis-1"><i class="fa fa-check"></i><b>7.1.1</b> Permanova analysis</a></li>
+<li class="chapter" data-level="7.1.2" data-path="beta-diversity.html"><a href="beta-diversity.html#beta-diversity-plots-1"><i class="fa fa-check"></i><b>7.1.2</b> Beta diversity plots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="amr-and-vf.html"><a href="amr-and-vf.html"><i class="fa fa-check"></i><b>8</b> AMR and VF</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="amr-and-vf.html"><a href="amr-and-vf.html#genome-size"><i class="fa fa-check"></i><b>8.1</b> Genome size</a></li>
+<li class="chapter" data-level="8.2" data-path="amr-and-vf.html"><a href="amr-and-vf.html#amr"><i class="fa fa-check"></i><b>8.2</b> AMR</a></li>
+<li class="chapter" data-level="8.3" data-path="amr-and-vf.html"><a href="amr-and-vf.html#virulence-factors"><i class="fa fa-check"></i><b>8.3</b> Virulence factors</a></li>
+<li class="chapter" data-level="8.4" data-path="amr-and-vf.html"><a href="amr-and-vf.html#size-function-correlations"><i class="fa fa-check"></i><b>8.4</b> Size-function correlations</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html"><i class="fa fa-check"></i><b>9</b> Greenlandic sled dogs in summer</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#filter-data-1"><i class="fa fa-check"></i><b>9.1</b> Filter data</a></li>
+<li class="chapter" data-level="9.2" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#taxonomy-overview-2"><i class="fa fa-check"></i><b>9.2</b> Taxonomy overview</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#stacked-barplot-1"><i class="fa fa-check"></i><b>9.2.1</b> Stacked barplot</a></li>
+<li class="chapter" data-level="9.2.2" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#phylum-relative-abundances-1"><i class="fa fa-check"></i><b>9.2.2</b> Phylum relative abundances</a></li>
+<li class="chapter" data-level="9.2.3" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#plots-1"><i class="fa fa-check"></i><b>9.2.3</b> Plots</a></li>
+<li class="chapter" data-level="9.2.4" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#values"><i class="fa fa-check"></i><b>9.2.4</b> Values</a></li>
+<li class="chapter" data-level="9.2.5" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#mixed-models-1"><i class="fa fa-check"></i><b>9.2.5</b> Mixed models</a></li>
+<li class="chapter" data-level="9.2.6" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#beta-diversity-plots-2"><i class="fa fa-check"></i><b>9.2.6</b> Beta diversity plots</a></li>
+<li class="chapter" data-level="9.2.7" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#permanova-analysis-2"><i class="fa fa-check"></i><b>9.2.7</b> Permanova analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#enrichment-analysis-ancombc2"><i class="fa fa-check"></i><b>9.3</b> Enrichment analysis: Ancombc2</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#mag-level"><i class="fa fa-check"></i><b>9.3.1</b> MAG level</a></li>
+<li class="chapter" data-level="9.3.2" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#the-global-differential-taxa"><i class="fa fa-check"></i><b>9.3.2</b> the global differential taxa</a></li>
+<li class="chapter" data-level="9.3.3" data-path="greenlandic-sled-dogs-in-summer.html"><a href="greenlandic-sled-dogs-in-summer.html#extract-the-results"><i class="fa fa-check"></i><b>9.3.3</b> Extract the results</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="top-10.html"><a href="top-10.html"><i class="fa fa-check"></i><b>10</b> top 10</a>
+<ul>
+<li class="chapter" data-level="10.0.1" data-path="top-10.html"><a href="top-10.html#phylum-level"><i class="fa fa-check"></i><b>10.0.1</b> Phylum level</a></li>
+<li class="chapter" data-level="10.0.2" data-path="top-10.html"><a href="top-10.html#genus-level"><i class="fa fa-check"></i><b>10.0.2</b> Genus level</a></li>
+<li class="chapter" data-level="10.1" data-path="top-10.html"><a href="top-10.html#functional-differences"><i class="fa fa-check"></i><b>10.1</b> Functional differences</a></li>
+<li class="chapter" data-level="10.2" data-path="top-10.html"><a href="top-10.html#groups-mci"><i class="fa fa-check"></i><b>10.2</b> Groups MCI</a></li>
+<li class="chapter" data-level="10.3" data-path="top-10.html"><a href="top-10.html#community-elements-differences"><i class="fa fa-check"></i><b>10.3</b> Community elements differences:</a></li>
+<li class="chapter" data-level="10.4" data-path="top-10.html"><a href="top-10.html#community-function-differences"><i class="fa fa-check"></i><b>10.4</b> Community function differences:</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="top-10.html"><a href="top-10.html#with-wolves"><i class="fa fa-check"></i><b>10.4.1</b> With wolves</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="winter-vs-summer-in-eastern-greenland.html"><a href="winter-vs-summer-in-eastern-greenland.html"><i class="fa fa-check"></i><b>11</b> Winter vs summer in eastern Greenland</a>
+<ul>
+<li class="chapter" data-level="11.0.1" data-path="winter-vs-summer-in-eastern-greenland.html"><a href="winter-vs-summer-in-eastern-greenland.html#beta-diversity-plots-3"><i class="fa fa-check"></i><b>11.0.1</b> Beta diversity plots</a></li>
+<li class="chapter" data-level="11.0.2" data-path="winter-vs-summer-in-eastern-greenland.html"><a href="winter-vs-summer-in-eastern-greenland.html#permanova-analysis-3"><i class="fa fa-check"></i><b>11.0.2</b> Permanova analysis</a></li>
+<li class="chapter" data-level="11.1" data-path="winter-vs-summer-in-eastern-greenland.html"><a href="winter-vs-summer-in-eastern-greenland.html#enrichment-analysis-ancombc2-1"><i class="fa fa-check"></i><b>11.1</b> Enrichment analysis: Ancombc2</a>
+<ul>
+<li class="chapter" data-level="11.1.1" data-path="winter-vs-summer-in-eastern-greenland.html"><a href="winter-vs-summer-in-eastern-greenland.html#phylum-level-1"><i class="fa fa-check"></i><b>11.1.1</b> Phylum level</a></li>
+<li class="chapter" data-level="11.1.2" data-path="winter-vs-summer-in-eastern-greenland.html"><a href="winter-vs-summer-in-eastern-greenland.html#genus-level-1"><i class="fa fa-check"></i><b>11.1.2</b> Genus level</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="winter-vs-summer-in-eastern-greenland.html"><a href="winter-vs-summer-in-eastern-greenland.html#groups-mci-1"><i class="fa fa-check"></i><b>11.2</b> Groups MCI</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="winter-vs-summer-in-eastern-greenland.html"><a href="winter-vs-summer-in-eastern-greenland.html#community-elements-differences-1"><i class="fa fa-check"></i><b>11.2.1</b> Community elements differences:</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="winter-in-eastern-greenland-from-day-1-to-day-5.html"><a href="winter-in-eastern-greenland-from-day-1-to-day-5.html"><i class="fa fa-check"></i><b>12</b> Winter in eastern Greenland (from day 1 to day 5)</a>
+<ul>
+<li class="chapter" data-level="12.0.1" data-path="winter-in-eastern-greenland-from-day-1-to-day-5.html"><a href="winter-in-eastern-greenland-from-day-1-to-day-5.html#beta-diversity-plots-4"><i class="fa fa-check"></i><b>12.0.1</b> Beta diversity plots</a></li>
+<li class="chapter" data-level="12.0.2" data-path="winter-in-eastern-greenland-from-day-1-to-day-5.html"><a href="winter-in-eastern-greenland-from-day-1-to-day-5.html#beta-diversity-plots-5"><i class="fa fa-check"></i><b>12.0.2</b> Beta diversity plots</a></li>
+<li class="chapter" data-level="12.1" data-path="winter-in-eastern-greenland-from-day-1-to-day-5.html"><a href="winter-in-eastern-greenland-from-day-1-to-day-5.html#functional-differences-1"><i class="fa fa-check"></i><b>12.1</b> Functional differences</a></li>
+<li class="chapter" data-level="12.2" data-path="winter-in-eastern-greenland-from-day-1-to-day-5.html"><a href="winter-in-eastern-greenland-from-day-1-to-day-5.html#groups-mci-2"><i class="fa fa-check"></i><b>12.2</b> Groups MCI</a></li>
+<li class="chapter" data-level="12.3" data-path="winter-in-eastern-greenland-from-day-1-to-day-5.html"><a href="winter-in-eastern-greenland-from-day-1-to-day-5.html#wilcoxon-comparison"><i class="fa fa-check"></i><b>12.3</b> Wilcoxon comparison</a>
+<ul>
+<li class="chapter" data-level="12.3.1" data-path="winter-in-eastern-greenland-from-day-1-to-day-5.html"><a href="winter-in-eastern-greenland-from-day-1-to-day-5.html#community-elements-differences-2"><i class="fa fa-check"></i><b>12.3.1</b> Community elements differences:</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">AlberdiLab | Brenner et al. 2025</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="greenlandic-sled-dogs-in-summer" class="section level1 hasAnchor" number="9">
+<h1><span class="header-section-number">Chapter 9</span> Greenlandic sled dogs in summer<a href="greenlandic-sled-dogs-in-summer.html#greenlandic-sled-dogs-in-summer" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="filter-data-1" class="section level2 hasAnchor" number="9.1">
+<h2><span class="header-section-number">9.1</span> Filter data<a href="greenlandic-sled-dogs-in-summer.html#filter-data-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="greenlandic-sled-dogs-in-summer.html#cb1-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;data/data.Rdata&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="greenlandic-sled-dogs-in-summer.html#cb2-1" tabindex="-1"></a>sample_metadata <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/sample_metadata.csv&quot;</span>)</span>
+<span id="cb2-2"><a href="greenlandic-sled-dogs-in-summer.html#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="greenlandic-sled-dogs-in-summer.html#cb2-3" tabindex="-1"></a> sample_metadata <span class="ot">&lt;-</span> sample_metadata <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="greenlandic-sled-dogs-in-summer.html#cb2-4" tabindex="-1"></a>   <span class="fu">filter</span>(country<span class="sc">==</span> <span class="st">&quot;Greenland&quot;</span>)</span>
+<span id="cb2-5"><a href="greenlandic-sled-dogs-in-summer.html#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="greenlandic-sled-dogs-in-summer.html#cb2-6" tabindex="-1"></a><span class="co"># sample_metadata &lt;- sample_metadata %&gt;%</span></span>
+<span id="cb2-7"><a href="greenlandic-sled-dogs-in-summer.html#cb2-7" tabindex="-1"></a><span class="co">#   filter(country== &quot;Greenland&quot; | breed == &quot;Wolf&quot;)</span></span>
+<span id="cb2-8"><a href="greenlandic-sled-dogs-in-summer.html#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="greenlandic-sled-dogs-in-summer.html#cb2-9" tabindex="-1"></a>sample_metadata<span class="sc">$</span>individual <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">&quot;[0-9]{2}$&quot;</span>, <span class="st">&quot;&quot;</span>, sample_metadata<span class="sc">$</span>animal)</span>
+<span id="cb2-10"><a href="greenlandic-sled-dogs-in-summer.html#cb2-10" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="greenlandic-sled-dogs-in-summer.html#cb2-11" tabindex="-1"></a>sample_metadata_illu <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/metadata_illu.csv&quot;</span>)</span>
+<span id="cb2-12"><a href="greenlandic-sled-dogs-in-summer.html#cb2-12" tabindex="-1"></a>sample_metadata <span class="ot">&lt;-</span> sample_metadata <span class="sc">%&gt;%</span> </span>
+<span id="cb2-13"><a href="greenlandic-sled-dogs-in-summer.html#cb2-13" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata_illu[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">9</span>)], <span class="at">by=</span><span class="fu">join_by</span>(<span class="st">&quot;sample&quot;</span><span class="sc">==</span><span class="st">&quot;DogID&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-14"><a href="greenlandic-sled-dogs-in-summer.html#cb2-14" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>Samples <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Blank&quot;</span>,<span class="st">&quot;Saliva&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-15"><a href="greenlandic-sled-dogs-in-summer.html#cb2-15" tabindex="-1"></a>  <span class="fu">filter</span>(individual<span class="sc">!=</span><span class="st">&quot;GL_02_&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-16"><a href="greenlandic-sled-dogs-in-summer.html#cb2-16" tabindex="-1"></a>  <span class="fu">filter</span>(season<span class="sc">!=</span><span class="st">&quot;winter&quot;</span>)</span>
+<span id="cb2-17"><a href="greenlandic-sled-dogs-in-summer.html#cb2-17" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="greenlandic-sled-dogs-in-summer.html#cb2-18" tabindex="-1"></a>genome_counts_filt <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span> </span>
+<span id="cb2-19"><a href="greenlandic-sled-dogs-in-summer.html#cb2-19" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">one_of</span>(<span class="fu">c</span>(<span class="st">&quot;genome&quot;</span>,sample_metadata<span class="sc">$</span>sample)))<span class="sc">%&gt;%</span></span>
+<span id="cb2-20"><a href="greenlandic-sled-dogs-in-summer.html#cb2-20" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">rowSums</span>(. <span class="sc">!=</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-21"><a href="greenlandic-sled-dogs-in-summer.html#cb2-21" tabindex="-1"></a>  <span class="fu">select_if</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))</span>
+<span id="cb2-22"><a href="greenlandic-sled-dogs-in-summer.html#cb2-22" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="greenlandic-sled-dogs-in-summer.html#cb2-23" tabindex="-1"></a>genome_metadata <span class="ot">&lt;-</span> genome_metadata <span class="sc">%&gt;%</span> </span>
+<span id="cb2-24"><a href="greenlandic-sled-dogs-in-summer.html#cb2-24" tabindex="-1"></a>  <span class="fu">semi_join</span>(., genome_counts_filt, <span class="at">by =</span> <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-25"><a href="greenlandic-sled-dogs-in-summer.html#cb2-25" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">match</span>(genome,genome_counts_filt<span class="sc">$</span>genome))</span>
+<span id="cb2-26"><a href="greenlandic-sled-dogs-in-summer.html#cb2-26" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="greenlandic-sled-dogs-in-summer.html#cb2-27" tabindex="-1"></a>genome_tree <span class="ot">&lt;-</span> <span class="fu">keep.tip</span>(genome_tree, <span class="at">tip=</span>genome_metadata<span class="sc">$</span>genome) <span class="co"># keep only MAG tips</span></span></code></pre></div>
+</div>
+<div id="taxonomy-overview-2" class="section level2 hasAnchor" number="9.2">
+<h2><span class="header-section-number">9.2</span> Taxonomy overview<a href="greenlandic-sled-dogs-in-summer.html#taxonomy-overview-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Number of bacteria phyla</strong></p>
+<pre><code>[1] 16</code></pre>
+<p><strong>After merging all Bacillota</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="greenlandic-sled-dogs-in-summer.html#cb4-1" tabindex="-1"></a>genome_metadata <span class="ot">&lt;-</span> genome_metadata <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="greenlandic-sled-dogs-in-summer.html#cb4-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">phylum_clean =</span> <span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">&quot;^Bacillota_&quot;</span>, phylum), <span class="st">&quot;Bacillota&quot;</span>, phylum))</span>
+<span id="cb4-3"><a href="greenlandic-sled-dogs-in-summer.html#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="greenlandic-sled-dogs-in-summer.html#cb4-4" tabindex="-1"></a>genome_metadata <span class="sc">%&gt;%</span> </span>
+<span id="cb4-5"><a href="greenlandic-sled-dogs-in-summer.html#cb4-5" tabindex="-1"></a>  <span class="fu">filter</span>(domain <span class="sc">==</span> <span class="st">&quot;Bacteria&quot;</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="greenlandic-sled-dogs-in-summer.html#cb4-6" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(phylum_clean) <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="greenlandic-sled-dogs-in-summer.html#cb4-7" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="greenlandic-sled-dogs-in-summer.html#cb4-8" tabindex="-1"></a>  <span class="fu">pull</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="greenlandic-sled-dogs-in-summer.html#cb4-9" tabindex="-1"></a>  <span class="fu">length</span>()</span></code></pre></div>
+<pre><code>## [1] 12</code></pre>
+<div id="stacked-barplot-1" class="section level3 hasAnchor" number="9.2.1">
+<h3><span class="header-section-number">9.2.1</span> Stacked barplot<a href="greenlandic-sled-dogs-in-summer.html#stacked-barplot-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="greenlandic-sled-dogs-in-summer.html#cb6-1" tabindex="-1"></a>genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="greenlandic-sled-dogs-in-summer.html#cb6-2" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(<span class="sc">-</span>genome),  <span class="sc">~</span> . <span class="sc">/</span> <span class="fu">sum</span>(.)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="greenlandic-sled-dogs-in-summer.html#cb6-3" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>genome, <span class="at">names_to =</span> <span class="st">&quot;sample&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="greenlandic-sled-dogs-in-summer.html#cb6-4" tabindex="-1"></a>  <span class="fu">left_join</span>(., genome_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(genome <span class="sc">==</span> genome)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="greenlandic-sled-dogs-in-summer.html#cb6-5" tabindex="-1"></a>  <span class="fu">left_join</span>(., sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a href="greenlandic-sled-dogs-in-summer.html#cb6-6" tabindex="-1"></a>  <span class="fu">filter</span>(count <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-7"><a href="greenlandic-sled-dogs-in-summer.html#cb6-7" tabindex="-1"></a>  <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x =</span> sample,</span>
+<span id="cb6-8"><a href="greenlandic-sled-dogs-in-summer.html#cb6-8" tabindex="-1"></a>    <span class="at">y =</span> count,</span>
+<span id="cb6-9"><a href="greenlandic-sled-dogs-in-summer.html#cb6-9" tabindex="-1"></a>    <span class="at">fill =</span> phylum,</span>
+<span id="cb6-10"><a href="greenlandic-sled-dogs-in-summer.html#cb6-10" tabindex="-1"></a>    <span class="at">group =</span> phylum</span>
+<span id="cb6-11"><a href="greenlandic-sled-dogs-in-summer.html#cb6-11" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb6-12"><a href="greenlandic-sled-dogs-in-summer.html#cb6-12" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>,</span>
+<span id="cb6-13"><a href="greenlandic-sled-dogs-in-summer.html#cb6-13" tabindex="-1"></a>           <span class="at">colour =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb6-14"><a href="greenlandic-sled-dogs-in-summer.html#cb6-14" tabindex="-1"></a>           <span class="at">linewidth =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb6-15"><a href="greenlandic-sled-dogs-in-summer.html#cb6-15" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> phylum_colors) <span class="sc">+</span></span>
+<span id="cb6-16"><a href="greenlandic-sled-dogs-in-summer.html#cb6-16" tabindex="-1"></a>  <span class="fu">facet_grid</span>( <span class="sc">~</span> locality, <span class="at">scale =</span> <span class="st">&quot;free&quot;</span>, <span class="at">space =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb6-17"><a href="greenlandic-sled-dogs-in-summer.html#cb6-17" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="fu">guide_legend</span>(<span class="at">ncol =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb6-18"><a href="greenlandic-sled-dogs-in-summer.html#cb6-18" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb6-19"><a href="greenlandic-sled-dogs-in-summer.html#cb6-19" tabindex="-1"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-20"><a href="greenlandic-sled-dogs-in-summer.html#cb6-20" tabindex="-1"></a>    <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-21"><a href="greenlandic-sled-dogs-in-summer.html#cb6-21" tabindex="-1"></a>    <span class="at">panel.border =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-22"><a href="greenlandic-sled-dogs-in-summer.html#cb6-22" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-23"><a href="greenlandic-sled-dogs-in-summer.html#cb6-23" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-24"><a href="greenlandic-sled-dogs-in-summer.html#cb6-24" tabindex="-1"></a>    <span class="at">strip.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;white&quot;</span>),</span>
+<span id="cb6-25"><a href="greenlandic-sled-dogs-in-summer.html#cb6-25" tabindex="-1"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>, <span class="at">lineheight =</span> <span class="fl">0.6</span>),</span>
+<span id="cb6-26"><a href="greenlandic-sled-dogs-in-summer.html#cb6-26" tabindex="-1"></a>    <span class="at">strip.placement =</span> <span class="st">&quot;outside&quot;</span>,</span>
+<span id="cb6-27"><a href="greenlandic-sled-dogs-in-summer.html#cb6-27" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-28"><a href="greenlandic-sled-dogs-in-summer.html#cb6-28" tabindex="-1"></a>    <span class="at">axis.ticks.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-29"><a href="greenlandic-sled-dogs-in-summer.html#cb6-29" tabindex="-1"></a>    <span class="at">axis.line =</span> <span class="fu">element_line</span>(</span>
+<span id="cb6-30"><a href="greenlandic-sled-dogs-in-summer.html#cb6-30" tabindex="-1"></a>      <span class="at">linewidth =</span> <span class="fl">0.5</span>,</span>
+<span id="cb6-31"><a href="greenlandic-sled-dogs-in-summer.html#cb6-31" tabindex="-1"></a>      <span class="at">linetype =</span> <span class="st">&quot;solid&quot;</span>,</span>
+<span id="cb6-32"><a href="greenlandic-sled-dogs-in-summer.html#cb6-32" tabindex="-1"></a>      <span class="at">colour =</span> <span class="st">&quot;black&quot;</span></span>
+<span id="cb6-33"><a href="greenlandic-sled-dogs-in-summer.html#cb6-33" tabindex="-1"></a>    )</span>
+<span id="cb6-34"><a href="greenlandic-sled-dogs-in-summer.html#cb6-34" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-35"><a href="greenlandic-sled-dogs-in-summer.html#cb6-35" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">&quot;Phylum&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Relative abundance&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Samples&quot;</span>)</span></code></pre></div>
+<p><img src="Figures/taxonomy_G_barplot-1.png" width="960" /></p>
+</div>
+<div id="phylum-relative-abundances-1" class="section level3 hasAnchor" number="9.2.2">
+<h3><span class="header-section-number">9.2.2</span> Phylum relative abundances<a href="greenlandic-sled-dogs-in-summer.html#phylum-relative-abundances-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="greenlandic-sled-dogs-in-summer.html#cb7-1" tabindex="-1"></a>phylum_summary <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="greenlandic-sled-dogs-in-summer.html#cb7-2" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(<span class="sc">-</span>genome),<span class="sc">~</span>.<span class="sc">/</span><span class="fu">sum</span>(.)) <span class="sc">%&gt;%</span> <span class="co">#apply TSS nornalisation</span></span>
+<span id="cb7-3"><a href="greenlandic-sled-dogs-in-summer.html#cb7-3" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>genome, <span class="at">names_to =</span> <span class="st">&quot;sample&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="greenlandic-sled-dogs-in-summer.html#cb7-4" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="greenlandic-sled-dogs-in-summer.html#cb7-5" tabindex="-1"></a>  <span class="fu">left_join</span>(genome_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(genome <span class="sc">==</span> genome)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="greenlandic-sled-dogs-in-summer.html#cb7-6" tabindex="-1"></a>  <span class="fu">group_by</span>(sample,phylum_clean,locality) <span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a href="greenlandic-sled-dogs-in-summer.html#cb7-7" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">relabun=</span><span class="fu">sum</span>(count))</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="greenlandic-sled-dogs-in-summer.html#cb8-1" tabindex="-1"></a>phylum_arrange <span class="ot">&lt;-</span> phylum_summary <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="greenlandic-sled-dogs-in-summer.html#cb8-2" tabindex="-1"></a>    <span class="fu">group_by</span>(phylum_clean) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="greenlandic-sled-dogs-in-summer.html#cb8-3" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">mean=</span><span class="fu">mean</span>(relabun)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="greenlandic-sled-dogs-in-summer.html#cb8-4" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="sc">-</span>mean) <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="greenlandic-sled-dogs-in-summer.html#cb8-5" tabindex="-1"></a>    <span class="fu">select</span>(phylum_clean) <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="greenlandic-sled-dogs-in-summer.html#cb8-6" tabindex="-1"></a>    <span class="fu">pull</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="greenlandic-sled-dogs-in-summer.html#cb9-1" tabindex="-1"></a>phylum_summary <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="greenlandic-sled-dogs-in-summer.html#cb9-2" tabindex="-1"></a>  <span class="fu">group_by</span>(phylum_clean) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="greenlandic-sled-dogs-in-summer.html#cb9-3" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb9-4"><a href="greenlandic-sled-dogs-in-summer.html#cb9-4" tabindex="-1"></a>    <span class="at">total_mean =</span> <span class="fu">mean</span>(relabun <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb9-5"><a href="greenlandic-sled-dogs-in-summer.html#cb9-5" tabindex="-1"></a>    <span class="at">total_sd =</span> <span class="fu">sd</span>(relabun <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb9-6"><a href="greenlandic-sled-dogs-in-summer.html#cb9-6" tabindex="-1"></a>    <span class="at">Daneborg_mean =</span> <span class="fu">mean</span>(relabun[locality <span class="sc">==</span> <span class="st">&quot;Daneborg&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span>T),</span>
+<span id="cb9-7"><a href="greenlandic-sled-dogs-in-summer.html#cb9-7" tabindex="-1"></a>    <span class="at">Daneborg_sd =</span> <span class="fu">sd</span>(relabun[locality <span class="sc">==</span> <span class="st">&quot;Daneborg&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span>T),</span>
+<span id="cb9-8"><a href="greenlandic-sled-dogs-in-summer.html#cb9-8" tabindex="-1"></a>    <span class="at">Disko_mean =</span> <span class="fu">mean</span>(relabun[locality <span class="sc">==</span> <span class="st">&quot;Disko&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb9-9"><a href="greenlandic-sled-dogs-in-summer.html#cb9-9" tabindex="-1"></a>    <span class="at">Disko_sd =</span> <span class="fu">sd</span>(relabun[locality <span class="sc">==</span> <span class="st">&quot;Disko&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span>T),</span>
+<span id="cb9-10"><a href="greenlandic-sled-dogs-in-summer.html#cb9-10" tabindex="-1"></a>    <span class="at">Illulissat_mean =</span> <span class="fu">mean</span>(relabun[locality <span class="sc">==</span> <span class="st">&quot;Illulissat&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb9-11"><a href="greenlandic-sled-dogs-in-summer.html#cb9-11" tabindex="-1"></a>    <span class="at">Illulissat_sd =</span> <span class="fu">sd</span>(relabun[locality <span class="sc">==</span> <span class="st">&quot;Illulissat&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb9-12"><a href="greenlandic-sled-dogs-in-summer.html#cb9-12" tabindex="-1"></a>    <span class="at">Ittoqqortoormiit_mean =</span> <span class="fu">mean</span>(relabun[locality <span class="sc">==</span> <span class="st">&quot;Ittoqqortoormiit&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb9-13"><a href="greenlandic-sled-dogs-in-summer.html#cb9-13" tabindex="-1"></a>    <span class="at">Ittoqqortoormiit_sd =</span> <span class="fu">sd</span>(relabun[locality <span class="sc">==</span> <span class="st">&quot;Ittoqqortoormiit&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb9-14"><a href="greenlandic-sled-dogs-in-summer.html#cb9-14" tabindex="-1"></a>    <span class="at">Wolf_mean =</span> <span class="fu">mean</span>(relabun[locality <span class="sc">==</span> <span class="st">&quot;Mongolia&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb9-15"><a href="greenlandic-sled-dogs-in-summer.html#cb9-15" tabindex="-1"></a>    <span class="at">Wolf_sd =</span> <span class="fu">sd</span>(relabun[locality <span class="sc">==</span> <span class="st">&quot;Mongolia&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-16"><a href="greenlandic-sled-dogs-in-summer.html#cb9-16" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-17"><a href="greenlandic-sled-dogs-in-summer.html#cb9-17" tabindex="-1"></a>    <span class="at">total =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(total_mean, <span class="dv">4</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(total_sd, <span class="dv">3</span>)),</span>
+<span id="cb9-18"><a href="greenlandic-sled-dogs-in-summer.html#cb9-18" tabindex="-1"></a>    <span class="at">Daneborg =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Daneborg_mean, <span class="dv">4</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Daneborg_sd, <span class="dv">3</span>)),</span>
+<span id="cb9-19"><a href="greenlandic-sled-dogs-in-summer.html#cb9-19" tabindex="-1"></a>    <span class="at">Disko =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Disko_mean, <span class="dv">4</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Disko_sd, <span class="dv">3</span>)),</span>
+<span id="cb9-20"><a href="greenlandic-sled-dogs-in-summer.html#cb9-20" tabindex="-1"></a>    <span class="at">Illulissat =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Illulissat_mean, <span class="dv">4</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Illulissat_sd, <span class="dv">3</span>)),</span>
+<span id="cb9-21"><a href="greenlandic-sled-dogs-in-summer.html#cb9-21" tabindex="-1"></a>    <span class="at">Ittoqqortoormiit =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Ittoqqortoormiit_mean, <span class="dv">4</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Ittoqqortoormiit_sd, <span class="dv">3</span>)),</span>
+<span id="cb9-22"><a href="greenlandic-sled-dogs-in-summer.html#cb9-22" tabindex="-1"></a>    <span class="at">Wolf =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Wolf_mean, <span class="dv">4</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Wolf_sd, <span class="dv">3</span>))</span>
+<span id="cb9-23"><a href="greenlandic-sled-dogs-in-summer.html#cb9-23" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-24"><a href="greenlandic-sled-dogs-in-summer.html#cb9-24" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>total_mean) <span class="sc">%&gt;%</span></span>
+<span id="cb9-25"><a href="greenlandic-sled-dogs-in-summer.html#cb9-25" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(phylum_clean, total, Daneborg, Disko,Illulissat,Ittoqqortoormiit, Wolf)</span></code></pre></div>
+<pre><code>## # A tibble: 12 × 7
+##    phylum_clean      total      Daneborg Disko Illulissat Ittoqqortoormiit Wolf 
+##    &lt;chr&gt;             &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;            &lt;chr&gt;
+##  1 Bacteroidota      35.9871±1… 41.5161… 36.2… 34.7868±1… 30.9737±12.256   &lt;NA&gt; 
+##  2 Bacillota         28.3433±1… 17.3291… 33.9… 31.5784±1… 28.4885±11.966   &lt;NA&gt; 
+##  3 Fusobacteriota    22.4994±1… 28.6227… 17.1… 21.2002±8… 25.4034±13.712   &lt;NA&gt; 
+##  4 Pseudomonadota    9.6042±6.… 10.5417… 7.59… 8.8876±4.… 12.2208±10.585   &lt;NA&gt; 
+##  5 Actinomycetota    2.0261±2.… 0.6224±… 3.48… 2.428±1.5… 0.9458±0.684     &lt;NA&gt; 
+##  6 Campylobacterota  0.9357±1.… 0.6724±… 0.97… 0.5842±0.… 1.425±1.394      &lt;NA&gt; 
+##  7 Deferribacterota  0.3659±0.… 0.4707±… 0.36… 0.2218±0.… 0.3788±0.687     &lt;NA&gt; 
+##  8 Cyanobacteriota   0.1112±0.… 0.0254±… 0.15… 0.2234±0.… 0.0367±0.021     &lt;NA&gt; 
+##  9 Spirochaetota     0.0981±0.… 0.1124±… 0.07… 0.0803±0.… 0.1257±0.3       &lt;NA&gt; 
+## 10 Desulfobacterota  0.0289±0.… 0.0871±… 0.01… 0.009±0.0… 0.0013±0.003     &lt;NA&gt; 
+## 11 Fibrobacterota    2e-04±0    0±0      2e-0… 2e-04±0    1e-04±0          &lt;NA&gt; 
+## 12 Verrucomicrobiota 0±0        0±0      0±0   0±0        0±0              &lt;NA&gt;</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="greenlandic-sled-dogs-in-summer.html#cb11-1" tabindex="-1"></a><span class="co"># Calculate Hill numbers</span></span>
+<span id="cb11-2"><a href="greenlandic-sled-dogs-in-summer.html#cb11-2" tabindex="-1"></a>richness <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="greenlandic-sled-dogs-in-summer.html#cb11-3" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="greenlandic-sled-dogs-in-summer.html#cb11-4" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a href="greenlandic-sled-dogs-in-summer.html#cb11-5" tabindex="-1"></a>  <span class="fu">hilldiv</span>(., <span class="at">q =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-6"><a href="greenlandic-sled-dogs-in-summer.html#cb11-6" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a href="greenlandic-sled-dogs-in-summer.html#cb11-7" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-8"><a href="greenlandic-sled-dogs-in-summer.html#cb11-8" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">richness =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-9"><a href="greenlandic-sled-dogs-in-summer.html#cb11-9" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;sample&quot;</span>)</span>
+<span id="cb11-10"><a href="greenlandic-sled-dogs-in-summer.html#cb11-10" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="greenlandic-sled-dogs-in-summer.html#cb11-11" tabindex="-1"></a>neutral <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb11-12"><a href="greenlandic-sled-dogs-in-summer.html#cb11-12" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-13"><a href="greenlandic-sled-dogs-in-summer.html#cb11-13" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb11-14"><a href="greenlandic-sled-dogs-in-summer.html#cb11-14" tabindex="-1"></a>  <span class="fu">hilldiv</span>(., <span class="at">q =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-15"><a href="greenlandic-sled-dogs-in-summer.html#cb11-15" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-16"><a href="greenlandic-sled-dogs-in-summer.html#cb11-16" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-17"><a href="greenlandic-sled-dogs-in-summer.html#cb11-17" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">neutral =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-18"><a href="greenlandic-sled-dogs-in-summer.html#cb11-18" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;sample&quot;</span>)</span>
+<span id="cb11-19"><a href="greenlandic-sled-dogs-in-summer.html#cb11-19" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="greenlandic-sled-dogs-in-summer.html#cb11-20" tabindex="-1"></a>phylogenetic <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb11-21"><a href="greenlandic-sled-dogs-in-summer.html#cb11-21" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-22"><a href="greenlandic-sled-dogs-in-summer.html#cb11-22" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb11-23"><a href="greenlandic-sled-dogs-in-summer.html#cb11-23" tabindex="-1"></a>  <span class="fu">hilldiv</span>(., <span class="at">q =</span> <span class="dv">1</span>, <span class="at">tree =</span> genome_tree) <span class="sc">%&gt;%</span></span>
+<span id="cb11-24"><a href="greenlandic-sled-dogs-in-summer.html#cb11-24" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-25"><a href="greenlandic-sled-dogs-in-summer.html#cb11-25" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-26"><a href="greenlandic-sled-dogs-in-summer.html#cb11-26" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">phylogenetic =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-27"><a href="greenlandic-sled-dogs-in-summer.html#cb11-27" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;sample&quot;</span>)</span>
+<span id="cb11-28"><a href="greenlandic-sled-dogs-in-summer.html#cb11-28" tabindex="-1"></a></span>
+<span id="cb11-29"><a href="greenlandic-sled-dogs-in-summer.html#cb11-29" tabindex="-1"></a></span>
+<span id="cb11-30"><a href="greenlandic-sled-dogs-in-summer.html#cb11-30" tabindex="-1"></a>genome_counts_filt_beta <span class="ot">&lt;-</span> genome_counts_filt[genome_counts_filt<span class="sc">$</span>genome <span class="sc">%in%</span> <span class="fu">rownames</span>(genome_gifts),]</span>
+<span id="cb11-31"><a href="greenlandic-sled-dogs-in-summer.html#cb11-31" tabindex="-1"></a>genome_counts_filt_beta <span class="ot">&lt;-</span> genome_counts_filt_beta <span class="sc">%&gt;%</span></span>
+<span id="cb11-32"><a href="greenlandic-sled-dogs-in-summer.html#cb11-32" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(., <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-33"><a href="greenlandic-sled-dogs-in-summer.html#cb11-33" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">rowSums</span>(. <span class="sc">!=</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-34"><a href="greenlandic-sled-dogs-in-summer.html#cb11-34" tabindex="-1"></a>  <span class="fu">select_if</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb11-35"><a href="greenlandic-sled-dogs-in-summer.html#cb11-35" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(., <span class="st">&quot;genome&quot;</span>)</span>
+<span id="cb11-36"><a href="greenlandic-sled-dogs-in-summer.html#cb11-36" tabindex="-1"></a></span>
+<span id="cb11-37"><a href="greenlandic-sled-dogs-in-summer.html#cb11-37" tabindex="-1"></a>genome_gifts1 <span class="ot">&lt;-</span> genome_gifts[<span class="fu">rownames</span>(genome_gifts) <span class="sc">%in%</span> genome_counts_filt_beta<span class="sc">$</span>genome,]</span>
+<span id="cb11-38"><a href="greenlandic-sled-dogs-in-summer.html#cb11-38" tabindex="-1"></a>genome_gifts1 <span class="ot">&lt;-</span> genome_gifts1[, <span class="fu">colSums</span>(genome_gifts1 <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb11-39"><a href="greenlandic-sled-dogs-in-summer.html#cb11-39" tabindex="-1"></a></span>
+<span id="cb11-40"><a href="greenlandic-sled-dogs-in-summer.html#cb11-40" tabindex="-1"></a>dist <span class="ot">&lt;-</span> genome_gifts1 <span class="sc">%&gt;%</span></span>
+<span id="cb11-41"><a href="greenlandic-sled-dogs-in-summer.html#cb11-41" tabindex="-1"></a>  <span class="fu">to.elements</span>(., GIFT_db) <span class="sc">%&gt;%</span></span>
+<span id="cb11-42"><a href="greenlandic-sled-dogs-in-summer.html#cb11-42" tabindex="-1"></a>  <span class="fu">traits2dist</span>(., <span class="at">method =</span> <span class="st">&quot;gower&quot;</span>)</span>
+<span id="cb11-43"><a href="greenlandic-sled-dogs-in-summer.html#cb11-43" tabindex="-1"></a></span>
+<span id="cb11-44"><a href="greenlandic-sled-dogs-in-summer.html#cb11-44" tabindex="-1"></a>functional <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb11-45"><a href="greenlandic-sled-dogs-in-summer.html#cb11-45" tabindex="-1"></a>  <span class="fu">filter</span>(genome <span class="sc">%in%</span> <span class="fu">rownames</span>(dist)) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-46"><a href="greenlandic-sled-dogs-in-summer.html#cb11-46" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-47"><a href="greenlandic-sled-dogs-in-summer.html#cb11-47" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb11-48"><a href="greenlandic-sled-dogs-in-summer.html#cb11-48" tabindex="-1"></a>  <span class="fu">hilldiv</span>(., <span class="at">q =</span> <span class="dv">1</span>, <span class="at">dist =</span> dist) <span class="sc">%&gt;%</span></span>
+<span id="cb11-49"><a href="greenlandic-sled-dogs-in-summer.html#cb11-49" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-50"><a href="greenlandic-sled-dogs-in-summer.html#cb11-50" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-51"><a href="greenlandic-sled-dogs-in-summer.html#cb11-51" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">functional =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-52"><a href="greenlandic-sled-dogs-in-summer.html#cb11-52" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;sample&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-53"><a href="greenlandic-sled-dogs-in-summer.html#cb11-53" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">functional =</span> <span class="fu">if_else</span>(<span class="fu">is.nan</span>(functional), <span class="dv">1</span>, functional))</span>
+<span id="cb11-54"><a href="greenlandic-sled-dogs-in-summer.html#cb11-54" tabindex="-1"></a></span>
+<span id="cb11-55"><a href="greenlandic-sled-dogs-in-summer.html#cb11-55" tabindex="-1"></a><span class="co"># Merge all metrics</span></span>
+<span id="cb11-56"><a href="greenlandic-sled-dogs-in-summer.html#cb11-56" tabindex="-1"></a>alpha_div <span class="ot">&lt;-</span> richness <span class="sc">%&gt;%</span></span>
+<span id="cb11-57"><a href="greenlandic-sled-dogs-in-summer.html#cb11-57" tabindex="-1"></a>  <span class="fu">full_join</span>(neutral, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-58"><a href="greenlandic-sled-dogs-in-summer.html#cb11-58" tabindex="-1"></a>  <span class="fu">full_join</span>(phylogenetic, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample))<span class="sc">%&gt;%</span></span>
+<span id="cb11-59"><a href="greenlandic-sled-dogs-in-summer.html#cb11-59" tabindex="-1"></a>  <span class="fu">full_join</span>(functional, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample))</span></code></pre></div>
+</div>
+<div id="plots-1" class="section level3 hasAnchor" number="9.2.3">
+<h3><span class="header-section-number">9.2.3</span> Plots<a href="greenlandic-sled-dogs-in-summer.html#plots-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><img src="Figures/div_plot_G-1.png" width="960" /></p>
+</div>
+<div id="values" class="section level3 hasAnchor" number="9.2.4">
+<h3><span class="header-section-number">9.2.4</span> Values<a href="greenlandic-sled-dogs-in-summer.html#values" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="greenlandic-sled-dogs-in-summer.html#cb12-1" tabindex="-1"></a>alpha_div <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="greenlandic-sled-dogs-in-summer.html#cb12-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>sample, <span class="at">names_to =</span> <span class="st">&quot;alpha&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="greenlandic-sled-dogs-in-summer.html#cb12-3" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="greenlandic-sled-dogs-in-summer.html#cb12-4" tabindex="-1"></a>  <span class="fu">group_by</span>(alpha) <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="greenlandic-sled-dogs-in-summer.html#cb12-5" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb12-6"><a href="greenlandic-sled-dogs-in-summer.html#cb12-6" tabindex="-1"></a>    <span class="at">total_mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> T),</span>
+<span id="cb12-7"><a href="greenlandic-sled-dogs-in-summer.html#cb12-7" tabindex="-1"></a>    <span class="at">total_sd =</span> <span class="fu">sd</span>(value, <span class="at">na.rm =</span> T),</span>
+<span id="cb12-8"><a href="greenlandic-sled-dogs-in-summer.html#cb12-8" tabindex="-1"></a>    <span class="at">Daneborg_mean =</span> <span class="fu">mean</span>(value[locality <span class="sc">==</span> <span class="st">&quot;Daneborg&quot;</span>], <span class="at">na.rm =</span>T),</span>
+<span id="cb12-9"><a href="greenlandic-sled-dogs-in-summer.html#cb12-9" tabindex="-1"></a>    <span class="at">Daneborg_sd =</span> <span class="fu">sd</span>(value[locality <span class="sc">==</span> <span class="st">&quot;Daneborg&quot;</span>], <span class="at">na.rm =</span>T),</span>
+<span id="cb12-10"><a href="greenlandic-sled-dogs-in-summer.html#cb12-10" tabindex="-1"></a>    <span class="at">Disko_mean =</span> <span class="fu">mean</span>(value[locality <span class="sc">==</span> <span class="st">&quot;Disko&quot;</span>], <span class="at">na.rm =</span> T),</span>
+<span id="cb12-11"><a href="greenlandic-sled-dogs-in-summer.html#cb12-11" tabindex="-1"></a>    <span class="at">Disko_sd =</span> <span class="fu">sd</span>(value[locality <span class="sc">==</span> <span class="st">&quot;Disko&quot;</span>], <span class="at">na.rm =</span>T),</span>
+<span id="cb12-12"><a href="greenlandic-sled-dogs-in-summer.html#cb12-12" tabindex="-1"></a>    <span class="at">Illulissat_mean =</span> <span class="fu">mean</span>(value[locality <span class="sc">==</span> <span class="st">&quot;Illulissat&quot;</span>], <span class="at">na.rm =</span> T),</span>
+<span id="cb12-13"><a href="greenlandic-sled-dogs-in-summer.html#cb12-13" tabindex="-1"></a>    <span class="at">Illulissat_sd =</span> <span class="fu">sd</span>(value[locality <span class="sc">==</span> <span class="st">&quot;Illulissat&quot;</span>], <span class="at">na.rm =</span> T),</span>
+<span id="cb12-14"><a href="greenlandic-sled-dogs-in-summer.html#cb12-14" tabindex="-1"></a>    <span class="at">Ittoqqortoormiit_mean =</span> <span class="fu">mean</span>(value[locality <span class="sc">==</span> <span class="st">&quot;Ittoqqortoormiit&quot;</span>], <span class="at">na.rm =</span> T),</span>
+<span id="cb12-15"><a href="greenlandic-sled-dogs-in-summer.html#cb12-15" tabindex="-1"></a>    <span class="at">Ittoqqortoormiit_sd =</span> <span class="fu">sd</span>(value[locality <span class="sc">==</span> <span class="st">&quot;Ittoqqortoormiit&quot;</span>], <span class="at">na.rm =</span> T),,</span>
+<span id="cb12-16"><a href="greenlandic-sled-dogs-in-summer.html#cb12-16" tabindex="-1"></a>    <span class="at">Wolf_mean =</span> <span class="fu">mean</span>(value[locality <span class="sc">==</span> <span class="st">&quot;Mongolia&quot;</span>], <span class="at">na.rm =</span> T),</span>
+<span id="cb12-17"><a href="greenlandic-sled-dogs-in-summer.html#cb12-17" tabindex="-1"></a>    <span class="at">Wolf_sd =</span> <span class="fu">sd</span>(value[locality <span class="sc">==</span> <span class="st">&quot;Mongolia&quot;</span>], <span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-18"><a href="greenlandic-sled-dogs-in-summer.html#cb12-18" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-19"><a href="greenlandic-sled-dogs-in-summer.html#cb12-19" tabindex="-1"></a>    <span class="at">total =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(total_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(total_sd, <span class="dv">3</span>)),</span>
+<span id="cb12-20"><a href="greenlandic-sled-dogs-in-summer.html#cb12-20" tabindex="-1"></a>    <span class="at">Daneborg =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Daneborg_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Daneborg_sd, <span class="dv">3</span>)),</span>
+<span id="cb12-21"><a href="greenlandic-sled-dogs-in-summer.html#cb12-21" tabindex="-1"></a>    <span class="at">Disko =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Disko_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Disko_sd, <span class="dv">3</span>)),</span>
+<span id="cb12-22"><a href="greenlandic-sled-dogs-in-summer.html#cb12-22" tabindex="-1"></a>    <span class="at">Illulissat =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Illulissat_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Illulissat_sd, <span class="dv">3</span>)),</span>
+<span id="cb12-23"><a href="greenlandic-sled-dogs-in-summer.html#cb12-23" tabindex="-1"></a>    <span class="at">Ittoqqortoormiit =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Ittoqqortoormiit_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Ittoqqortoormiit_sd, <span class="dv">3</span>)),</span>
+<span id="cb12-24"><a href="greenlandic-sled-dogs-in-summer.html#cb12-24" tabindex="-1"></a>    <span class="at">Wolf =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Wolf_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Wolf_sd, <span class="dv">3</span>))</span>
+<span id="cb12-25"><a href="greenlandic-sled-dogs-in-summer.html#cb12-25" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-26"><a href="greenlandic-sled-dogs-in-summer.html#cb12-26" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>total_mean) <span class="sc">%&gt;%</span></span>
+<span id="cb12-27"><a href="greenlandic-sled-dogs-in-summer.html#cb12-27" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(alpha,total, Daneborg, Disko,Illulissat,Ittoqqortoormiit, Wolf)</span></code></pre></div>
+<pre><code># A tibble: 4 × 7
+  alpha        total          Daneborg   Disko Illulissat Ittoqqortoormiit Wolf 
+  &lt;chr&gt;        &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;            &lt;chr&gt;
+1 richness     1178.71±53.318 1115.138±… 1224… 1216.391±… 1144.345±30.441  &lt;NA&gt; 
+2 neutral      144.575±43.541 114.756±2… 164.… 170.644±3… 124.141±42.755   &lt;NA&gt; 
+3 phylogenetic 7.677±1.258    6.697±0.8… 8.24… 8.261±0.9… 7.357±1.065      &lt;NA&gt; 
+4 functional   1.476±0.047    1.443±0.0… 1.49… 1.481±0.0… 1.486±0.053      &lt;NA&gt; </code></pre>
+</div>
+<div id="mixed-models-1" class="section level3 hasAnchor" number="9.2.5">
+<h3><span class="header-section-number">9.2.5</span> Mixed models<a href="greenlandic-sled-dogs-in-summer.html#mixed-models-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<pre><code>Analysis of Deviance Table
+
+Model: Negative Binomial(39379537), link: log
+
+Response: richness
+
+Terms added sequentially (first to last)
+
+         Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+NULL                       123    299.518              
+locality  3   233.88       120     65.638 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre><code>
+Call:
+MASS::glm.nb(formula = richness ~ locality, data = alpha_div_meta, 
+    trace = TRUE, init.theta = 39379536.8, link = log)
+
+Coefficients:
+                         Estimate Std. Error  z value Pr(&gt;|z|)    
+(Intercept)              7.016733   0.005561 1261.805  &lt; 2e-16 ***
+localityDisko            0.093640   0.007065   13.254  &lt; 2e-16 ***
+localityIllulissat       0.086910   0.008165   10.644  &lt; 2e-16 ***
+localityIttoqqortoormiit 0.025854   0.007814    3.309 0.000937 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for Negative Binomial(39379537) family taken to be 1)
+
+    Null deviance: 299.518  on 123  degrees of freedom
+Residual deviance:  65.638  on 120  degrees of freedom
+AIC: 1180.4
+
+Number of Fisher Scoring iterations: 1
+
+              Theta:  39379537 
+          Std. Err.:  503994211 
+Warning while fitting theta: iteration limit reached 
+
+ 2 x log-likelihood:  -1170.377 </code></pre>
+<pre><code>$emmeans
+ locality         emmean      SE  df asymp.LCL asymp.UCL
+ Daneborg          7.017 0.00556 Inf     7.006     7.028
+ Disko             7.110 0.00436 Inf     7.102     7.119
+ Illulissat        7.104 0.00598 Inf     7.092     7.115
+ Ittoqqortoormiit  7.043 0.00549 Inf     7.032     7.053
+
+Results are given on the log (not the response) scale. 
+Confidence level used: 0.95 
+
+$contrasts
+ contrast                      estimate      SE  df z.ratio p.value
+ Daneborg - Disko              -0.09364 0.00707 Inf -13.254  &lt;.0001
+ Daneborg - Illulissat         -0.08691 0.00817 Inf -10.644  &lt;.0001
+ Daneborg - Ittoqqortoormiit   -0.02585 0.00781 Inf  -3.309  0.0052
+ Disko - Illulissat             0.00673 0.00740 Inf   0.910  0.7997
+ Disko - Ittoqqortoormiit       0.06779 0.00701 Inf   9.671  &lt;.0001
+ Illulissat - Ittoqqortoormiit  0.06106 0.00812 Inf   7.522  &lt;.0001
+
+Results are given on the log (not the response) scale. 
+P value adjustment: tukey method for comparing a family of 4 estimates </code></pre>
+<pre><code>Analysis of Variance Table
+
+Response: neutral
+           Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+locality    3  70637 23545.8  17.383 1.948e-09 ***
+Residuals 120 162545  1354.5                      
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre><code>
+Call:
+lm(formula = neutral ~ locality, data = alpha_div_meta)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-86.121 -25.760   0.704  28.304 107.054 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)               114.756      6.834  16.791  &lt; 2e-16 ***
+localityDisko              49.768      8.844   5.628 1.22e-07 ***
+localityIllulissat         55.888     10.276   5.439 2.88e-07 ***
+localityIttoqqortoormiit    9.385      9.665   0.971    0.333    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 36.8 on 120 degrees of freedom
+Multiple R-squared:  0.3029,    Adjusted R-squared:  0.2855 
+F-statistic: 17.38 on 3 and 120 DF,  p-value: 1.948e-09</code></pre>
+<pre><code>$emmeans
+ locality         emmean   SE  df lower.CL upper.CL
+ Daneborg            115 6.83 120      101      128
+ Disko               165 5.61 120      153      176
+ Illulissat          171 7.67 120      155      186
+ Ittoqqortoormiit    124 6.83 120      111      138
+
+Confidence level used: 0.95 
+
+$contrasts
+ contrast                      estimate    SE  df t.ratio p.value
+ Daneborg - Disko                -49.77  8.84 120  -5.628  &lt;.0001
+ Daneborg - Illulissat           -55.89 10.30 120  -5.439  &lt;.0001
+ Daneborg - Ittoqqortoormiit      -9.39  9.67 120  -0.971  0.7662
+ Disko - Illulissat               -6.12  9.51 120  -0.644  0.9175
+ Disko - Ittoqqortoormiit         40.38  8.84 120   4.566  0.0001
+ Illulissat - Ittoqqortoormiit    46.50 10.30 120   4.525  0.0001
+
+P value adjustment: tukey method for comparing a family of 4 estimates </code></pre>
+<pre><code>Analysis of Variance Table
+
+Response: phylogenetic
+           Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+locality    3  52.296 17.4318    14.7 3.257e-08 ***
+Residuals 120 142.305  1.1859                      
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre><code>
+Call:
+lm(formula = phylogenetic ~ locality, data = alpha_div_meta)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.1823 -0.6443  0.0360  0.5909  4.0160 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                6.6971     0.2022  33.118  &lt; 2e-16 ***
+localityDisko              1.5432     0.2617   5.898 3.48e-08 ***
+localityIllulissat         1.5638     0.3041   5.143 1.06e-06 ***
+localityIttoqqortoormiit   0.6602     0.2860   2.309   0.0227 *  
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 1.089 on 120 degrees of freedom
+Multiple R-squared:  0.2687,    Adjusted R-squared:  0.2505 
+F-statistic:  14.7 on 3 and 120 DF,  p-value: 3.257e-08</code></pre>
+<pre><code>$emmeans
+ locality         emmean    SE  df lower.CL upper.CL
+ Daneborg           6.70 0.202 120     6.30     7.10
+ Disko              8.24 0.166 120     7.91     8.57
+ Illulissat         8.26 0.227 120     7.81     8.71
+ Ittoqqortoormiit   7.36 0.202 120     6.96     7.76
+
+Confidence level used: 0.95 
+
+$contrasts
+ contrast                      estimate    SE  df t.ratio p.value
+ Daneborg - Disko               -1.5432 0.262 120  -5.898  &lt;.0001
+ Daneborg - Illulissat          -1.5638 0.304 120  -5.143  &lt;.0001
+ Daneborg - Ittoqqortoormiit    -0.6602 0.286 120  -2.309  0.1017
+ Disko - Illulissat             -0.0206 0.281 120  -0.073  0.9999
+ Disko - Ittoqqortoormiit        0.8830 0.262 120   3.374  0.0054
+ Illulissat - Ittoqqortoormiit   0.9036 0.304 120   2.972  0.0185
+
+P value adjustment: tukey method for comparing a family of 4 estimates </code></pre>
+<pre><code>Analysis of Variance Table
+
+Response: functional
+           Df   Sum Sq   Mean Sq F value    Pr(&gt;F)    
+locality    3 0.043216 0.0144053  7.5394 0.0001155 ***
+Residuals 120 0.229282 0.0019107                      
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre><code>
+Call:
+lm(formula = functional ~ locality, data = alpha_div_meta)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.128325 -0.022949 -0.003123  0.018900  0.163235 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)              1.442942   0.008117 177.768  &lt; 2e-16 ***
+localityDisko            0.046653   0.010503   4.442    2e-05 ***
+localityIllulissat       0.037742   0.012205   3.092 0.002470 ** 
+localityIttoqqortoormiit 0.043363   0.011479   3.778 0.000248 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.04371 on 120 degrees of freedom
+Multiple R-squared:  0.1586,    Adjusted R-squared:  0.1376 
+F-statistic: 7.539 on 3 and 120 DF,  p-value: 0.0001155</code></pre>
+<pre><code>$emmeans
+ locality         emmean      SE  df lower.CL upper.CL
+ Daneborg           1.44 0.00812 120     1.43     1.46
+ Disko              1.49 0.00667 120     1.48     1.50
+ Illulissat         1.48 0.00911 120     1.46     1.50
+ Ittoqqortoormiit   1.49 0.00812 120     1.47     1.50
+
+Confidence level used: 0.95 
+
+$contrasts
+ contrast                      estimate     SE  df t.ratio p.value
+ Daneborg - Disko              -0.04665 0.0105 120  -4.442  0.0001
+ Daneborg - Illulissat         -0.03774 0.0122 120  -3.092  0.0130
+ Daneborg - Ittoqqortoormiit   -0.04336 0.0115 120  -3.778  0.0014
+ Disko - Illulissat             0.00891 0.0113 120   0.789  0.8592
+ Disko - Ittoqqortoormiit       0.00329 0.0105 120   0.313  0.9893
+ Illulissat - Ittoqqortoormiit -0.00562 0.0122 120  -0.461  0.9674
+
+P value adjustment: tukey method for comparing a family of 4 estimates </code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="greenlandic-sled-dogs-in-summer.html#cb26-1" tabindex="-1"></a>beta_q0n <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="greenlandic-sled-dogs-in-summer.html#cb26-2" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(., <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-3"><a href="greenlandic-sled-dogs-in-summer.html#cb26-3" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">rowSums</span>(. <span class="sc">!=</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-4"><a href="greenlandic-sled-dogs-in-summer.html#cb26-4" tabindex="-1"></a>  <span class="fu">select_if</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb26-5"><a href="greenlandic-sled-dogs-in-summer.html#cb26-5" tabindex="-1"></a>  <span class="fu">hillpair</span>(., <span class="at">q =</span> <span class="dv">0</span>)</span>
+<span id="cb26-6"><a href="greenlandic-sled-dogs-in-summer.html#cb26-6" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="greenlandic-sled-dogs-in-summer.html#cb26-7" tabindex="-1"></a>beta_q1n <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb26-8"><a href="greenlandic-sled-dogs-in-summer.html#cb26-8" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(., <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-9"><a href="greenlandic-sled-dogs-in-summer.html#cb26-9" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">rowSums</span>(. <span class="sc">!=</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-10"><a href="greenlandic-sled-dogs-in-summer.html#cb26-10" tabindex="-1"></a>  <span class="fu">select_if</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb26-11"><a href="greenlandic-sled-dogs-in-summer.html#cb26-11" tabindex="-1"></a>  <span class="fu">hillpair</span>(., <span class="at">q =</span> <span class="dv">1</span>)</span>
+<span id="cb26-12"><a href="greenlandic-sled-dogs-in-summer.html#cb26-12" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="greenlandic-sled-dogs-in-summer.html#cb26-13" tabindex="-1"></a>genome_counts <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb26-14"><a href="greenlandic-sled-dogs-in-summer.html#cb26-14" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(., <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-15"><a href="greenlandic-sled-dogs-in-summer.html#cb26-15" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">rowSums</span>(. <span class="sc">!=</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-16"><a href="greenlandic-sled-dogs-in-summer.html#cb26-16" tabindex="-1"></a>  <span class="fu">select_if</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb26-17"><a href="greenlandic-sled-dogs-in-summer.html#cb26-17" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(., <span class="st">&quot;genome&quot;</span>)</span>
+<span id="cb26-18"><a href="greenlandic-sled-dogs-in-summer.html#cb26-18" tabindex="-1"></a></span>
+<span id="cb26-19"><a href="greenlandic-sled-dogs-in-summer.html#cb26-19" tabindex="-1"></a>genome_tree <span class="ot">&lt;-</span> <span class="fu">keep.tip</span>(genome_tree, <span class="at">tip=</span>genome_counts_filt<span class="sc">$</span>genome)</span>
+<span id="cb26-20"><a href="greenlandic-sled-dogs-in-summer.html#cb26-20" tabindex="-1"></a></span>
+<span id="cb26-21"><a href="greenlandic-sled-dogs-in-summer.html#cb26-21" tabindex="-1"></a>beta_q1p <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb26-22"><a href="greenlandic-sled-dogs-in-summer.html#cb26-22" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(., <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-23"><a href="greenlandic-sled-dogs-in-summer.html#cb26-23" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">rowSums</span>(. <span class="sc">!=</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-24"><a href="greenlandic-sled-dogs-in-summer.html#cb26-24" tabindex="-1"></a>  <span class="fu">select_if</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb26-25"><a href="greenlandic-sled-dogs-in-summer.html#cb26-25" tabindex="-1"></a>  <span class="fu">hillpair</span>(., <span class="at">q =</span> <span class="dv">1</span>, <span class="at">tree =</span> genome_tree)</span>
+<span id="cb26-26"><a href="greenlandic-sled-dogs-in-summer.html#cb26-26" tabindex="-1"></a></span>
+<span id="cb26-27"><a href="greenlandic-sled-dogs-in-summer.html#cb26-27" tabindex="-1"></a>genome_counts_filt_beta <span class="ot">&lt;-</span> genome_counts_filt[genome_counts_filt<span class="sc">$</span>genome <span class="sc">%in%</span> <span class="fu">rownames</span>(genome_gifts),]</span>
+<span id="cb26-28"><a href="greenlandic-sled-dogs-in-summer.html#cb26-28" tabindex="-1"></a>genome_counts_filt_beta <span class="ot">&lt;-</span> genome_counts_filt_beta <span class="sc">%&gt;%</span></span>
+<span id="cb26-29"><a href="greenlandic-sled-dogs-in-summer.html#cb26-29" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(., <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-30"><a href="greenlandic-sled-dogs-in-summer.html#cb26-30" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">rowSums</span>(. <span class="sc">!=</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-31"><a href="greenlandic-sled-dogs-in-summer.html#cb26-31" tabindex="-1"></a>  <span class="fu">select_if</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb26-32"><a href="greenlandic-sled-dogs-in-summer.html#cb26-32" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(., <span class="st">&quot;genome&quot;</span>)</span>
+<span id="cb26-33"><a href="greenlandic-sled-dogs-in-summer.html#cb26-33" tabindex="-1"></a></span>
+<span id="cb26-34"><a href="greenlandic-sled-dogs-in-summer.html#cb26-34" tabindex="-1"></a>genome_gifts1 <span class="ot">&lt;-</span> genome_gifts[<span class="fu">rownames</span>(genome_gifts) <span class="sc">%in%</span> genome_counts_filt_beta<span class="sc">$</span>genome,]</span>
+<span id="cb26-35"><a href="greenlandic-sled-dogs-in-summer.html#cb26-35" tabindex="-1"></a>genome_gifts1 <span class="ot">&lt;-</span> genome_gifts1[, <span class="fu">colSums</span>(genome_gifts1 <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb26-36"><a href="greenlandic-sled-dogs-in-summer.html#cb26-36" tabindex="-1"></a></span>
+<span id="cb26-37"><a href="greenlandic-sled-dogs-in-summer.html#cb26-37" tabindex="-1"></a>dist <span class="ot">&lt;-</span> genome_gifts1 <span class="sc">%&gt;%</span></span>
+<span id="cb26-38"><a href="greenlandic-sled-dogs-in-summer.html#cb26-38" tabindex="-1"></a>  <span class="fu">to.elements</span>(., GIFT_db) <span class="sc">%&gt;%</span></span>
+<span id="cb26-39"><a href="greenlandic-sled-dogs-in-summer.html#cb26-39" tabindex="-1"></a>  <span class="fu">traits2dist</span>(., <span class="at">method =</span> <span class="st">&quot;gower&quot;</span>)</span>
+<span id="cb26-40"><a href="greenlandic-sled-dogs-in-summer.html#cb26-40" tabindex="-1"></a></span>
+<span id="cb26-41"><a href="greenlandic-sled-dogs-in-summer.html#cb26-41" tabindex="-1"></a>beta_q1f <span class="ot">&lt;-</span> genome_counts_filt_beta <span class="sc">%&gt;%</span></span>
+<span id="cb26-42"><a href="greenlandic-sled-dogs-in-summer.html#cb26-42" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(., <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-43"><a href="greenlandic-sled-dogs-in-summer.html#cb26-43" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">rowSums</span>(. <span class="sc">!=</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-44"><a href="greenlandic-sled-dogs-in-summer.html#cb26-44" tabindex="-1"></a>  <span class="fu">select_if</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb26-45"><a href="greenlandic-sled-dogs-in-summer.html#cb26-45" tabindex="-1"></a>  <span class="fu">hillpair</span>(., <span class="at">q =</span> <span class="dv">1</span>, <span class="at">dist =</span> dist)</span></code></pre></div>
+</div>
+<div id="beta-diversity-plots-2" class="section level3 hasAnchor" number="9.2.6">
+<h3><span class="header-section-number">9.2.6</span> Beta diversity plots<a href="greenlandic-sled-dogs-in-summer.html#beta-diversity-plots-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="greenlandic-sled-dogs-in-summer.html#cb27-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;data/beta_greenland_summer.Rdata&quot;</span>)</span></code></pre></div>
+<div id="richness-2" class="section level4 hasAnchor" number="9.2.6.1">
+<h4><span class="header-section-number">9.2.6.1</span> Richness<a href="greenlandic-sled-dogs-in-summer.html#richness-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="greenlandic-sled-dogs-in-summer.html#cb28-1" tabindex="-1"></a>beta_q0n<span class="sc">$</span>S <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="greenlandic-sled-dogs-in-summer.html#cb28-2" tabindex="-1"></a>  vegan<span class="sc">::</span><span class="fu">metaMDS</span>(., <span class="at">trymax =</span> <span class="dv">500</span>, <span class="at">k =</span> <span class="dv">2</span>, <span class="at">trace=</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-3"><a href="greenlandic-sled-dogs-in-summer.html#cb28-3" tabindex="-1"></a>  vegan<span class="sc">::</span><span class="fu">scores</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb28-4"><a href="greenlandic-sled-dogs-in-summer.html#cb28-4" tabindex="-1"></a>  <span class="fu">as_tibble</span>(., <span class="at">rownames =</span> <span class="st">&quot;sample&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-5"><a href="greenlandic-sled-dogs-in-summer.html#cb28-5" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb28-6"><a href="greenlandic-sled-dogs-in-summer.html#cb28-6" tabindex="-1"></a>  <span class="fu">group_by</span>(locality) <span class="sc">%&gt;%</span></span>
+<span id="cb28-7"><a href="greenlandic-sled-dogs-in-summer.html#cb28-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x_cen =</span> <span class="fu">mean</span>(NMDS1, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb28-8"><a href="greenlandic-sled-dogs-in-summer.html#cb28-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y_cen =</span> <span class="fu">mean</span>(NMDS2, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb28-9"><a href="greenlandic-sled-dogs-in-summer.html#cb28-9" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb28-10"><a href="greenlandic-sled-dogs-in-summer.html#cb28-10" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> NMDS1, <span class="at">y =</span> NMDS2, <span class="at">color =</span> locality)) <span class="sc">+</span></span>
+<span id="cb28-11"><a href="greenlandic-sled-dogs-in-summer.html#cb28-11" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb28-12"><a href="greenlandic-sled-dogs-in-summer.html#cb28-12" tabindex="-1"></a>    <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> x_cen, <span class="at">y =</span> y_cen, <span class="at">xend =</span> NMDS1, <span class="at">yend =</span> NMDS2), <span class="at">alpha =</span> <span class="fl">0.9</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb28-13"><a href="greenlandic-sled-dogs-in-summer.html#cb28-13" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb28-14"><a href="greenlandic-sled-dogs-in-summer.html#cb28-14" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb28-15"><a href="greenlandic-sled-dogs-in-summer.html#cb28-15" tabindex="-1"></a>      <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb28-16"><a href="greenlandic-sled-dogs-in-summer.html#cb28-16" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb28-17"><a href="greenlandic-sled-dogs-in-summer.html#cb28-17" tabindex="-1"></a>      <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb28-18"><a href="greenlandic-sled-dogs-in-summer.html#cb28-18" tabindex="-1"></a>      <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb28-19"><a href="greenlandic-sled-dogs-in-summer.html#cb28-19" tabindex="-1"></a>      <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb28-20"><a href="greenlandic-sled-dogs-in-summer.html#cb28-20" tabindex="-1"></a>      <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">colour =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb28-21"><a href="greenlandic-sled-dogs-in-summer.html#cb28-21" tabindex="-1"></a>      <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb28-22"><a href="greenlandic-sled-dogs-in-summer.html#cb28-22" tabindex="-1"></a>      <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb28-23"><a href="greenlandic-sled-dogs-in-summer.html#cb28-23" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">&quot;right&quot;</span>, <span class="at">legend.box =</span> <span class="st">&quot;vertical&quot;</span></span>
+<span id="cb28-24"><a href="greenlandic-sled-dogs-in-summer.html#cb28-24" tabindex="-1"></a>    ) <span class="sc">+</span><span class="fu">labs</span>(<span class="at">color=</span><span class="st">&#39;Origin&#39;</span>)</span></code></pre></div>
+<p><img src="Figures/beta_div_nmds_neutral_plot_G-1.png" width="960" /></p>
+</div>
+<div id="neutral-2" class="section level4 hasAnchor" number="9.2.6.2">
+<h4><span class="header-section-number">9.2.6.2</span> Neutral<a href="greenlandic-sled-dogs-in-summer.html#neutral-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Figures/beta_div_neutral_G-1.png" width="960" /></p>
+</div>
+<div id="phylogenetic-2" class="section level4 hasAnchor" number="9.2.6.3">
+<h4><span class="header-section-number">9.2.6.3</span> Phylogenetic<a href="greenlandic-sled-dogs-in-summer.html#phylogenetic-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="greenlandic-sled-dogs-in-summer.html#cb29-1" tabindex="-1"></a>beta_q1p<span class="sc">$</span>S <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="greenlandic-sled-dogs-in-summer.html#cb29-2" tabindex="-1"></a>  vegan<span class="sc">::</span><span class="fu">metaMDS</span>(., <span class="at">trymax =</span> <span class="dv">500</span>, <span class="at">k =</span> <span class="dv">2</span>, <span class="at">trace=</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-3"><a href="greenlandic-sled-dogs-in-summer.html#cb29-3" tabindex="-1"></a>  vegan<span class="sc">::</span><span class="fu">scores</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb29-4"><a href="greenlandic-sled-dogs-in-summer.html#cb29-4" tabindex="-1"></a>  <span class="fu">as_tibble</span>(., <span class="at">rownames =</span> <span class="st">&quot;sample&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-5"><a href="greenlandic-sled-dogs-in-summer.html#cb29-5" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb29-6"><a href="greenlandic-sled-dogs-in-summer.html#cb29-6" tabindex="-1"></a>  <span class="fu">group_by</span>(locality) <span class="sc">%&gt;%</span></span>
+<span id="cb29-7"><a href="greenlandic-sled-dogs-in-summer.html#cb29-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x_cen =</span> <span class="fu">median</span>(NMDS1, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb29-8"><a href="greenlandic-sled-dogs-in-summer.html#cb29-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y_cen =</span> <span class="fu">median</span>(NMDS2, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb29-9"><a href="greenlandic-sled-dogs-in-summer.html#cb29-9" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb29-10"><a href="greenlandic-sled-dogs-in-summer.html#cb29-10" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> NMDS1, <span class="at">y =</span> NMDS2, <span class="at">color =</span> locality)) <span class="sc">+</span></span>
+<span id="cb29-11"><a href="greenlandic-sled-dogs-in-summer.html#cb29-11" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb29-12"><a href="greenlandic-sled-dogs-in-summer.html#cb29-12" tabindex="-1"></a>    <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> x_cen, <span class="at">y =</span> y_cen, <span class="at">xend =</span> NMDS1, <span class="at">yend =</span> NMDS2), <span class="at">alpha =</span> <span class="fl">0.9</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb29-13"><a href="greenlandic-sled-dogs-in-summer.html#cb29-13" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb29-14"><a href="greenlandic-sled-dogs-in-summer.html#cb29-14" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb29-15"><a href="greenlandic-sled-dogs-in-summer.html#cb29-15" tabindex="-1"></a>      <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb29-16"><a href="greenlandic-sled-dogs-in-summer.html#cb29-16" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb29-17"><a href="greenlandic-sled-dogs-in-summer.html#cb29-17" tabindex="-1"></a>      <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb29-18"><a href="greenlandic-sled-dogs-in-summer.html#cb29-18" tabindex="-1"></a>      <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">18</span>),</span>
+<span id="cb29-19"><a href="greenlandic-sled-dogs-in-summer.html#cb29-19" tabindex="-1"></a>      <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb29-20"><a href="greenlandic-sled-dogs-in-summer.html#cb29-20" tabindex="-1"></a>      <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">colour =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb29-21"><a href="greenlandic-sled-dogs-in-summer.html#cb29-21" tabindex="-1"></a>      <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>),</span>
+<span id="cb29-22"><a href="greenlandic-sled-dogs-in-summer.html#cb29-22" tabindex="-1"></a>      <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>),</span>
+<span id="cb29-23"><a href="greenlandic-sled-dogs-in-summer.html#cb29-23" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">&quot;right&quot;</span>, <span class="at">legend.box =</span> <span class="st">&quot;vertical&quot;</span></span>
+<span id="cb29-24"><a href="greenlandic-sled-dogs-in-summer.html#cb29-24" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb29-25"><a href="greenlandic-sled-dogs-in-summer.html#cb29-25" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">color=</span><span class="st">&#39;Locality&#39;</span>)</span></code></pre></div>
+<p><img src="Figures/beta_div_nmds_phylo1_plot_G-1.png" width="960" /></p>
+</div>
+<div id="functional-2" class="section level4 hasAnchor" number="9.2.6.4">
+<h4><span class="header-section-number">9.2.6.4</span> Functional<a href="greenlandic-sled-dogs-in-summer.html#functional-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="greenlandic-sled-dogs-in-summer.html#cb30-1" tabindex="-1"></a>beta_q1f<span class="sc">$</span>S <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="greenlandic-sled-dogs-in-summer.html#cb30-2" tabindex="-1"></a>  vegan<span class="sc">::</span><span class="fu">metaMDS</span>(., <span class="at">trymax =</span> <span class="dv">500</span>, <span class="at">k =</span> <span class="dv">2</span>, <span class="at">trace=</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="greenlandic-sled-dogs-in-summer.html#cb30-3" tabindex="-1"></a>  vegan<span class="sc">::</span><span class="fu">scores</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-4"><a href="greenlandic-sled-dogs-in-summer.html#cb30-4" tabindex="-1"></a>  <span class="fu">as_tibble</span>(., <span class="at">rownames =</span> <span class="st">&quot;sample&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-5"><a href="greenlandic-sled-dogs-in-summer.html#cb30-5" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-6"><a href="greenlandic-sled-dogs-in-summer.html#cb30-6" tabindex="-1"></a>  <span class="fu">group_by</span>(locality) <span class="sc">%&gt;%</span></span>
+<span id="cb30-7"><a href="greenlandic-sled-dogs-in-summer.html#cb30-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x_cen =</span> <span class="fu">median</span>(NMDS1, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-8"><a href="greenlandic-sled-dogs-in-summer.html#cb30-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">y_cen =</span> <span class="fu">median</span>(NMDS2, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-9"><a href="greenlandic-sled-dogs-in-summer.html#cb30-9" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-10"><a href="greenlandic-sled-dogs-in-summer.html#cb30-10" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> NMDS1, <span class="at">y =</span> NMDS2, <span class="at">color =</span> locality)) <span class="sc">+</span></span>
+<span id="cb30-11"><a href="greenlandic-sled-dogs-in-summer.html#cb30-11" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb30-12"><a href="greenlandic-sled-dogs-in-summer.html#cb30-12" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> x_cen, <span class="at">y =</span> y_cen, <span class="at">xend =</span> NMDS1, <span class="at">yend =</span> NMDS2), <span class="at">alpha =</span> <span class="fl">0.9</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb30-13"><a href="greenlandic-sled-dogs-in-summer.html#cb30-13" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb30-14"><a href="greenlandic-sled-dogs-in-summer.html#cb30-14" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb30-15"><a href="greenlandic-sled-dogs-in-summer.html#cb30-15" tabindex="-1"></a>      <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb30-16"><a href="greenlandic-sled-dogs-in-summer.html#cb30-16" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb30-17"><a href="greenlandic-sled-dogs-in-summer.html#cb30-17" tabindex="-1"></a>      <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb30-18"><a href="greenlandic-sled-dogs-in-summer.html#cb30-18" tabindex="-1"></a>      <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">18</span>),</span>
+<span id="cb30-19"><a href="greenlandic-sled-dogs-in-summer.html#cb30-19" tabindex="-1"></a>      <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb30-20"><a href="greenlandic-sled-dogs-in-summer.html#cb30-20" tabindex="-1"></a>      <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">colour =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb30-21"><a href="greenlandic-sled-dogs-in-summer.html#cb30-21" tabindex="-1"></a>      <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>),</span>
+<span id="cb30-22"><a href="greenlandic-sled-dogs-in-summer.html#cb30-22" tabindex="-1"></a>      <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>),</span>
+<span id="cb30-23"><a href="greenlandic-sled-dogs-in-summer.html#cb30-23" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">&quot;right&quot;</span>, <span class="at">legend.box =</span> <span class="st">&quot;vertical&quot;</span></span>
+<span id="cb30-24"><a href="greenlandic-sled-dogs-in-summer.html#cb30-24" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb30-25"><a href="greenlandic-sled-dogs-in-summer.html#cb30-25" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">color=</span><span class="st">&#39;Locality&#39;</span>)</span></code></pre></div>
+<p><img src="Figures/beta_div_nmds_func_plot_G-1.png" width="960" /></p>
+</div>
+</div>
+<div id="permanova-analysis-2" class="section level3 hasAnchor" number="9.2.7">
+<h3><span class="header-section-number">9.2.7</span> Permanova analysis<a href="greenlandic-sled-dogs-in-summer.html#permanova-analysis-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="greenlandic-sled-dogs-in-summer.html#cb31-1" tabindex="-1"></a>sample_metadata_row<span class="ot">&lt;-</span> <span class="fu">column_to_rownames</span>(sample_metadata, <span class="st">&quot;sample&quot;</span>) </span>
+<span id="cb31-2"><a href="greenlandic-sled-dogs-in-summer.html#cb31-2" tabindex="-1"></a>sample_metadata_row <span class="ot">&lt;-</span> sample_metadata_row[<span class="fu">labels</span>(beta_q1n<span class="sc">$</span>S), ]</span></code></pre></div>
+<p><strong>Richness</strong></p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="greenlandic-sled-dogs-in-summer.html#cb32-1" tabindex="-1"></a><span class="fu">betadisper</span>(beta_q0n<span class="sc">$</span>S, sample_metadata_row<span class="sc">$</span>locality) <span class="sc">%&gt;%</span> <span class="fu">permutest</span>(., <span class="at">pairwise =</span> <span class="cn">TRUE</span>) </span></code></pre></div>
+<pre><code>
+Permutation test for homogeneity of multivariate dispersions
+Permutation: free
+Number of permutations: 999
+
+Response: Distances
+           Df   Sum Sq   Mean Sq      F N.Perm Pr(&gt;F)    
+Groups      3 0.026956 0.0089854 43.902    999  0.001 ***
+Residuals 120 0.024560 0.0002047                         
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Pairwise comparisons:
+(Observed p-value below diagonal, permuted p-value above diagonal)
+                   Daneborg      Disko Illulissat Ittoqqortoormiit
+Daneborg                    1.0000e-03 1.0000e-03            0.415
+Disko            5.2192e-11            7.9000e-02            0.001
+Illulissat       6.2041e-06 7.6928e-02                       0.001
+Ittoqqortoormiit 3.8986e-01 3.4240e-18 1.2376e-10                 </code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="greenlandic-sled-dogs-in-summer.html#cb34-1" tabindex="-1"></a><span class="fu">adonis2</span>(beta_q0n<span class="sc">$</span>S <span class="sc">~</span> locality, </span>
+<span id="cb34-2"><a href="greenlandic-sled-dogs-in-summer.html#cb34-2" tabindex="-1"></a>        <span class="at">data =</span> sample_metadata <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">match</span>(sample,<span class="fu">labels</span>(beta_q1n<span class="sc">$</span>S))), </span>
+<span id="cb34-3"><a href="greenlandic-sled-dogs-in-summer.html#cb34-3" tabindex="-1"></a>        <span class="at">permutations =</span> <span class="dv">999</span>, <span class="at">by=</span><span class="st">&quot;terms&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-4"><a href="greenlandic-sled-dogs-in-summer.html#cb34-4" tabindex="-1"></a>        broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb34-5"><a href="greenlandic-sled-dogs-in-summer.html#cb34-5" tabindex="-1"></a>        <span class="fu">tt</span>()</span></code></pre></div>
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_xqk0c6m02hntezt9pr1l(i, j, css_id) {
+          var table = document.getElementById("tinytable_xqk0c6m02hntezt9pr1l");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_xqk0c6m02hntezt9pr1l');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_xqk0c6m02hntezt9pr1l(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_xqk0c6m02hntezt9pr1l");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 3, j: 0 }, { i: 3, j: 1 }, { i: 3, j: 2 }, { i: 3, j: 3 }, { i: 3, j: 4 }, { i: 3, j: 5 },  ], css_id: 'tinytable_css_s1j9g6qrm6pjp1t2vol5',}, 
+          { positions: [ { i: 0, j: 0 }, { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 },  ], css_id: 'tinytable_css_rihc5zllf0f8kopzkcmq',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_xqk0c6m02hntezt9pr1l(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_s1j9g6qrm6pjp1t2vol5, .table th.tinytable_css_s1j9g6qrm6pjp1t2vol5 { border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_rihc5zllf0f8kopzkcmq, .table th.tinytable_css_rihc5zllf0f8kopzkcmq { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_xqk0c6m02hntezt9pr1l" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'>
+        <thead>
+        
+              <tr>
+                <th scope="col">term</th>
+                <th scope="col">df</th>
+                <th scope="col">SumOfSqs</th>
+                <th scope="col">R2</th>
+                <th scope="col">statistic</th>
+                <th scope="col">p.value</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>locality</td>
+                  <td>3</td>
+                  <td>0.1610129</td>
+                  <td>0.4012651</td>
+                  <td>26.80753</td>
+                  <td>0.001</td>
+                </tr>
+                <tr>
+                  <td>Residual</td>
+                  <td>120</td>
+                  <td>0.2402503</td>
+                  <td>0.5987349</td>
+                  <td>NA</td>
+                  <td>NA</td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td>123</td>
+                  <td>0.4012633</td>
+                  <td>1.0000000</td>
+                  <td>NA</td>
+                  <td>NA</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+<p><strong>Neutral</strong></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="greenlandic-sled-dogs-in-summer.html#cb35-1" tabindex="-1"></a><span class="fu">betadisper</span>(beta_q1n<span class="sc">$</span>S, sample_metadata_row<span class="sc">$</span>locality) <span class="sc">%&gt;%</span> <span class="fu">permutest</span>(., <span class="at">pairwise =</span> <span class="cn">TRUE</span>) </span></code></pre></div>
+<pre><code>
+Permutation test for homogeneity of multivariate dispersions
+Permutation: free
+Number of permutations: 999
+
+Response: Distances
+           Df  Sum Sq  Mean Sq      F N.Perm Pr(&gt;F)    
+Groups      3 0.36542 0.121807 10.496    999  0.001 ***
+Residuals 120 1.39266 0.011605                         
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Pairwise comparisons:
+(Observed p-value below diagonal, permuted p-value above diagonal)
+                   Daneborg      Disko Illulissat Ittoqqortoormiit
+Daneborg                    4.0000e-03 2.1100e-01            0.001
+Disko            2.5330e-03            6.4000e-02            0.012
+Illulissat       2.1392e-01 6.5566e-02                       0.001
+Ittoqqortoormiit 1.0351e-05 1.3069e-02 1.9841e-04                 </code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="greenlandic-sled-dogs-in-summer.html#cb37-1" tabindex="-1"></a><span class="fu">adonis2</span>(beta_q1n<span class="sc">$</span>S <span class="sc">~</span> locality, </span>
+<span id="cb37-2"><a href="greenlandic-sled-dogs-in-summer.html#cb37-2" tabindex="-1"></a>        <span class="at">data =</span> sample_metadata <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">match</span>(sample,<span class="fu">labels</span>(beta_q1n<span class="sc">$</span>S))), </span>
+<span id="cb37-3"><a href="greenlandic-sled-dogs-in-summer.html#cb37-3" tabindex="-1"></a>        <span class="at">permutations =</span> <span class="dv">999</span>, <span class="at">by=</span><span class="st">&quot;terms&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-4"><a href="greenlandic-sled-dogs-in-summer.html#cb37-4" tabindex="-1"></a>        broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb37-5"><a href="greenlandic-sled-dogs-in-summer.html#cb37-5" tabindex="-1"></a>        <span class="fu">tt</span>()</span></code></pre></div>
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_ld3tuo1l6welz8lalvlz(i, j, css_id) {
+          var table = document.getElementById("tinytable_ld3tuo1l6welz8lalvlz");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_ld3tuo1l6welz8lalvlz');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_ld3tuo1l6welz8lalvlz(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_ld3tuo1l6welz8lalvlz");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 0, j: 0 }, { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 },  ], css_id: 'tinytable_css_mucwwz5ikkve17g3sosk',}, 
+          { positions: [ { i: 3, j: 0 }, { i: 3, j: 1 }, { i: 3, j: 2 }, { i: 3, j: 3 }, { i: 3, j: 4 }, { i: 3, j: 5 },  ], css_id: 'tinytable_css_gr8xze36vjy4ewhdrye2',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_ld3tuo1l6welz8lalvlz(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_mucwwz5ikkve17g3sosk, .table th.tinytable_css_mucwwz5ikkve17g3sosk { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_gr8xze36vjy4ewhdrye2, .table th.tinytable_css_gr8xze36vjy4ewhdrye2 { border-bottom: solid #d3d8dc 0.1em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_ld3tuo1l6welz8lalvlz" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'>
+        <thead>
+        
+              <tr>
+                <th scope="col">term</th>
+                <th scope="col">df</th>
+                <th scope="col">SumOfSqs</th>
+                <th scope="col">R2</th>
+                <th scope="col">statistic</th>
+                <th scope="col">p.value</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>locality</td>
+                  <td>3</td>
+                  <td>3.078004</td>
+                  <td>0.2194629</td>
+                  <td>11.24676</td>
+                  <td>0.001</td>
+                </tr>
+                <tr>
+                  <td>Residual</td>
+                  <td>120</td>
+                  <td>10.947165</td>
+                  <td>0.7805371</td>
+                  <td>NA</td>
+                  <td>NA</td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td>123</td>
+                  <td>14.025168</td>
+                  <td>1.0000000</td>
+                  <td>NA</td>
+                  <td>NA</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="greenlandic-sled-dogs-in-summer.html#cb38-1" tabindex="-1"></a><span class="fu">pairwise.adonis</span>(beta_q1n<span class="sc">$</span>S, sample_metadata<span class="sc">$</span>locality, <span class="at">perm =</span> <span class="dv">999</span>)</span></code></pre></div>
+<pre><code>                           pairs Df SumsOfSqs   F.Model         R2 p.value
+1              Daneborg vs Disko  1 0.3779504  4.170036 0.05622265   0.001
+2         Daneborg vs Illulissat  1 1.6374267 21.797752 0.30359937   0.001
+3   Daneborg vs Ittoqqortoormiit  1 0.4643954  3.986525 0.06645702   0.001
+4            Disko vs Illulissat  1 1.0757063 13.877524 0.17819677   0.001
+5      Disko vs Ittoqqortoormiit  1 0.5217785  4.725966 0.06324396   0.001
+6 Illulissat vs Ittoqqortoormiit  1 1.2921905 12.569974 0.20089466   0.001
+  p.adjusted sig
+1      0.006   *
+2      0.006   *
+3      0.006   *
+4      0.006   *
+5      0.006   *
+6      0.006   *</code></pre>
+<p><strong>Phylogenetic</strong></p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="greenlandic-sled-dogs-in-summer.html#cb40-1" tabindex="-1"></a><span class="fu">betadisper</span>(beta_q1p<span class="sc">$</span>S, sample_metadata_row<span class="sc">$</span>locality) <span class="sc">%&gt;%</span> <span class="fu">permutest</span>(., <span class="at">pairwise =</span> <span class="cn">TRUE</span>) </span></code></pre></div>
+<pre><code>
+Permutation test for homogeneity of multivariate dispersions
+Permutation: free
+Number of permutations: 999
+
+Response: Distances
+           Df  Sum Sq   Mean Sq      F N.Perm Pr(&gt;F)   
+Groups      3 0.08858 0.0295280 4.3569    999  0.007 **
+Residuals 120 0.81327 0.0067772                        
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Pairwise comparisons:
+(Observed p-value below diagonal, permuted p-value above diagonal)
+                  Daneborg     Disko Illulissat Ittoqqortoormiit
+Daneborg                   0.0190000  0.1560000            0.002
+Disko            0.0225359            0.4490000            0.143
+Illulissat       0.1600611 0.3961635                       0.055
+Ittoqqortoormiit 0.0036294 0.1421897  0.0534874                 </code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="greenlandic-sled-dogs-in-summer.html#cb42-1" tabindex="-1"></a><span class="fu">adonis2</span>(beta_q1p<span class="sc">$</span>S <span class="sc">~</span> locality, </span>
+<span id="cb42-2"><a href="greenlandic-sled-dogs-in-summer.html#cb42-2" tabindex="-1"></a>        <span class="at">data =</span> sample_metadata <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">match</span>(sample,<span class="fu">labels</span>(beta_q1n<span class="sc">$</span>S))), </span>
+<span id="cb42-3"><a href="greenlandic-sled-dogs-in-summer.html#cb42-3" tabindex="-1"></a>        <span class="at">permutations =</span> <span class="dv">999</span>, <span class="at">by=</span><span class="st">&quot;terms&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-4"><a href="greenlandic-sled-dogs-in-summer.html#cb42-4" tabindex="-1"></a>        broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb42-5"><a href="greenlandic-sled-dogs-in-summer.html#cb42-5" tabindex="-1"></a>        <span class="fu">tt</span>()</span></code></pre></div>
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_2360w2gk9zxkgal5imdo(i, j, css_id) {
+          var table = document.getElementById("tinytable_2360w2gk9zxkgal5imdo");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_2360w2gk9zxkgal5imdo');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_2360w2gk9zxkgal5imdo(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_2360w2gk9zxkgal5imdo");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 3, j: 0 }, { i: 3, j: 1 }, { i: 3, j: 2 }, { i: 3, j: 3 }, { i: 3, j: 4 }, { i: 3, j: 5 },  ], css_id: 'tinytable_css_ikmsdflv8noc0ebpqlj5',}, 
+          { positions: [ { i: 0, j: 0 }, { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 },  ], css_id: 'tinytable_css_5txog7j4287imkjrbq0u',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_2360w2gk9zxkgal5imdo(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_ikmsdflv8noc0ebpqlj5, .table th.tinytable_css_ikmsdflv8noc0ebpqlj5 { border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_5txog7j4287imkjrbq0u, .table th.tinytable_css_5txog7j4287imkjrbq0u { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_2360w2gk9zxkgal5imdo" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'>
+        <thead>
+        
+              <tr>
+                <th scope="col">term</th>
+                <th scope="col">df</th>
+                <th scope="col">SumOfSqs</th>
+                <th scope="col">R2</th>
+                <th scope="col">statistic</th>
+                <th scope="col">p.value</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>locality</td>
+                  <td>3</td>
+                  <td>0.5099086</td>
+                  <td>0.1839443</td>
+                  <td>9.016264</td>
+                  <td>0.001</td>
+                </tr>
+                <tr>
+                  <td>Residual</td>
+                  <td>120</td>
+                  <td>2.2621725</td>
+                  <td>0.8160557</td>
+                  <td>NA</td>
+                  <td>NA</td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td>123</td>
+                  <td>2.7720811</td>
+                  <td>1.0000000</td>
+                  <td>NA</td>
+                  <td>NA</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="greenlandic-sled-dogs-in-summer.html#cb43-1" tabindex="-1"></a><span class="fu">pairwise.adonis</span>(beta_q1p<span class="sc">$</span>S, sample_metadata<span class="sc">$</span>locality, <span class="at">perm =</span> <span class="dv">999</span>)</span></code></pre></div>
+<pre><code>                           pairs Df  SumsOfSqs   F.Model         R2 p.value
+1              Daneborg vs Disko  1 0.05550175  3.264910 0.04456308   0.026
+2         Daneborg vs Illulissat  1 0.27904627 15.558986 0.23732804   0.001
+3   Daneborg vs Ittoqqortoormiit  1 0.12253267  4.814614 0.07916870   0.001
+4            Disko vs Illulissat  1 0.12462870  8.463517 0.11679694   0.001
+5      Disko vs Ittoqqortoormiit  1 0.11150589  5.306563 0.07046614   0.003
+6 Illulissat vs Ittoqqortoormiit  1 0.15930838  6.763703 0.11915542   0.002
+  p.adjusted sig
+1      0.156    
+2      0.006   *
+3      0.006   *
+4      0.006   *
+5      0.018   .
+6      0.012   .</code></pre>
+<p><strong>Functional</strong></p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="greenlandic-sled-dogs-in-summer.html#cb45-1" tabindex="-1"></a><span class="fu">betadisper</span>(beta_q1f<span class="sc">$</span>S, sample_metadata_row<span class="sc">$</span>locality) <span class="sc">%&gt;%</span> <span class="fu">permutest</span>(., <span class="at">pairwise =</span> <span class="cn">TRUE</span>) </span></code></pre></div>
+<pre><code>
+Permutation test for homogeneity of multivariate dispersions
+Permutation: free
+Number of permutations: 999
+
+Response: Distances
+           Df  Sum Sq   Mean Sq     F N.Perm Pr(&gt;F)
+Groups      3 0.01060 0.0035320 0.591    999  0.638
+Residuals 120 0.71711 0.0059759                    
+
+Pairwise comparisons:
+(Observed p-value below diagonal, permuted p-value above diagonal)
+                 Daneborg   Disko Illulissat Ittoqqortoormiit
+Daneborg                  0.33600    0.74100            0.893
+Disko             0.33095            0.60600            0.219
+Illulissat        0.71280 0.62272                       0.605
+Ittoqqortoormiit  0.89732 0.23323    0.58629                 </code></pre>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="greenlandic-sled-dogs-in-summer.html#cb47-1" tabindex="-1"></a><span class="fu">adonis2</span>(beta_q1f<span class="sc">$</span>S <span class="sc">~</span> place<span class="sc">*</span>locality, </span>
+<span id="cb47-2"><a href="greenlandic-sled-dogs-in-summer.html#cb47-2" tabindex="-1"></a>        <span class="at">data =</span> sample_metadata <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">match</span>(sample,<span class="fu">labels</span>(beta_q1n<span class="sc">$</span>S))), </span>
+<span id="cb47-3"><a href="greenlandic-sled-dogs-in-summer.html#cb47-3" tabindex="-1"></a>        <span class="at">permutations =</span> <span class="dv">999</span>, <span class="at">by=</span><span class="st">&quot;terms&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb47-4"><a href="greenlandic-sled-dogs-in-summer.html#cb47-4" tabindex="-1"></a>        broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb47-5"><a href="greenlandic-sled-dogs-in-summer.html#cb47-5" tabindex="-1"></a>        <span class="fu">tt</span>()</span></code></pre></div>
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_sethkoxii3upd2vtx3a2(i, j, css_id) {
+          var table = document.getElementById("tinytable_sethkoxii3upd2vtx3a2");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_sethkoxii3upd2vtx3a2');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_sethkoxii3upd2vtx3a2(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_sethkoxii3upd2vtx3a2");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 0, j: 0 }, { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 },  ], css_id: 'tinytable_css_rk1ztu8pcxtgxu3qvuou',}, 
+          { positions: [ { i: 4, j: 0 }, { i: 4, j: 1 }, { i: 4, j: 2 }, { i: 4, j: 3 }, { i: 4, j: 4 }, { i: 4, j: 5 },  ], css_id: 'tinytable_css_qp500wq7bhowiyqt4qx9',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_sethkoxii3upd2vtx3a2(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_rk1ztu8pcxtgxu3qvuou, .table th.tinytable_css_rk1ztu8pcxtgxu3qvuou { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_qp500wq7bhowiyqt4qx9, .table th.tinytable_css_qp500wq7bhowiyqt4qx9 { border-bottom: solid #d3d8dc 0.1em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_sethkoxii3upd2vtx3a2" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'>
+        <thead>
+        
+              <tr>
+                <th scope="col">term</th>
+                <th scope="col">df</th>
+                <th scope="col">SumOfSqs</th>
+                <th scope="col">R2</th>
+                <th scope="col">statistic</th>
+                <th scope="col">p.value</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>place</td>
+                  <td>1</td>
+                  <td>0.83104455</td>
+                  <td>0.422761281</td>
+                  <td>88.7155127</td>
+                  <td>0.001</td>
+                </tr>
+                <tr>
+                  <td>locality</td>
+                  <td>2</td>
+                  <td>0.01060646</td>
+                  <td>0.005395619</td>
+                  <td>0.5661293</td>
+                  <td>0.521</td>
+                </tr>
+                <tr>
+                  <td>Residual</td>
+                  <td>120</td>
+                  <td>1.12410268</td>
+                  <td>0.571843100</td>
+                  <td>NA</td>
+                  <td>NA</td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td>123</td>
+                  <td>1.96575368</td>
+                  <td>1.000000000</td>
+                  <td>NA</td>
+                  <td>NA</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="greenlandic-sled-dogs-in-summer.html#cb48-1" tabindex="-1"></a><span class="fu">pairwise.adonis</span>(beta_q1f<span class="sc">$</span>S, sample_metadata<span class="sc">$</span>locality, <span class="at">perm =</span> <span class="dv">999</span>)</span></code></pre></div>
+<pre><code>                           pairs Df  SumsOfSqs   F.Model         R2 p.value
+1              Daneborg vs Disko  1 0.08718865  6.520848 0.08521662   0.032
+2         Daneborg vs Illulissat  1 0.34959673 42.942556 0.46203330   0.001
+3   Daneborg vs Ittoqqortoormiit  1 0.62329071 96.278680 0.63225318   0.001
+4            Disko vs Illulissat  1 0.11734695  8.636601 0.11890150   0.014
+5      Disko vs Ittoqqortoormiit  1 0.30178638 25.604223 0.26781477   0.001
+6 Illulissat vs Ittoqqortoormiit  1 0.01712494  2.891165 0.05466253   0.165
+  p.adjusted sig
+1      0.192    
+2      0.006   *
+3      0.006   *
+4      0.084    
+5      0.006   *
+6      0.990    </code></pre>
+</div>
+</div>
+<div id="enrichment-analysis-ancombc2" class="section level2 hasAnchor" number="9.3">
+<h2><span class="header-section-number">9.3</span> Enrichment analysis: Ancombc2<a href="greenlandic-sled-dogs-in-summer.html#enrichment-analysis-ancombc2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="greenlandic-sled-dogs-in-summer.html#cb50-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;data/ancombc_results.Rdata&quot;</span>) <span class="co">#ancombc_results_wolves.Rdata</span></span></code></pre></div>
+<div id="mag-level" class="section level3 hasAnchor" number="9.3.1">
+<h3><span class="header-section-number">9.3.1</span> MAG level<a href="greenlandic-sled-dogs-in-summer.html#mag-level" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+<div id="the-global-differential-taxa" class="section level3 hasAnchor" number="9.3.2">
+<h3><span class="header-section-number">9.3.2</span> the global differential taxa<a href="greenlandic-sled-dogs-in-summer.html#the-global-differential-taxa" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="greenlandic-sled-dogs-in-summer.html#cb51-1" tabindex="-1"></a>res_global <span class="ot">&lt;-</span> ancom_rand_output_mag<span class="sc">$</span>res_global</span>
+<span id="cb51-2"><a href="greenlandic-sled-dogs-in-summer.html#cb51-2" tabindex="-1"></a>global_hits <span class="ot">&lt;-</span> res_global <span class="sc">%&gt;%</span></span>
+<span id="cb51-3"><a href="greenlandic-sled-dogs-in-summer.html#cb51-3" tabindex="-1"></a>  <span class="fu">filter</span>(diff_abn <span class="sc">==</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb51-4"><a href="greenlandic-sled-dogs-in-summer.html#cb51-4" tabindex="-1"></a>  <span class="fu">select</span>(taxon, W, p_val, q_val)</span></code></pre></div>
+</div>
+<div id="extract-the-results" class="section level3 hasAnchor" number="9.3.3">
+<h3><span class="header-section-number">9.3.3</span> Extract the results<a href="greenlandic-sled-dogs-in-summer.html#extract-the-results" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="greenlandic-sled-dogs-in-summer.html#cb52-1" tabindex="-1"></a> res_pair <span class="ot">&lt;-</span> ancom_rand_output_mag<span class="sc">$</span>res_pair</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="greenlandic-sled-dogs-in-summer.html#cb53-1" tabindex="-1"></a><span class="co"># Get log-fold change and q-value columns</span></span>
+<span id="cb53-2"><a href="greenlandic-sled-dogs-in-summer.html#cb53-2" tabindex="-1"></a>lfc_cols <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">&quot;^lfc_&quot;</span>, <span class="fu">colnames</span>(res_pair), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb53-3"><a href="greenlandic-sled-dogs-in-summer.html#cb53-3" tabindex="-1"></a>q_cols   <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;^lfc_&quot;</span>, <span class="st">&quot;q_&quot;</span>, lfc_cols)</span>
+<span id="cb53-4"><a href="greenlandic-sled-dogs-in-summer.html#cb53-4" tabindex="-1"></a></span>
+<span id="cb53-5"><a href="greenlandic-sled-dogs-in-summer.html#cb53-5" tabindex="-1"></a><span class="co"># Build long table by pairing lfc and q for each contrast</span></span>
+<span id="cb53-6"><a href="greenlandic-sled-dogs-in-summer.html#cb53-6" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> lfc_cols <span class="sc">%&gt;%</span></span>
+<span id="cb53-7"><a href="greenlandic-sled-dogs-in-summer.html#cb53-7" tabindex="-1"></a>  <span class="fu">setNames</span>(<span class="at">nm =</span> .) <span class="sc">%&gt;%</span></span>
+<span id="cb53-8"><a href="greenlandic-sled-dogs-in-summer.html#cb53-8" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">imap_dfr</span>(<span class="cf">function</span>(lfc_col, name) {</span>
+<span id="cb53-9"><a href="greenlandic-sled-dogs-in-summer.html#cb53-9" tabindex="-1"></a>    q_col <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;^lfc_&quot;</span>, <span class="st">&quot;q_&quot;</span>, lfc_col)</span>
+<span id="cb53-10"><a href="greenlandic-sled-dogs-in-summer.html#cb53-10" tabindex="-1"></a>    </span>
+<span id="cb53-11"><a href="greenlandic-sled-dogs-in-summer.html#cb53-11" tabindex="-1"></a>    res_pair <span class="sc">%&gt;%</span></span>
+<span id="cb53-12"><a href="greenlandic-sled-dogs-in-summer.html#cb53-12" tabindex="-1"></a>      <span class="fu">select</span>(taxon, <span class="sc">!!</span>lfc_col, <span class="sc">!!</span>q_col) <span class="sc">%&gt;%</span></span>
+<span id="cb53-13"><a href="greenlandic-sled-dogs-in-summer.html#cb53-13" tabindex="-1"></a>      <span class="fu">rename</span>(</span>
+<span id="cb53-14"><a href="greenlandic-sled-dogs-in-summer.html#cb53-14" tabindex="-1"></a>        <span class="at">lfc =</span> <span class="sc">!!</span>lfc_col,</span>
+<span id="cb53-15"><a href="greenlandic-sled-dogs-in-summer.html#cb53-15" tabindex="-1"></a>        <span class="at">q   =</span> <span class="sc">!!</span>q_col</span>
+<span id="cb53-16"><a href="greenlandic-sled-dogs-in-summer.html#cb53-16" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span></span>
+<span id="cb53-17"><a href="greenlandic-sled-dogs-in-summer.html#cb53-17" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">contrast_key =</span> name)</span>
+<span id="cb53-18"><a href="greenlandic-sled-dogs-in-summer.html#cb53-18" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
+<span id="cb53-19"><a href="greenlandic-sled-dogs-in-summer.html#cb53-19" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(lfc), <span class="sc">!</span><span class="fu">is.na</span>(q), q <span class="sc">&lt;</span> <span class="fl">0.05</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb53-20"><a href="greenlandic-sled-dogs-in-summer.html#cb53-20" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb53-21"><a href="greenlandic-sled-dogs-in-summer.html#cb53-21" tabindex="-1"></a>    <span class="co"># Manually re-label contrasts for clarity</span></span>
+<span id="cb53-22"><a href="greenlandic-sled-dogs-in-summer.html#cb53-22" tabindex="-1"></a>    <span class="at">contrast =</span> <span class="fu">case_when</span>(</span>
+<span id="cb53-23"><a href="greenlandic-sled-dogs-in-summer.html#cb53-23" tabindex="-1"></a>      contrast_key <span class="sc">==</span> <span class="st">&quot;lfc_localityDisko&quot;</span> <span class="sc">~</span> <span class="st">&quot;Disko vs Daneborg&quot;</span>,</span>
+<span id="cb53-24"><a href="greenlandic-sled-dogs-in-summer.html#cb53-24" tabindex="-1"></a>      contrast_key <span class="sc">==</span> <span class="st">&quot;lfc_localityIllulissat&quot;</span> <span class="sc">~</span> <span class="st">&quot;Illulissat vs Daneborg&quot;</span>,</span>
+<span id="cb53-25"><a href="greenlandic-sled-dogs-in-summer.html#cb53-25" tabindex="-1"></a>      contrast_key <span class="sc">==</span> <span class="st">&quot;lfc_localityIttoqqortoormiit&quot;</span> <span class="sc">~</span> <span class="st">&quot;Ittoqqortoormiit vs Daneborg&quot;</span>,</span>
+<span id="cb53-26"><a href="greenlandic-sled-dogs-in-summer.html#cb53-26" tabindex="-1"></a>      contrast_key <span class="sc">==</span> <span class="st">&quot;lfc_localityMongolia&quot;</span> <span class="sc">~</span> <span class="st">&quot;Mongolia vs Daneborg&quot;</span>,</span>
+<span id="cb53-27"><a href="greenlandic-sled-dogs-in-summer.html#cb53-27" tabindex="-1"></a>      contrast_key <span class="sc">==</span> <span class="st">&quot;lfc_localityIllulissat_localityDisko&quot;</span> <span class="sc">~</span> <span class="st">&quot;Illulissat vs Disko&quot;</span>,</span>
+<span id="cb53-28"><a href="greenlandic-sled-dogs-in-summer.html#cb53-28" tabindex="-1"></a>      contrast_key <span class="sc">==</span> <span class="st">&quot;lfc_localityMongolia_localityDisko&quot;</span> <span class="sc">~</span> <span class="st">&quot;Mongolia vs Disko&quot;</span>,</span>
+<span id="cb53-29"><a href="greenlandic-sled-dogs-in-summer.html#cb53-29" tabindex="-1"></a>      contrast_key <span class="sc">==</span> <span class="st">&quot;lfc_localityIttoqqortoormiit_localityDisko&quot;</span> <span class="sc">~</span> <span class="st">&quot;Ittoqqortoormiit vs Disko&quot;</span>,</span>
+<span id="cb53-30"><a href="greenlandic-sled-dogs-in-summer.html#cb53-30" tabindex="-1"></a>      contrast_key <span class="sc">==</span> <span class="st">&quot;lfc_localityIttoqqortoormiit_localityIllulissat&quot;</span> <span class="sc">~</span> <span class="st">&quot;Ittoqqortoormiit vs Illulissat&quot;</span>,</span>
+<span id="cb53-31"><a href="greenlandic-sled-dogs-in-summer.html#cb53-31" tabindex="-1"></a>      contrast_key <span class="sc">==</span> <span class="st">&quot;lfc_localityMongolia_localityIllulissat&quot;</span> <span class="sc">~</span> <span class="st">&quot;Mongolia vs Illulissat&quot;</span>,</span>
+<span id="cb53-32"><a href="greenlandic-sled-dogs-in-summer.html#cb53-32" tabindex="-1"></a>      contrast_key <span class="sc">==</span> <span class="st">&quot;lfc_localityMongolia_localityIttoqqortoormiit&quot;</span> <span class="sc">~</span> <span class="st">&quot;Mongolia vs Ittoqqortoormiit&quot;</span>,</span>
+<span id="cb53-33"><a href="greenlandic-sled-dogs-in-summer.html#cb53-33" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> contrast_key</span>
+<span id="cb53-34"><a href="greenlandic-sled-dogs-in-summer.html#cb53-34" tabindex="-1"></a>    ),</span>
+<span id="cb53-35"><a href="greenlandic-sled-dogs-in-summer.html#cb53-35" tabindex="-1"></a>    <span class="at">direction =</span> <span class="fu">ifelse</span>(lfc <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="fu">paste</span>(<span class="st">&quot;Enriched in&quot;</span>, <span class="fu">sub</span>(<span class="st">&quot; vs.*&quot;</span>, <span class="st">&quot;&quot;</span>, contrast)),</span>
+<span id="cb53-36"><a href="greenlandic-sled-dogs-in-summer.html#cb53-36" tabindex="-1"></a>                             <span class="fu">paste</span>(<span class="st">&quot;Enriched in&quot;</span>, <span class="fu">sub</span>(<span class="st">&quot;.*vs &quot;</span>, <span class="st">&quot;&quot;</span>, contrast)))</span>
+<span id="cb53-37"><a href="greenlandic-sled-dogs-in-summer.html#cb53-37" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="greenlandic-sled-dogs-in-summer.html#cb54-1" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> plot_data <span class="sc">%&gt;%</span></span>
+<span id="cb54-2"><a href="greenlandic-sled-dogs-in-summer.html#cb54-2" tabindex="-1"></a>  <span class="fu">left_join</span>(genome_metadata <span class="sc">%&gt;%</span> <span class="fu">select</span>(genome, phylum), <span class="at">by =</span><span class="fu">join_by</span>(<span class="st">&quot;taxon&quot;</span><span class="sc">==</span><span class="st">&quot;genome&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="greenlandic-sled-dogs-in-summer.html#cb55-1" tabindex="-1"></a><span class="co"># Loop through each contrast</span></span>
+<span id="cb55-2"><a href="greenlandic-sled-dogs-in-summer.html#cb55-2" tabindex="-1"></a>unique_contrasts <span class="ot">&lt;-</span> <span class="fu">unique</span>(plot_data<span class="sc">$</span>contrast)</span>
+<span id="cb55-3"><a href="greenlandic-sled-dogs-in-summer.html#cb55-3" tabindex="-1"></a></span>
+<span id="cb55-4"><a href="greenlandic-sled-dogs-in-summer.html#cb55-4" tabindex="-1"></a>taxonomy <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(physeq_genome_filtered<span class="sc">@</span>tax_table) <span class="sc">%&gt;%</span></span>
+<span id="cb55-5"><a href="greenlandic-sled-dogs-in-summer.html#cb55-5" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(., <span class="st">&quot;taxon&quot;</span>)</span>
+<span id="cb55-6"><a href="greenlandic-sled-dogs-in-summer.html#cb55-6" tabindex="-1"></a></span>
+<span id="cb55-7"><a href="greenlandic-sled-dogs-in-summer.html#cb55-7" tabindex="-1"></a>colors_alphabetic <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb55-8"><a href="greenlandic-sled-dogs-in-summer.html#cb55-8" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(phylum), <span class="sc">~</span> <span class="fu">str_replace</span>(., <span class="st">&quot;[dpcofgs]__&quot;</span>, <span class="st">&quot;&quot;</span>))  <span class="sc">%&gt;%</span></span>
+<span id="cb55-9"><a href="greenlandic-sled-dogs-in-summer.html#cb55-9" tabindex="-1"></a>  <span class="fu">right_join</span>(taxonomy, <span class="at">by =</span> <span class="fu">join_by</span>(phylum <span class="sc">==</span> phylum)) <span class="sc">%&gt;%</span></span>
+<span id="cb55-10"><a href="greenlandic-sled-dogs-in-summer.html#cb55-10" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(phylum, colors) <span class="sc">%&gt;%</span></span>
+<span id="cb55-11"><a href="greenlandic-sled-dogs-in-summer.html#cb55-11" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">colors =</span> <span class="fu">str_c</span>(colors, <span class="st">&quot;80&quot;</span>))  <span class="sc">%&gt;%</span> <span class="co">#add 80% alpha</span></span>
+<span id="cb55-12"><a href="greenlandic-sled-dogs-in-summer.html#cb55-12" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb55-13"><a href="greenlandic-sled-dogs-in-summer.html#cb55-13" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(phylum)</span>
+<span id="cb55-14"><a href="greenlandic-sled-dogs-in-summer.html#cb55-14" tabindex="-1"></a></span>
+<span id="cb55-15"><a href="greenlandic-sled-dogs-in-summer.html#cb55-15" tabindex="-1"></a><span class="cf">for</span> (c <span class="cf">in</span> unique_contrasts) {</span>
+<span id="cb55-16"><a href="greenlandic-sled-dogs-in-summer.html#cb55-16" tabindex="-1"></a>  locs <span class="ot">&lt;-</span> <span class="fu">str_split</span>(c, <span class="st">&quot; vs &quot;</span>, <span class="at">simplify =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb55-17"><a href="greenlandic-sled-dogs-in-summer.html#cb55-17" tabindex="-1"></a>  title <span class="ot">&lt;-</span> <span class="fu">paste</span>(locs[<span class="dv">2</span>], <span class="st">&quot; - &quot;</span>, locs[<span class="dv">1</span>])<span class="co">#&quot;Comparison:&quot;, </span></span>
+<span id="cb55-18"><a href="greenlandic-sled-dogs-in-summer.html#cb55-18" tabindex="-1"></a>  </span>
+<span id="cb55-19"><a href="greenlandic-sled-dogs-in-summer.html#cb55-19" tabindex="-1"></a>  subset_data <span class="ot">&lt;-</span> plot_data <span class="sc">%&gt;%</span></span>
+<span id="cb55-20"><a href="greenlandic-sled-dogs-in-summer.html#cb55-20" tabindex="-1"></a>    <span class="fu">filter</span>(contrast <span class="sc">==</span> c) <span class="sc">%&gt;%</span></span>
+<span id="cb55-21"><a href="greenlandic-sled-dogs-in-summer.html#cb55-21" tabindex="-1"></a>    <span class="fu">arrange</span>(direction, lfc) <span class="sc">%&gt;%</span></span>
+<span id="cb55-22"><a href="greenlandic-sled-dogs-in-summer.html#cb55-22" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">taxon_ordered =</span> <span class="fu">factor</span>(taxon, <span class="at">levels =</span> <span class="fu">unique</span>(taxon)))</span>
+<span id="cb55-23"><a href="greenlandic-sled-dogs-in-summer.html#cb55-23" tabindex="-1"></a>  </span>
+<span id="cb55-24"><a href="greenlandic-sled-dogs-in-summer.html#cb55-24" tabindex="-1"></a>  tax_color <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">unique</span>(subset_data<span class="sc">$</span>phylum)) <span class="sc">%&gt;%</span></span>
+<span id="cb55-25"><a href="greenlandic-sled-dogs-in-summer.html#cb55-25" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">phylum =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb55-26"><a href="greenlandic-sled-dogs-in-summer.html#cb55-26" tabindex="-1"></a>    <span class="fu">left_join</span>(., colors_alphabetic, <span class="at">by =</span> <span class="st">&quot;phylum&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb55-27"><a href="greenlandic-sled-dogs-in-summer.html#cb55-27" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(phylum) <span class="sc">%&gt;%</span></span>
+<span id="cb55-28"><a href="greenlandic-sled-dogs-in-summer.html#cb55-28" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(colors) <span class="sc">%&gt;%</span></span>
+<span id="cb55-29"><a href="greenlandic-sled-dogs-in-summer.html#cb55-29" tabindex="-1"></a>    <span class="fu">pull</span>()</span>
+<span id="cb55-30"><a href="greenlandic-sled-dogs-in-summer.html#cb55-30" tabindex="-1"></a>  </span>
+<span id="cb55-31"><a href="greenlandic-sled-dogs-in-summer.html#cb55-31" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(subset_data, <span class="fu">aes</span>(<span class="at">x =</span> taxon_ordered, <span class="at">y =</span> lfc, <span class="at">fill =</span> phylum)) <span class="sc">+</span></span>
+<span id="cb55-32"><a href="greenlandic-sled-dogs-in-summer.html#cb55-32" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="sc">+</span></span>
+<span id="cb55-33"><a href="greenlandic-sled-dogs-in-summer.html#cb55-33" tabindex="-1"></a>    <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb55-34"><a href="greenlandic-sled-dogs-in-summer.html#cb55-34" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb55-35"><a href="greenlandic-sled-dogs-in-summer.html#cb55-35" tabindex="-1"></a>      <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb55-36"><a href="greenlandic-sled-dogs-in-summer.html#cb55-36" tabindex="-1"></a>      <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">colour =</span> <span class="st">&quot;black&quot;</span>),</span>
+<span id="cb55-37"><a href="greenlandic-sled-dogs-in-summer.html#cb55-37" tabindex="-1"></a>      <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb55-38"><a href="greenlandic-sled-dogs-in-summer.html#cb55-38" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>),</span>
+<span id="cb55-39"><a href="greenlandic-sled-dogs-in-summer.html#cb55-39" tabindex="-1"></a>      <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb55-40"><a href="greenlandic-sled-dogs-in-summer.html#cb55-40" tabindex="-1"></a>      <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb55-41"><a href="greenlandic-sled-dogs-in-summer.html#cb55-41" tabindex="-1"></a>      <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb55-42"><a href="greenlandic-sled-dogs-in-summer.html#cb55-42" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">&quot;right&quot;</span>,</span>
+<span id="cb55-43"><a href="greenlandic-sled-dogs-in-summer.html#cb55-43" tabindex="-1"></a>      <span class="at">legend.box =</span> <span class="st">&quot;vertical&quot;</span>,</span>
+<span id="cb55-44"><a href="greenlandic-sled-dogs-in-summer.html#cb55-44" tabindex="-1"></a>      <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb55-45"><a href="greenlandic-sled-dogs-in-summer.html#cb55-45" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb55-46"><a href="greenlandic-sled-dogs-in-summer.html#cb55-46" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> tax_color) <span class="sc">+</span></span>
+<span id="cb55-47"><a href="greenlandic-sled-dogs-in-summer.html#cb55-47" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb55-48"><a href="greenlandic-sled-dogs-in-summer.html#cb55-48" tabindex="-1"></a>      <span class="at">title =</span> title,</span>
+<span id="cb55-49"><a href="greenlandic-sled-dogs-in-summer.html#cb55-49" tabindex="-1"></a>      <span class="co">#paste(&quot;Enriched Taxa:&quot;, c)</span></span>
+<span id="cb55-50"><a href="greenlandic-sled-dogs-in-summer.html#cb55-50" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">&quot;Taxa&quot;</span>,</span>
+<span id="cb55-51"><a href="greenlandic-sled-dogs-in-summer.html#cb55-51" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">&quot;Log-Fold Change&quot;</span>,</span>
+<span id="cb55-52"><a href="greenlandic-sled-dogs-in-summer.html#cb55-52" tabindex="-1"></a>      <span class="at">fill =</span> <span class="st">&quot;Phylum&quot;</span></span>
+<span id="cb55-53"><a href="greenlandic-sled-dogs-in-summer.html#cb55-53" tabindex="-1"></a>    )</span>
+<span id="cb55-54"><a href="greenlandic-sled-dogs-in-summer.html#cb55-54" tabindex="-1"></a>  </span>
+<span id="cb55-55"><a href="greenlandic-sled-dogs-in-summer.html#cb55-55" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="fu">paste0</span>(<span class="st">&quot;Fig_&quot;</span>, <span class="fu">gsub</span>(<span class="st">&quot; &quot;</span>, <span class="st">&quot;_&quot;</span>, c), <span class="st">&quot;.png&quot;</span>), <span class="at">plot =</span> p, <span class="at">width =</span> <span class="dv">10</span>, <span class="at">height =</span> <span class="dv">25</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span>
+<span id="cb55-56"><a href="greenlandic-sled-dogs-in-summer.html#cb55-56" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="amr-and-vf.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="top-10.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>

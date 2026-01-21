@@ -5,7 +5,7 @@ load("data/data.Rdata")
 ```
 
 ## filter samples with high host data
-```{r load_data_host_filt, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r load_data_host_filt_host, comment="", message=FALSE, warning=FALSE, eval=FALSE}
 sample_metadata <- sample_metadata%>%
   filter(!sample %in% c("EHI02721", "EHI02712", "EHI02700", "EHI02720", "EHI02749", "EHI02719", "EHI02729", "EHI02715", "EHI02722"))
 
