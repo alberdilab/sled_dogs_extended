@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Prepare data | AlberdiLab | Aizpurua et al. 2025</title>
+  <meta name="description" content="Data analysis code for the study on the study of gut microbiomes of sled dogs and beyond." />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Prepare data | AlberdiLab | Aizpurua et al. 2025" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Data analysis code for the study on the study of gut microbiomes of sled dogs and beyond." />
+  <meta name="github-repo" content="alberdilab/sled_dogs_extended" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Prepare data | AlberdiLab | Aizpurua et al. 2025" />
+  
+  <meta name="twitter:description" content="Data analysis code for the study on the study of gut microbiomes of sled dogs and beyond." />
+  
+
+<meta name="author" content="Ostaizka Aizpurua" />
+<meta name="author" content="Antton Alberdi" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="data-statistics.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#prepare-the-r-environment"><i class="fa fa-check"></i><b>1.1</b> Prepare the R environment</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#environment"><i class="fa fa-check"></i><b>1.1.1</b> Environment</a></li>
+<li class="chapter" data-level="1.1.2" data-path="index.html"><a href="index.html#libraries"><i class="fa fa-check"></i><b>1.1.2</b> Libraries</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="prepare-data.html"><a href="prepare-data.html"><i class="fa fa-check"></i><b>2</b> Prepare data</a>
+<ul>
+<li class="chapter" data-level="2.0.1" data-path="prepare-data.html"><a href="prepare-data.html#reads"><i class="fa fa-check"></i><b>2.0.1</b> Reads</a></li>
+<li class="chapter" data-level="2.0.2" data-path="prepare-data.html"><a href="prepare-data.html#sample-metadata"><i class="fa fa-check"></i><b>2.0.2</b> Sample metadata</a></li>
+<li class="chapter" data-level="2.0.3" data-path="prepare-data.html"><a href="prepare-data.html#filter-read-counts"><i class="fa fa-check"></i><b>2.0.3</b> Filter read counts</a></li>
+<li class="chapter" data-level="2.0.4" data-path="prepare-data.html"><a href="prepare-data.html#genome-taxonomy"><i class="fa fa-check"></i><b>2.0.4</b> Genome taxonomy</a></li>
+<li class="chapter" data-level="2.0.5" data-path="prepare-data.html"><a href="prepare-data.html#genome-base-hits"><i class="fa fa-check"></i><b>2.0.5</b> Genome base hits</a></li>
+<li class="chapter" data-level="2.0.6" data-path="prepare-data.html"><a href="prepare-data.html#genome-tree"><i class="fa fa-check"></i><b>2.0.6</b> Genome tree</a></li>
+<li class="chapter" data-level="2.0.7" data-path="prepare-data.html"><a href="prepare-data.html#genome-annotations"><i class="fa fa-check"></i><b>2.0.7</b> Genome annotations</a></li>
+<li class="chapter" data-level="2.1" data-path="prepare-data.html"><a href="prepare-data.html#create-working-objects"><i class="fa fa-check"></i><b>2.1</b> Create working objects</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="prepare-data.html"><a href="prepare-data.html#filter-reads-by-coverage"><i class="fa fa-check"></i><b>2.1.1</b> Filter reads by coverage</a></li>
+<li class="chapter" data-level="2.1.2" data-path="prepare-data.html"><a href="prepare-data.html#transform-reads-into-genome-counts"><i class="fa fa-check"></i><b>2.1.2</b> Transform reads into genome counts</a></li>
+<li class="chapter" data-level="2.1.3" data-path="prepare-data.html"><a href="prepare-data.html#distill-annotations-into-gifts"><i class="fa fa-check"></i><b>2.1.3</b> Distill annotations into GIFTs</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="prepare-data.html"><a href="prepare-data.html#prepare-color-scheme"><i class="fa fa-check"></i><b>2.2</b> Prepare color scheme</a></li>
+<li class="chapter" data-level="2.3" data-path="prepare-data.html"><a href="prepare-data.html#wrap-working-objects"><i class="fa fa-check"></i><b>2.3</b> Wrap working objects</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-statistics.html"><a href="data-statistics.html"><i class="fa fa-check"></i><b>3</b> Data statistics</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="data-statistics.html"><a href="data-statistics.html#sample-overview"><i class="fa fa-check"></i><b>3.1</b> Sample overview</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="mag-catalogue.html"><a href="mag-catalogue.html"><i class="fa fa-check"></i><b>4</b> MAG catalogue</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="mag-catalogue.html"><a href="mag-catalogue.html#genome-phylogeny"><i class="fa fa-check"></i><b>4.1</b> Genome phylogeny</a></li>
+<li class="chapter" data-level="4.2" data-path="mag-catalogue.html"><a href="mag-catalogue.html#taxonomy-overview"><i class="fa fa-check"></i><b>4.2</b> Taxonomy overview</a></li>
+<li class="chapter" data-level="4.3" data-path="mag-catalogue.html"><a href="mag-catalogue.html#genome-quality"><i class="fa fa-check"></i><b>4.3</b> Genome quality</a></li>
+<li class="chapter" data-level="4.4" data-path="mag-catalogue.html"><a href="mag-catalogue.html#functional-overview"><i class="fa fa-check"></i><b>4.4</b> Functional overview</a></li>
+<li class="chapter" data-level="4.5" data-path="mag-catalogue.html"><a href="mag-catalogue.html#functional-ordination"><i class="fa fa-check"></i><b>4.5</b> Functional ordination</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="community-composition.html"><a href="community-composition.html"><i class="fa fa-check"></i><b>5</b> Community composition</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="community-composition.html"><a href="community-composition.html#filter-data"><i class="fa fa-check"></i><b>5.1</b> Filter data</a></li>
+<li class="chapter" data-level="5.2" data-path="community-composition.html"><a href="community-composition.html#taxonomy-overview-1"><i class="fa fa-check"></i><b>5.2</b> Taxonomy overview</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="community-composition.html"><a href="community-composition.html#stacked-barplot"><i class="fa fa-check"></i><b>5.2.1</b> Stacked barplot</a></li>
+<li class="chapter" data-level="5.2.2" data-path="community-composition.html"><a href="community-composition.html#genus-and-species-annotation"><i class="fa fa-check"></i><b>5.2.2</b> Genus and species annotation</a></li>
+<li class="chapter" data-level="5.2.3" data-path="community-composition.html"><a href="community-composition.html#phylum-relative-abundances"><i class="fa fa-check"></i><b>5.2.3</b> Phylum relative abundances</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="alpha-diversity.html"><a href="alpha-diversity.html"><i class="fa fa-check"></i><b>6</b> Alpha diversity</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="alpha-diversity.html"><a href="alpha-diversity.html#countries"><i class="fa fa-check"></i><b>6.1</b> Countries</a></li>
+<li class="chapter" data-level="6.2" data-path="alpha-diversity.html"><a href="alpha-diversity.html#dog-group"><i class="fa fa-check"></i><b>6.2</b> Dog group</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="beta-diversity.html"><a href="beta-diversity.html"><i class="fa fa-check"></i><b>7</b> Beta diversity</a>
+<ul>
+<li class="chapter" data-level="7.0.1" data-path="beta-diversity.html"><a href="beta-diversity.html#permanova-analysis"><i class="fa fa-check"></i><b>7.0.1</b> Permanova analysis</a></li>
+<li class="chapter" data-level="7.0.2" data-path="beta-diversity.html"><a href="beta-diversity.html#plots"><i class="fa fa-check"></i><b>7.0.2</b> Plots</a></li>
+<li class="chapter" data-level="7.1" data-path="beta-diversity.html"><a href="beta-diversity.html#phylum"><i class="fa fa-check"></i><b>7.1</b> Phylum</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="beta-diversity.html"><a href="beta-diversity.html#domestic-vs-sled_dog"><i class="fa fa-check"></i><b>7.1.1</b> Domestic vs sled_dog</a></li>
+<li class="chapter" data-level="7.1.2" data-path="beta-diversity.html"><a href="beta-diversity.html#sled_dog-vs-wolves"><i class="fa fa-check"></i><b>7.1.2</b> Sled_dog vs wolves</a></li>
+<li class="chapter" data-level="7.1.3" data-path="beta-diversity.html"><a href="beta-diversity.html#plots-1"><i class="fa fa-check"></i><b>7.1.3</b> Plots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html"><i class="fa fa-check"></i><b>8</b> Sled dogs vs domestic dogs vs wolves</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#mag-level"><i class="fa fa-check"></i><b>8.1</b> MAG level</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#domestic_vs_sled_dog"><i class="fa fa-check"></i><b>8.1.1</b> domestic_vs_sled_dog</a></li>
+<li class="chapter" data-level="8.1.2" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#sled_dog-vs-wolves-1"><i class="fa fa-check"></i><b>8.1.2</b> sled_dog vs wolves</a></li>
+<li class="chapter" data-level="8.1.3" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#plots-2"><i class="fa fa-check"></i><b>8.1.3</b> Plots</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#species-level"><i class="fa fa-check"></i><b>8.2</b> Species level</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#domestic_vs_sled_dog-1"><i class="fa fa-check"></i><b>8.2.1</b> domestic_vs_sled_dog</a></li>
+<li class="chapter" data-level="8.2.2" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#sled_dog-vs-wolves-2"><i class="fa fa-check"></i><b>8.2.2</b> sled_dog vs wolves</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#phylum-1"><i class="fa fa-check"></i><b>8.3</b> Phylum</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#domestic_vs_sled_dog-2"><i class="fa fa-check"></i><b>8.3.1</b> domestic_vs_sled_dog</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#functional-differences"><i class="fa fa-check"></i><b>8.4</b> Functional differences</a></li>
+<li class="chapter" data-level="8.5" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#mci"><i class="fa fa-check"></i><b>8.5</b> MCI</a></li>
+<li class="chapter" data-level="8.6" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#type"><i class="fa fa-check"></i><b>8.6</b> Type</a></li>
+<li class="chapter" data-level="8.7" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#community-elements-differences"><i class="fa fa-check"></i><b>8.7</b> Community elements differences:</a></li>
+<li class="chapter" data-level="8.8" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#community-function-differences"><i class="fa fa-check"></i><b>8.8</b> Community function differences:</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="amr-and-vf.html"><a href="amr-and-vf.html"><i class="fa fa-check"></i><b>9</b> AMR and VF</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="amr-and-vf.html"><a href="amr-and-vf.html#genome-size"><i class="fa fa-check"></i><b>9.1</b> Genome size</a></li>
+<li class="chapter" data-level="9.2" data-path="amr-and-vf.html"><a href="amr-and-vf.html#amr"><i class="fa fa-check"></i><b>9.2</b> AMR</a></li>
+<li class="chapter" data-level="9.3" data-path="amr-and-vf.html"><a href="amr-and-vf.html#virulence-factors"><i class="fa fa-check"></i><b>9.3</b> Virulence factors</a></li>
+<li class="chapter" data-level="9.4" data-path="amr-and-vf.html"><a href="amr-and-vf.html#size-function-correlations"><i class="fa fa-check"></i><b>9.4</b> Size-function correlations</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html"><i class="fa fa-check"></i><b>10</b> Sled dogs: differences across localities</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#taxonomy"><i class="fa fa-check"></i><b>10.1</b> Taxonomy</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#phylum-relative-abundances-1"><i class="fa fa-check"></i><b>10.1.1</b> Phylum relative abundances</a></li>
+<li class="chapter" data-level="10.1.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#upset-shared-mags"><i class="fa fa-check"></i><b>10.1.2</b> Upset: shared MAGs</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#alpha-diversity-1"><i class="fa fa-check"></i><b>10.2</b> Alpha diversity</a></li>
+<li class="chapter" data-level="10.3" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#beta-diversity-1"><i class="fa fa-check"></i><b>10.3</b> Beta diversity</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#richness-1"><i class="fa fa-check"></i><b>10.3.1</b> Richness</a></li>
+<li class="chapter" data-level="10.3.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#neutral-1"><i class="fa fa-check"></i><b>10.3.2</b> Neutral</a></li>
+<li class="chapter" data-level="10.3.3" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#phylogenetic-1"><i class="fa fa-check"></i><b>10.3.3</b> Phylogenetic</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#is-there-any-location-closer-to-domestic-dogs"><i class="fa fa-check"></i><b>10.4</b> Is there any location closer to domestic dogs?</a></li>
+<li class="chapter" data-level="10.5" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#differential-abundance"><i class="fa fa-check"></i><b>10.5</b> Differential abundance</a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#differences-across-localities"><i class="fa fa-check"></i><b>10.5.1</b> Differences across localities</a></li>
+<li class="chapter" data-level="10.5.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#differences-between-military-and-civilian-owned-dogs"><i class="fa fa-check"></i><b>10.5.2</b> Differences between military and civilian-owned dogs</a></li>
+<li class="chapter" data-level="10.5.3" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#species-level-1"><i class="fa fa-check"></i><b>10.5.3</b> Species level</a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#functional-differences-1"><i class="fa fa-check"></i><b>10.6</b> Functional differences</a>
+<ul>
+<li class="chapter" data-level="10.6.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#different-localities-in-greenland"><i class="fa fa-check"></i><b>10.6.1</b> Different localities in Greenland</a></li>
+<li class="chapter" data-level="10.6.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#military-vs-civilian-owned-dogs"><i class="fa fa-check"></i><b>10.6.2</b> Military vs civilian-owned dogs</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html"><i class="fa fa-check"></i><b>11</b> Seasonal differences in eastern Greenland</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#taxonomy-1"><i class="fa fa-check"></i><b>11.1</b> Taxonomy</a>
+<ul>
+<li class="chapter" data-level="11.1.1" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#phylum-relative-abundances-2"><i class="fa fa-check"></i><b>11.1.1</b> Phylum relative abundances</a></li>
+<li class="chapter" data-level="11.1.2" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#differences-in-phylum-ancombc"><i class="fa fa-check"></i><b>11.1.2</b> Differences in phylum (ancombc)</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#alpha-diversity-2"><i class="fa fa-check"></i><b>11.2</b> Alpha diversity</a></li>
+<li class="chapter" data-level="11.3" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#beta-diversity-2"><i class="fa fa-check"></i><b>11.3</b> Beta diversity</a></li>
+<li class="chapter" data-level="11.4" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#differences-in-mag-abundances-ancombc2"><i class="fa fa-check"></i><b>11.4</b> Differences in MAG abundances: Ancombc2</a></li>
+<li class="chapter" data-level="11.5" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#functional-differences-2"><i class="fa fa-check"></i><b>11.5</b> Functional differences</a></li>
+<li class="chapter" data-level="11.6" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#groups-mci"><i class="fa fa-check"></i><b>11.6</b> Groups MCI</a>
+<ul>
+<li class="chapter" data-level="11.6.1" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#community-elements-differences-1"><i class="fa fa-check"></i><b>11.6.1</b> Community elements differences:</a></li>
+</ul></li>
+<li class="chapter" data-level="11.7" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#taxonomy-overview-2"><i class="fa fa-check"></i><b>11.7</b> Taxonomy overview</a>
+<ul>
+<li class="chapter" data-level="11.7.1" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#phylum-relative-abundances-3"><i class="fa fa-check"></i><b>11.7.1</b> Phylum relative abundances</a></li>
+</ul></li>
+<li class="chapter" data-level="11.8" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#alpha-diversity-3"><i class="fa fa-check"></i><b>11.8</b> Alpha diversity</a></li>
+<li class="chapter" data-level="11.9" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#beta-diversity-3"><i class="fa fa-check"></i><b>11.9</b> Beta diversity</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="temporal-divergence.html"><a href="temporal-divergence.html"><i class="fa fa-check"></i><b>12</b> temporal divergence</a></li>
+<li class="chapter" data-level="13" data-path="do-animals-respond-differently-over-time.html"><a href="do-animals-respond-differently-over-time.html"><i class="fa fa-check"></i><b>13</b> do animals respond differently over time?</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">AlberdiLab | Aizpurua et al. 2025</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="prepare-data" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Prepare data<a href="prepare-data.html#prepare-data" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Load the original data files outputted by the bioinformatic pipeline.</p>
+<div id="reads" class="section level3 hasAnchor" number="2.0.1">
+<h3><span class="header-section-number">2.0.1</span> Reads<a href="prepare-data.html#reads" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb3-1"><a href="prepare-data.html#cb3-1" tabindex="-1"></a>read_counts <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;data/counts.tsv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="prepare-data.html#cb3-2" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">genome=</span><span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-3"><a href="prepare-data.html#cb3-3" tabindex="-1"></a>    <span class="fu">rename_with</span>(<span class="sc">~</span> <span class="fu">str_remove</span>(.x, <span class="st">&quot;_EKDL.*&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-4"><a href="prepare-data.html#cb3-4" tabindex="-1"></a>    <span class="fu">rename_with</span>(<span class="sc">~</span> <span class="fu">str_remove</span>(.x, <span class="st">&quot;_M$&quot;</span>))</span></code></pre></div>
+</div>
+<div id="sample-metadata" class="section level3 hasAnchor" number="2.0.2">
+<h3><span class="header-section-number">2.0.2</span> Sample metadata<a href="prepare-data.html#sample-metadata" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb4-1"><a href="prepare-data.html#cb4-1" tabindex="-1"></a>sample_metadata <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/sample_metadata.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="prepare-data.html#cb4-2" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata_illu[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">9</span>)], <span class="at">by=</span><span class="fu">join_by</span>(<span class="st">&quot;sample&quot;</span><span class="sc">==</span><span class="st">&quot;DogID&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-3"><a href="prepare-data.html#cb4-3" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>Samples <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Blank&quot;</span>, <span class="st">&quot;Saliva&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-4"><a href="prepare-data.html#cb4-4" tabindex="-1"></a>  <span class="fu">select</span>(sample, breed, origin, country, locality)</span>
+<span id="cb4-5"><a href="prepare-data.html#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="prepare-data.html#cb4-6" tabindex="-1"></a>metadata_new1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/PRJEB85799.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-7"><a href="prepare-data.html#cb4-7" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">country=</span>notes) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-8"><a href="prepare-data.html#cb4-8" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">sample=</span>name)</span>
+<span id="cb4-9"><a href="prepare-data.html#cb4-9" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="prepare-data.html#cb4-10" tabindex="-1"></a>sample_metadata <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/meta_new.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-11"><a href="prepare-data.html#cb4-11" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="st">&quot;Research agreement&quot;</span>,<span class="sc">-</span><span class="st">&quot;Owner age range&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-12"><a href="prepare-data.html#cb4-12" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">breed=</span>Breed) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-13"><a href="prepare-data.html#cb4-13" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">origin=</span><span class="st">&quot;Origin of the dog&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-14"><a href="prepare-data.html#cb4-14" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">locality=</span>District) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-15"><a href="prepare-data.html#cb4-15" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">sample=</span>Code)<span class="sc">%&gt;%</span> </span>
+<span id="cb4-16"><a href="prepare-data.html#cb4-16" tabindex="-1"></a>  <span class="fu">left_join</span>(., metadata_new1[<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">4</span>)], <span class="at">by=</span><span class="st">&quot;sample&quot;</span>)<span class="sc">%&gt;%</span> </span>
+<span id="cb4-17"><a href="prepare-data.html#cb4-17" tabindex="-1"></a>  <span class="fu">select</span>(sample, breed, origin, country, locality) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-18"><a href="prepare-data.html#cb4-18" tabindex="-1"></a>  <span class="fu">bind_rows</span>(sample_metadata)</span></code></pre></div>
+</div>
+<div id="filter-read-counts" class="section level3 hasAnchor" number="2.0.3">
+<h3><span class="header-section-number">2.0.3</span> Filter read counts<a href="prepare-data.html#filter-read-counts" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb5-1"><a href="prepare-data.html#cb5-1" tabindex="-1"></a>read_counts <span class="ot">&lt;-</span> read_counts <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="prepare-data.html#cb5-2" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">one_of</span>(<span class="fu">c</span>(<span class="st">&quot;genome&quot;</span>,sample_metadata<span class="sc">$</span>sample))) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="prepare-data.html#cb5-3" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">rowSums</span>(. <span class="sc">!=</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="prepare-data.html#cb5-4" tabindex="-1"></a>  <span class="fu">select_if</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>)) </span></code></pre></div>
+</div>
+<div id="genome-taxonomy" class="section level3 hasAnchor" number="2.0.4">
+<h3><span class="header-section-number">2.0.4</span> Genome taxonomy<a href="prepare-data.html#genome-taxonomy" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb6-1"><a href="prepare-data.html#cb6-1" tabindex="-1"></a>genome_taxonomy <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;data/genome_taxonomy.tsv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="prepare-data.html#cb6-2" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">genome =</span> user_genome) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="prepare-data.html#cb6-3" tabindex="-1"></a>  <span class="fu">separate</span>(</span>
+<span id="cb6-4"><a href="prepare-data.html#cb6-4" tabindex="-1"></a>    classification,</span>
+<span id="cb6-5"><a href="prepare-data.html#cb6-5" tabindex="-1"></a>    <span class="at">into  =</span> <span class="fu">c</span>(<span class="st">&quot;domain&quot;</span>, <span class="st">&quot;phylum&quot;</span>, <span class="st">&quot;class&quot;</span>, <span class="st">&quot;order&quot;</span>, <span class="st">&quot;family&quot;</span>, <span class="st">&quot;genus&quot;</span>,<span class="st">&quot;species&quot;</span>),</span>
+<span id="cb6-6"><a href="prepare-data.html#cb6-6" tabindex="-1"></a>    <span class="at">sep   =</span> <span class="st">&quot;;&quot;</span>,          <span class="co"># split on the semicolons</span></span>
+<span id="cb6-7"><a href="prepare-data.html#cb6-7" tabindex="-1"></a>    <span class="at">fill  =</span> <span class="st">&quot;right&quot;</span>,      <span class="co"># if a rank is missing, keep NA on the right</span></span>
+<span id="cb6-8"><a href="prepare-data.html#cb6-8" tabindex="-1"></a>    <span class="at">remove =</span> <span class="cn">TRUE</span></span>
+<span id="cb6-9"><a href="prepare-data.html#cb6-9" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-10"><a href="prepare-data.html#cb6-10" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(domain<span class="sc">:</span>species, <span class="sc">~</span> <span class="fu">str_remove</span>(., <span class="st">&quot;^[a-z]__&quot;</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-11"><a href="prepare-data.html#cb6-11" tabindex="-1"></a>  <span class="fu">select</span>(genome,domain,phylum,class,order,family,genus,species) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-12"><a href="prepare-data.html#cb6-12" tabindex="-1"></a>  <span class="fu">filter</span>(genome <span class="sc">%in%</span> read_counts<span class="sc">$</span>genome)</span>
+<span id="cb6-13"><a href="prepare-data.html#cb6-13" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="prepare-data.html#cb6-14" tabindex="-1"></a>genome_features <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;data/quality_report.tsv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-15"><a href="prepare-data.html#cb6-15" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">genome=</span><span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-16"><a href="prepare-data.html#cb6-16" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">length=</span>Genome_Size) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-17"><a href="prepare-data.html#cb6-17" tabindex="-1"></a>  <span class="fu">filter</span>(genome <span class="sc">%in%</span> read_counts<span class="sc">$</span>genome)</span>
+<span id="cb6-18"><a href="prepare-data.html#cb6-18" tabindex="-1"></a>  </span>
+<span id="cb6-19"><a href="prepare-data.html#cb6-19" tabindex="-1"></a>genome_metadata <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(genome_taxonomy,genome_features, <span class="at">by=</span><span class="st">&quot;genome&quot;</span>)</span></code></pre></div>
+</div>
+<div id="genome-base-hits" class="section level3 hasAnchor" number="2.0.5">
+<h3><span class="header-section-number">2.0.5</span> Genome base hits<a href="prepare-data.html#genome-base-hits" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb7-1"><a href="prepare-data.html#cb7-1" tabindex="-1"></a>genome_coverage <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;data/bases.tsv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="prepare-data.html#cb7-2" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">genome =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="prepare-data.html#cb7-3" tabindex="-1"></a>  <span class="fu">rename_with</span>( <span class="sc">~</span> <span class="fu">str_remove</span>(.x, <span class="st">&quot;_EKDL.*&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="prepare-data.html#cb7-4" tabindex="-1"></a>  <span class="fu">rename_with</span>( <span class="sc">~</span> <span class="fu">str_remove</span>(.x, <span class="st">&quot;_M$&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="prepare-data.html#cb7-5" tabindex="-1"></a>  <span class="fu">filter</span>(genome <span class="sc">%in%</span> read_counts<span class="sc">$</span>genome) <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="prepare-data.html#cb7-6" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">one_of</span>(<span class="fu">c</span>(<span class="st">&quot;genome&quot;</span>,sample_metadata<span class="sc">$</span>sample))) </span></code></pre></div>
+</div>
+<div id="genome-tree" class="section level3 hasAnchor" number="2.0.6">
+<h3><span class="header-section-number">2.0.6</span> Genome tree<a href="prepare-data.html#genome-tree" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb8-1"><a href="prepare-data.html#cb8-1" tabindex="-1"></a>genome_tree <span class="ot">&lt;-</span> <span class="fu">read_tree</span>(<span class="st">&quot;data/gtdbtk.backbone.bac120.classify.tree&quot;</span>)</span>
+<span id="cb8-2"><a href="prepare-data.html#cb8-2" tabindex="-1"></a>genome_tree<span class="sc">$</span>tip.label <span class="ot">&lt;-</span> <span class="fu">str_replace_all</span>(genome_tree<span class="sc">$</span>tip.label,<span class="st">&quot;&#39;&quot;</span>, <span class="st">&quot;&quot;</span>)</span>
+<span id="cb8-3"><a href="prepare-data.html#cb8-3" tabindex="-1"></a>genome_tree <span class="ot">&lt;-</span> <span class="fu">keep.tip</span>(genome_tree, <span class="at">tip=</span>genome_metadata<span class="sc">$</span>genome) </span></code></pre></div>
+</div>
+<div id="genome-annotations" class="section level3 hasAnchor" number="2.0.7">
+<h3><span class="header-section-number">2.0.7</span> Genome annotations<a href="prepare-data.html#genome-annotations" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb9-1"><a href="prepare-data.html#cb9-1" tabindex="-1"></a>genome_annotations <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;data/gene_annotations.tsv.xz&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="prepare-data.html#cb9-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">genome =</span> <span class="fu">str_extract</span>(gene, <span class="st">&quot;^[^^]+&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="prepare-data.html#cb9-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ec =</span> <span class="fu">str_c</span>(<span class="st">&quot;[EC:&quot;</span>,ec,<span class="st">&quot;]&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-4"><a href="prepare-data.html#cb9-4" tabindex="-1"></a>  <span class="fu">select</span>(genome, <span class="fu">everything</span>())</span></code></pre></div>
+</div>
+<div id="create-working-objects" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Create working objects<a href="prepare-data.html#create-working-objects" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Transform the original data files into working objects for downstream analyses.</p>
+<div id="filter-reads-by-coverage" class="section level3 hasAnchor" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> Filter reads by coverage<a href="prepare-data.html#filter-reads-by-coverage" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb10-1"><a href="prepare-data.html#cb10-1" tabindex="-1"></a><span class="co"># Keep only genomes and samples present in both datasets</span></span>
+<span id="cb10-2"><a href="prepare-data.html#cb10-2" tabindex="-1"></a>common_genomes <span class="ot">&lt;-</span> <span class="fu">intersect</span>(read_counts<span class="sc">$</span>genome, genome_coverage<span class="sc">$</span>genome)</span>
+<span id="cb10-3"><a href="prepare-data.html#cb10-3" tabindex="-1"></a>common_samples <span class="ot">&lt;-</span> <span class="fu">intersect</span>(<span class="fu">colnames</span>(read_counts)[<span class="sc">-</span><span class="dv">1</span>], <span class="fu">colnames</span>(genome_coverage)[<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb10-4"><a href="prepare-data.html#cb10-4" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="prepare-data.html#cb10-5" tabindex="-1"></a>read_counts <span class="ot">&lt;-</span> read_counts <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="prepare-data.html#cb10-6" tabindex="-1"></a>  <span class="fu">filter</span>(genome <span class="sc">%in%</span> common_genomes) <span class="sc">%&gt;%</span></span>
+<span id="cb10-7"><a href="prepare-data.html#cb10-7" tabindex="-1"></a>  <span class="fu">select</span>(genome, <span class="fu">all_of</span>(common_samples)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-8"><a href="prepare-data.html#cb10-8" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">match</span>(genome, common_genomes))</span>
+<span id="cb10-9"><a href="prepare-data.html#cb10-9" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="prepare-data.html#cb10-10" tabindex="-1"></a>genome_coverage <span class="ot">&lt;-</span> genome_coverage <span class="sc">%&gt;%</span></span>
+<span id="cb10-11"><a href="prepare-data.html#cb10-11" tabindex="-1"></a>  <span class="fu">filter</span>(genome <span class="sc">%in%</span> common_genomes) <span class="sc">%&gt;%</span></span>
+<span id="cb10-12"><a href="prepare-data.html#cb10-12" tabindex="-1"></a>  <span class="fu">select</span>(genome, <span class="fu">all_of</span>(common_samples)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-13"><a href="prepare-data.html#cb10-13" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">match</span>(genome, common_genomes))</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb11-1"><a href="prepare-data.html#cb11-1" tabindex="-1"></a>min_coverage<span class="ot">=</span><span class="fl">0.3</span></span>
+<span id="cb11-2"><a href="prepare-data.html#cb11-2" tabindex="-1"></a><span class="co"># read_counts_filt &lt;- genome_coverage %&gt;%</span></span>
+<span id="cb11-3"><a href="prepare-data.html#cb11-3" tabindex="-1"></a><span class="co">#   mutate(across(where(is.numeric), ~ ifelse(. &gt; min_coverage, 1, 0))) %&gt;%</span></span>
+<span id="cb11-4"><a href="prepare-data.html#cb11-4" tabindex="-1"></a><span class="co">#   mutate(across(-1, ~ . * read_counts[[cur_column()]]))</span></span>
+<span id="cb11-5"><a href="prepare-data.html#cb11-5" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="prepare-data.html#cb11-6" tabindex="-1"></a>read_counts_filt <span class="ot">&lt;-</span> read_counts <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a href="prepare-data.html#cb11-7" tabindex="-1"></a>  <span class="co"># keep genome column separate</span></span>
+<span id="cb11-8"><a href="prepare-data.html#cb11-8" tabindex="-1"></a>  <span class="fu">select</span>(genome) <span class="sc">%&gt;%</span></span>
+<span id="cb11-9"><a href="prepare-data.html#cb11-9" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb11-10"><a href="prepare-data.html#cb11-10" tabindex="-1"></a>    genome_coverage <span class="sc">%&gt;%</span></span>
+<span id="cb11-11"><a href="prepare-data.html#cb11-11" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>genome) <span class="sc">%&gt;%</span>               <span class="co"># drop genome column</span></span>
+<span id="cb11-12"><a href="prepare-data.html#cb11-12" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">as.numeric</span>(. <span class="sc">&gt;</span> min_coverage))) <span class="sc">%&gt;%</span>  <span class="co"># 0/1 coverage</span></span>
+<span id="cb11-13"><a href="prepare-data.html#cb11-13" tabindex="-1"></a>      <span class="fu">map2_df</span>(<span class="at">.x =</span> ., <span class="at">.y =</span> read_counts <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>genome), <span class="sc">~</span> .x <span class="sc">*</span> .y)   <span class="co"># multiply by read counts</span></span>
+<span id="cb11-14"><a href="prepare-data.html#cb11-14" tabindex="-1"></a>  )</span></code></pre></div>
+</div>
+<div id="transform-reads-into-genome-counts" class="section level3 hasAnchor" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> Transform reads into genome counts<a href="prepare-data.html#transform-reads-into-genome-counts" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb12-1"><a href="prepare-data.html#cb12-1" tabindex="-1"></a>readlength<span class="ot">=</span><span class="dv">150</span></span>
+<span id="cb12-2"><a href="prepare-data.html#cb12-2" tabindex="-1"></a>genome_counts_filt <span class="ot">&lt;-</span> read_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="prepare-data.html#cb12-3" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="fu">match</span>(genome_metadata<span class="sc">$</span>genome, genome)) <span class="sc">%&gt;%</span>  <span class="co"># reorder rows to match genome_metadata</span></span>
+<span id="cb12-4"><a href="prepare-data.html#cb12-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> . <span class="sc">/</span> (genome_metadata<span class="sc">$</span>length <span class="sc">/</span> readlength)))</span></code></pre></div>
+</div>
+<div id="distill-annotations-into-gifts" class="section level3 hasAnchor" number="2.1.3">
+<h3><span class="header-section-number">2.1.3</span> Distill annotations into GIFTs<a href="prepare-data.html#distill-annotations-into-gifts" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb13-1"><a href="prepare-data.html#cb13-1" tabindex="-1"></a>genome_gifts <span class="ot">&lt;-</span> <span class="fu">distill</span>(genome_annotations,GIFT_db,<span class="at">genomecol=</span><span class="dv">1</span>,<span class="at">annotcol=</span><span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">8</span>,<span class="dv">9</span>), <span class="at">verbosity=</span><span class="cn">TRUE</span>)</span>
+<span id="cb13-2"><a href="prepare-data.html#cb13-2" tabindex="-1"></a>genome_gifts <span class="ot">&lt;-</span> genome_gifts[, <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">&quot;^S&quot;</span>, <span class="fu">colnames</span>(genome_gifts))]</span></code></pre></div>
+</div>
+</div>
+<div id="prepare-color-scheme" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Prepare color scheme<a href="prepare-data.html#prepare-color-scheme" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><a href="www.alberdilab.dk">AlberdiLab</a> projects use unified color schemes developed for the <a href="www.earthhologenome.org">Earth Hologenome Initiative</a>, to facilitate figure interpretation.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb14-1"><a href="prepare-data.html#cb14-1" tabindex="-1"></a>phylum_colors <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">&quot;https://raw.githubusercontent.com/earthhologenome/EHI_taxonomy_colour/main/ehi_phylum_colors.tsv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="prepare-data.html#cb14-2" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">phylum =</span> <span class="fu">str_remove</span>(phylum, <span class="st">&quot;^p__&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="prepare-data.html#cb14-3" tabindex="-1"></a>    <span class="fu">right_join</span>(genome_metadata, <span class="at">by=</span><span class="fu">join_by</span>(phylum <span class="sc">==</span> phylum)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="prepare-data.html#cb14-4" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">match</span>(genome, genome_tree<span class="sc">$</span>tip.label)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="prepare-data.html#cb14-5" tabindex="-1"></a>    <span class="fu">select</span>(phylum, colors) <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="prepare-data.html#cb14-6" tabindex="-1"></a>    <span class="fu">unique</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-7"><a href="prepare-data.html#cb14-7" tabindex="-1"></a>    <span class="fu">arrange</span>(phylum) <span class="sc">%&gt;%</span></span>
+<span id="cb14-8"><a href="prepare-data.html#cb14-8" tabindex="-1"></a>    <span class="fu">pull</span>(colors, <span class="at">name=</span>phylum)</span></code></pre></div>
+</div>
+<div id="wrap-working-objects" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Wrap working objects<a href="prepare-data.html#wrap-working-objects" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>All working objects are wrapped into a single Rdata object to facilitate downstream usage.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb15-1"><a href="prepare-data.html#cb15-1" tabindex="-1"></a><span class="fu">save</span>(sample_metadata,</span>
+<span id="cb15-2"><a href="prepare-data.html#cb15-2" tabindex="-1"></a>     genome_metadata,</span>
+<span id="cb15-3"><a href="prepare-data.html#cb15-3" tabindex="-1"></a><span class="co">#     read_counts,</span></span>
+<span id="cb15-4"><a href="prepare-data.html#cb15-4" tabindex="-1"></a><span class="co">#    genome_counts,</span></span>
+<span id="cb15-5"><a href="prepare-data.html#cb15-5" tabindex="-1"></a>     genome_counts_filt,</span>
+<span id="cb15-6"><a href="prepare-data.html#cb15-6" tabindex="-1"></a>     genome_tree,</span>
+<span id="cb15-7"><a href="prepare-data.html#cb15-7" tabindex="-1"></a><span class="co">#     genome_gifts,</span></span>
+<span id="cb15-8"><a href="prepare-data.html#cb15-8" tabindex="-1"></a>     phylum_colors,</span>
+<span id="cb15-9"><a href="prepare-data.html#cb15-9" tabindex="-1"></a>     <span class="at">file =</span> <span class="st">&quot;data/data.Rdata&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb16-1"><a href="prepare-data.html#cb16-1" tabindex="-1"></a><span class="fu">save</span>(genome_gifts, </span>
+<span id="cb16-2"><a href="prepare-data.html#cb16-2" tabindex="-1"></a>     <span class="at">file =</span> <span class="st">&quot;data/genome_gifts1.Rdata&quot;</span>)</span></code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="data-statistics.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>

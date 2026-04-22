@@ -1,8 +1,9 @@
 ---
-title: "AlberdiLab | Brenner et al. 2025"
-subtitle: "Sled dogs extended"
+title: "AlberdiLab | Aizpurua et al. 2025"
+subtitle: "Ancestral traits of Greenland’s Qimmit sled dog gut microbiomes"
 author:
-  - Elsa Brenner, Antton Alberdi, Ostaizka Aizpurua^[University of Copenhagen, ostaizka.aizpurua@sund.ku.dk]
+  - Ostaizka Aizpurua^[University of Copenhagen, ostaizka.aizpurua@sund.ku.dk]
+  - Antton Alberdi^[University of Copenhagen, antton.alberdi@sund.ku.dk]
 date: "Last update: `r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
@@ -87,4 +88,5 @@ library(pairwiseAdonis)
 library(emmeans)
 library(pheatmap)
 library(rstatix)
+library(broom)
 ```

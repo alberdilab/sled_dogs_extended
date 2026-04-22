@@ -1,9 +1,9 @@
-# sled_dogs_extended
+# Sled dogs metagenomics
 
 Repository of the data and analysis procedures for the manuscript:
 
 **Ancestral traits of Greenland’s Qimmit sled dog gut microbiomes**
-Elsa Brenner, Antton Alberdi, Ostaizka Aizpurua
+Ostaizka Aizpurua, Antton Alberdi
 
 ## Bioinformatic procedures
 

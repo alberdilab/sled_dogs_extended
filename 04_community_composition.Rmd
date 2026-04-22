@@ -2,35 +2,37 @@
 
 ## Filter data
 
-```{r load_data_community, comment="", message=FALSE, warning=FALSE, eval=FALSE}
+```{r load_data_community, comment="", message=FALSE, warning=FALSE}
 load("data/data.Rdata")
+genome_metadata <- genome_metadata %>% 
+  mutate(phylum = case_when(
+        phylum == "Bacillota_A" ~ "Bacillota",
+        phylum == "Bacillota_C" ~ "Bacillota",
+        phylum == "Bacillota_B" ~ "Bacillota",
+        phylum == "Bacillota_I" ~ "Bacillota",
+        TRUE ~ phylum))
 
-sample_metadata <- read_csv("data/sample_metadata.csv")
- 
-sample_metadata$individual <- sub("[0-9]{2}$", "", sample_metadata$animal)
+remove_sled <- read_csv("data/sample_metadata.csv") %>% 
+  filter(season=="winter")
 
-sample_metadata_illu <- read_csv("data/metadata_illu.csv")
-sample_metadata <- sample_metadata %>% 
-  left_join(sample_metadata_illu[c(1,4,9)], by=join_by("sample"=="DogID")) 
+sample_metadata <- sample_metadata %>%
+  mutate(country = if_else(country == "Shangai domestic dog", "Shangai", country)) %>% 
+  filter(!sample %in% remove_sled$sample) %>%
+  mutate(
+    dog_type = case_when(
+      breed == "Wolf"        ~ "wolf",
+      country == "Greenland" ~ "sled_dog",
+      TRUE                   ~ "domestic"
+    )
+  )
 
-load("data/beta.Rdata")
-#samples to remove
-samples_to_remove <- sample_metadata %>% 
-  filter(individual == "GL_02_" | Samples %in% c("Blank", "Saliva") | group2 %in% c("Unknown") | season=="winter" ) %>% #!day %in% c("day_1", "Unknown")
-  select(sample) %>% 
-  pull()
-
-sample_metadata <- sample_metadata %>% 
-  filter(!sample %in% samples_to_remove)
-  #filter(individual != "GL_02_" | !Samples %in% c("Blank", "Saliva") | group2 != "Unknown" | season!="winter") 
-
-genome_counts_filt <- genome_counts_filt %>% 
+genome_counts_filt <- genome_counts_filt %>%
   select(one_of(c("genome",sample_metadata$sample)))%>%
   filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
   select_if(~!all(. == 0))
 
-genome_metadata <- genome_metadata %>% 
-  semi_join(., genome_counts_filt, by = "genome") %>% 
+genome_metadata <- genome_metadata %>%
+  semi_join(., genome_counts_filt, by = "genome") %>%
   arrange(match(genome,genome_counts_filt$genome))
 
 genome_tree <- keep.tip(genome_tree, tip=genome_metadata$genome)
@@ -39,19 +41,17 @@ genome_tree <- keep.tip(genome_tree, tip=genome_metadata$genome)
 ## Taxonomy overview 
 
 ### Stacked barplot
-
-```{r taxonomy_barplot, fig.height=6, fig.width=10, fig.fullwidth=TRUE}
+```{r taxonomy_barplot_canids, fig.height=8, fig.width=20, fig.fullwidth=TRUE}
 genome_counts_filt %>%
-  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS normalisation
-  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
-  left_join(., genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
-  left_join(., sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
-  filter(count > 0) %>% #filter 0 counts
-  ggplot(., aes(x=sample,y=count, fill=phylum, group=phylum)) + #grouping enables keeping the same sorting of taxonomic units
-    geom_bar(stat="identity", colour="white", linewidth=0.1) + #plot stacked bars with white borders
+  mutate_at(vars(-genome),~./sum(.)) %>% 
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% 
+  left_join(., genome_metadata, by = join_by(genome == genome)) %>% 
+  left_join(., sample_metadata, by = join_by(sample == sample)) %>% 
+  filter(count > 0) %>% 
+  ggplot(., aes(x=sample,y=count, fill=phylum, group=phylum)) + 
+    geom_bar(stat="identity", colour="white", linewidth=0.1) + 
     scale_fill_manual(values=phylum_colors) +
-  facet_grid(~ country, scale="free", space = "free")+
- #   facet_nested(. ~ region+diet,  scales="free") + #facet per day and treatment
+  facet_grid(~ country, scale="free", space="free")+
     guides(fill = guide_legend(ncol = 1)) +
     theme(
           axis.title.x = element_blank(),
@@ -60,370 +60,188 @@ genome_counts_filt %>%
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
           strip.background = element_rect(fill = "white"),
-    strip.text = element_text(size = 12, lineheight = 0.6),
+    strip.text = element_text(size = 8, lineheight = 0.6),
     strip.placement = "outside",
     axis.text.x = element_blank(), axis.ticks.x = element_blank(),
           axis.line = element_line(linewidth = 0.5, linetype = "solid", colour = "black")) +
    labs(fill="Phylum",y = "Relative abundance",x="Samples")
 ```
+```{r taxonomy_barplot, fig.height=10, fig.width=15, fig.fullwidth=TRUE}
+genome_counts_filt %>%
+  mutate(across(-genome, ~ . / sum(.))) %>% 
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>%
+  left_join(., genome_metadata, by = join_by(genome == genome)) %>%
+  left_join(., sample_metadata, by = join_by(sample == sample)) %>%
+  filter(count > 0) %>% 
+  ggplot(., aes(x=sample,y=count, fill=phylum, group=phylum)) + 
+  geom_bar(stat="identity", colour="white", linewidth=0.1) + 
+  scale_fill_manual(values = phylum_colors) +
+  facet_grid(~factor(dog_type, labels=c("domestic" = "Domestic dogs", "sled_dog" = "Sled dogs", "wolf" = "Wolves")), scale="free", space="free")+
+  guides(fill = guide_legend(ncol = 1)) +
+  theme(
+    axis.title.x = element_blank(),
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    strip.background = element_rect(fill = "white"),
+    strip.text = element_text(size = 12, lineheight = 0.6),
+    strip.placement = "outside",
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.line = element_line(
+      linewidth = 0.5,
+      linetype = "solid",
+      colour = "black"
+    )
+  ) +
+  labs(fill = "Phylum", y = "Relative abundance", x = "Samples")
+```
 
 **Number of bacteria phyla**
 
-```{r phyla, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+```{r phyla, comment="", message=FALSE, warning=FALSE}
 genome_metadata %>% 
-  filter(domain == "d__Bacteria")%>%
+  filter(domain == "Bacteria")%>%
   dplyr::select(phylum) %>%
   unique() %>%
   pull() %>%
   length()
-```
-
-**Bacteria phyla in wild individuals**
-
-```{r phyla_nat, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-
-wild_samples <- sample_metadata %>% 
-  filter(region=="Gipuzkoa") %>% 
-  dplyr::select(sample) %>% 
-  pull()
-
-wild_genomes <- genome_counts %>% 
-  column_to_rownames("genome") %>% 
-  select(all_of(wild_samples)) %>%
-  as.data.frame() %>%
-  filter(rowSums(across(where(is.numeric)))!=0)%>% 
-  rownames_to_column("genome")%>% 
-  dplyr::select(genome) %>% 
-  pull()
-
-genome_metadata %>% 
-  filter(genome %in% wild_genomes) %>% 
-  filter(domain == "d__Bacteria")%>%
-  dplyr::select(phylum) %>%
-  unique() %>%
-  pull() %>%
-  length() 
-```
-
-**Bacteria phyla captive animals**
-
-```{r phyla_cap, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-
-captive_samples <- sample_metadata %>% 
-  filter(region=="Nafarroa") %>% 
-  dplyr::select(sample) %>% 
-  pull()
-
-captive_genomes <- genome_counts %>% 
-  column_to_rownames("genome") %>% 
-  select(all_of(captive_samples)) %>%
-  as.data.frame() %>%
-  filter(rowSums(across(where(is.numeric)))!=0)%>% 
-  rownames_to_column("genome")%>% 
-  dplyr::select(genome) %>% 
-  pull()
-
-genome_metadata %>% 
-  filter(genome %in% captive_genomes) %>% 
-  filter(domain == "d__Bacteria")%>%
-  dplyr::select(phylum) %>%
-  unique() %>%
-  pull() %>%
-  length() 
-```
-
-**Bacteria phyla before grass is included in the diet**
-
-```{r phyla_pre, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-
-captive_pre_samples <- sample_metadata %>% 
-  filter(diet=="Sled_dog") %>% 
-  dplyr::select(sample) %>% 
-  pull()
-
-captive_pre_genomes <- genome_counts %>% 
-  column_to_rownames("genome") %>% 
-  select(all_of(captive_pre_samples)) %>%
-  as.data.frame() %>% 
-  mutate(row_sum = rowSums(.)) %>%
-  filter(row_sum != 0) %>%
-  select(-row_sum)%>% 
-  rownames_to_column("genome")%>% 
-  dplyr::select(genome) %>% 
-  pull()
-
-genome_metadata %>% 
-  filter(genome %in% captive_pre_genomes) %>% 
-  filter(domain == "d__Bacteria")%>%
-  dplyr::select(phylum) %>%
-  unique() %>%
-  pull() %>%
-  length() 
-```
-
-**Bacteria phyla after grass is included in the diet**
-
-```{r phyla_post, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-captive_post_samples <- sample_metadata %>% 
-  filter(diet=="Post_grass") %>% 
-  dplyr::select(sample) %>% 
-  pull()
-
-captive_post_genomes <- genome_counts %>% 
-  column_to_rownames("genome") %>% 
-  select(all_of(captive_post_samples)) %>%
-  as.data.frame() %>% 
-  mutate(row_sum = rowSums(.)) %>%
-  filter(row_sum != 0) %>%
-  select(-row_sum)%>% 
-  rownames_to_column("genome")%>% 
-  dplyr::select(genome) %>% 
-  pull()
-
-genome_metadata %>% 
-  filter(genome %in% captive_post_genomes) %>% 
-  filter(domain == "d__Bacteria")%>%
-  dplyr::select(phylum) %>%
-  unique() %>%
-  pull() %>%
-  length() 
 ```
 
 **Number of Archaea phyla**
 
-```{r arch, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+```{r arch, comment="", message=FALSE, warning=FALSE}
 genome_metadata %>% 
-  filter(domain == "d__Archaea")%>%
+  filter(domain == "Archaea")%>%
   dplyr::select(phylum) %>%
   unique() %>%
   pull() %>%
   length()
-```
-
-**Archaea phyla in wild individuals**
-
-```{r arch_nat, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-genome_metadata %>% 
-  filter(genome %in% wild_genomes) %>% 
-  filter(domain == "d__Archaea")%>%
-  dplyr::select(phylum) %>%
-  unique() %>%
-  pull() %>%
-  length()
-```
-
-**Archaea phyla before grass is included in the diet**
-
-```{r arch_pre, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-genome_metadata %>% 
-  filter(genome %in% captive_pre_genomes) %>% 
-  filter(domain == "d__Archaea")%>%
-  dplyr::select(phylum) %>%
-  unique() %>%
-  pull()
-```
-
-**Archaea phyla after grass is included in the diet**
-
-```{r arch_post, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-genome_metadata %>% 
-  filter(genome %in% captive_post_genomes) %>% 
-  filter(domain == "d__Archaea")%>%
-  dplyr::select(phylum) %>%
-  unique() %>%
-  pull()
 ```
 
 ### Genus and species annotation
 
 **Number of MAGs without species-level annotation**
-```{r nonspe, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+```{r nonspe, comment="", message=FALSE, warning=FALSE}
 genome_metadata %>%
-  filter(species == "s__") %>%
+  filter(species == "") %>%
   summarize(Mag_nospecies = n())%>%
   select(Mag_nospecies) %>% 
   pull()
-
 ```
-```{r nonspe_phylum, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+```{r nonspe_phylum, comment="", message=FALSE, warning=FALSE}
 total_mag_phylum <- genome_metadata %>%
   group_by(phylum) %>%
   summarize(count_total = n())
 genome_metadata %>%
-  filter(species == "s__") %>%
+  filter(species == "") %>%
   group_by(phylum) %>%
   summarize(count_nospecies = n()) %>% 
   left_join(total_mag_phylum, by = join_by(phylum == phylum)) %>% 
-  mutate(percentage=100*count_nospecies/count_total) %>% 
+  mutate(percentage_nosp=100*count_nospecies/count_total) %>% 
+  arrange(percentage_nosp) %>% 
   tt()
-
 ```
 
 **Percentage of MAGs without species-level annotation**
-```{r sp_percet, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-nmags <- nrow(genome_counts)
+```{r sp_percet, comment="", message=FALSE, warning=FALSE}
+nmags <- nrow(genome_metadata)
 nonspecies <- genome_metadata %>%
-    filter(species == "s__") %>%
+    filter(species == "") %>%
     nrow()
 perct <- nonspecies*100/nmags
 perct
 ```
 
 **Number of MAGs without genera-level annotation**
-```{r nongenera, comment="", echo=FALSE, message=FALSE, warning=FALSE}
+```{r nongenera, comment="", message=FALSE, warning=FALSE}
 nongenera <- genome_metadata %>%
-    filter(genus == "g__") %>%
+    filter(genus == "") %>%
     nrow()
 cat(nongenera)
 ```
+
 
 
 ### Phylum relative abundances
 
 ```{r taxonomy_phylum_summary, warning=FALSE, comments="", message=FALSE}
 phylum_summary <- genome_counts_filt %>%
-  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
+  mutate_at(vars(-genome),~./sum(.)) %>% 
   pivot_longer(-genome, names_to = "sample", values_to = "count") %>%
   left_join(sample_metadata, by = join_by(sample == sample)) %>%
   left_join(genome_metadata, by = join_by(genome == genome)) %>%
-  group_by(sample,phylum,group2) %>%
+  group_by(sample,phylum,dog_type) %>%
   summarise(relabun=sum(count))
 ```
 
 #### Origin: Dogs vs Sled dogs vs Wolves
 ```{r taxonomy_phylum_summary_origin, warning=FALSE, comments="", message=FALSE}
 phylum_summary %>%
-    group_by(phylum) %>%
-    summarise(total_mean=mean(relabun*100, na.rm=T),
-              total_sd=sd(relabun*100, na.rm=T),
-              Dog_mean=mean(relabun[group2=="Dog"]*100, na.rm=T),
-              Dog_sd=sd(relabun[group2=="Dog"]*100, na.rm=T),
-              Sled_dog_mean=mean(relabun[group2=="Sled_dog"]*100, na.rm=T),
-              Sled_dog_sd=sd(relabun[group2=="Sled_dog"]*100, na.rm=T),
-              Wolf_mean=mean(relabun[group2=="Wolf"]*100, na.rm=T),
-              Wolf_sd=sd(relabun[group2=="Wolf"]*100, na.rm=T)) %>%
-    mutate(total=str_c(round(total_mean,3),"±",round(total_sd,3)),
-           Dog=str_c(round(Dog_mean,3),"±",round(Dog_sd,3)),
-           Sled_dog=str_c(round(Sled_dog_mean,3),"±",round(Sled_dog_sd,3)),
-           Wolf=str_c(round(Wolf_mean,3),"±",round(Wolf_sd,3))) %>% 
-    arrange(-total_mean) %>% 
-    dplyr::select(phylum,total,Dog,Sled_dog,Wolf)
+  group_by(phylum) %>%
+  summarise(
+    total_mean = mean(relabun * 100, na.rm = T),
+    total_sd = sd(relabun * 100, na.rm = T),
+    Dog_mean = mean(relabun[dog_type == "domestic"] * 100, na.rm = T),
+    Dog_sd = sd(relabun[dog_type == "domestic"] * 100, na.rm = T),
+    Sled_dog_mean = mean(relabun[dog_type == "sled_dog"] * 100, na.rm = T),
+    Sled_dog_sd = sd(relabun[dog_type == "sled_dog"] * 100, na.rm = T),
+    Wolf_mean = mean(relabun[dog_type == "wolf"] * 100, na.rm = T),
+    Wolf_sd = sd(relabun[dog_type == "wolf"] * 100, na.rm = T)
+  ) %>%
+  mutate(
+    total = str_c(round(total_mean, 3), "±", round(total_sd, 3)),
+    Domestic_dogs = str_c(round(Dog_mean, 3), "±", round(Dog_sd, 3)),
+    Sled_dogs = str_c(round(Sled_dog_mean, 3), "±", round(Sled_dog_sd, 3)),
+    Wolves = str_c(round(Wolf_mean, 3), "±", round(Wolf_sd, 3))
+  ) %>%
+  arrange(-total_mean) %>%
+  dplyr::select(phylum, total, Domestic_dogs, Sled_dogs, Wolves) %>%
+  tt()
 ```
 
-## Taxonomy boxplot
+**Using CLR transformation**
 
-### Family
+```{r}
+set.seed(0206)
+phylo_counts <- genome_counts_filt %>%
+  column_to_rownames("genome") %>%
+  otu_table(., taxa_are_rows = TRUE)
 
-```{r taxonomy_family_summary, warning=FALSE, comments="", message=FALSE}
-family_summary <- genome_counts_filt %>%
-  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
-  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
-  left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
-  left_join(., genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
-  group_by(sample,family, group2) %>%
-  summarise(relabun=sum(count))
-family_summary$group2 <- factor(family_summary$group2, levels=c("Sled_dog", "Dog", "Wolf"))
-```
+phylo_geno_meta <- genome_metadata %>%
+  column_to_rownames(var="genome")%>%
+  as.matrix()%>%
+  tax_table()
 
-#### Origin: Dog vs Captive
-```{r taxonomy_family_summary_origin, warning=FALSE, comments="", message=FALSE}
-family_summary %>%
-    group_by(family) %>%
-    summarise(total_mean=mean(relabun*100, na.rm=T),
-              total_sd=sd(relabun*100, na.rm=T),
-              Dog_mean=mean(relabun[group2=="Dog"]*100, na.rm=T),
-              Dog_sd=sd(relabun[group2=="Dog"]*100, na.rm=T),
-              Sled_dog_mean=mean(relabun[group2=="Sled_dog"]*100, na.rm=T),
-              Sled_dog_sd=sd(relabun[group2=="Sled_dog"]*100, na.rm=T),
-              Wolf_mean=mean(relabun[group2=="Wolf"]*100, na.rm=T),
-              Wolf_sd=sd(relabun[group2=="Wolf"]*100, na.rm=T)) %>%
-    mutate(total=str_c(round(total_mean,3),"±",round(total_sd,3)),
-           Dog=str_c(round(Dog_mean,3),"±",round(Dog_sd,3)),
-           Sled_dog=str_c(round(Sled_dog_mean,3),"±",round(Sled_dog_sd,3)),
-           Wolf=str_c(round(Wolf_mean,3),"±",round(Wolf_sd,3))) %>% 
-    arrange(-Sled_dog_mean) %>% 
-    dplyr::select(family,total,Dog,Sled_dog,Wolf)
-```
+physeq_genome_filt <- phyloseq(phylo_counts,phylo_geno_meta)
+physeq_phylum <- tax_glom(physeq_genome_filt, taxrank = "phylum")
+physeq_phylum_clr <- microbiome::transform(physeq_phylum, "clr")
 
-### Genus
+df <- psmelt(physeq_phylum_clr)
 
-```{r taxonomy_genus_summary, warning=FALSE, comments="", message=FALSE}
-genus_summary <- genome_counts_filt %>%
-  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
-  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
-  left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
-  left_join(genome_metadata, by = join_by(genome == genome)) %>% #append genome metadata
-  group_by(sample,phylum,genus, group2) %>%
-  summarise(relabun=sum(count)) %>%
-  filter(genus != "g__") %>%
-  mutate(genus= sub("^g__", "", genus))
-genus_summary$group2 <- factor(genus_summary$group2, levels=c("Sled_dog", "Wolf", "Dog"))
+results <- df %>%
+  left_join(., sample_metadata, by=join_by("Sample"=="sample")) %>% 
+  group_by(phylum) %>%
+  do({
+    model <- lm(Abundance ~ dog_type, data = .)
+    as.data.frame(pairs(emmeans(model, ~ dog_type), adjust = "BH"))
+  }) %>%
+  ungroup()%>% 
+  filter(p.value < 0.05) 
+
 ```
 ```{r}
-genome_counts_filt %>%
-  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
-  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
-  left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
-  left_join(genome_metadata, by = join_by(genome == genome)) %>% 
-  filter(genome=="ERR1915648_bin_35072")%>% #append genome metadata
-  group_by(group2) %>%
-  summarise(relabun=sum(count))
+results %>% 
+  filter(contrast=="domestic - sled_dog")
 ```
+
 ```{r}
-genome_counts_filt %>%
-  mutate_at(vars(-genome),~./sum(.)) %>% #apply TSS nornalisation
-  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% #reduce to minimum number of columns
-  left_join(sample_metadata, by = join_by(sample == sample)) %>% #append sample metadata
-  left_join(genome_metadata, by = join_by(genome == genome)) %>% 
-  filter(genus=="Cetobacterium_A")%>% #append genome metadata
-  group_by(genome, group2) %>%
-  summarise(relabun=sum(count), sd=sd(count))
+results %>% 
+  filter(contrast=="domestic - wolf")
 ```
 
-```{r taxonomy_genera_summary_origroup2, warning=FALSE, comments="", message=FALSE}
-genus_summary %>%
-    group_by(genus) %>%
-    summarise(total_mean=mean(relabun*100, na.rm=T),
-              total_sd=sd(relabun*100, na.rm=T),
-              Dog_mean=mean(relabun[group2=="Dog"]*100, na.rm=T),
-              Dog_sd=sd(relabun[group2=="Dog"]*100, na.rm=T),
-              Sled_dog_mean=mean(relabun[group2=="Sled_dog"]*100, na.rm=T),
-              Sled_dog_sd=sd(relabun[group2=="Sled_dog"]*100, na.rm=T),
-              Wolf_mean=mean(relabun[group2=="Wolf"]*100, na.rm=T),
-              Wolf_sd=sd(relabun[group2=="Wolf"]*100, na.rm=T)) %>%
-    mutate(total=str_c(round(total_mean,3),"±",round(total_sd,3)),
-           Dog=str_c(round(Dog_mean,3),"±",round(Dog_sd,3)),
-           Sled_dog=str_c(round(Sled_dog_mean,3),"±",round(Sled_dog_sd,3)),
-           Wolf=str_c(round(Wolf_mean,3),"±",round(Wolf_sd,3))) %>% 
-    arrange(genus) %>% 
-    dplyr::select(genus,total,Dog,Sled_dog,Wolf)
+```{r}
+results %>% 
+  filter(contrast=="sled_dog - wolf")
 ```
-
-```{r taxonomy_jitterplot_genus, fig.height=14, fig.width=10, fig.fullwidth=TRUE}
-genus_arrange <- genus_summary %>%
-    group_by(genus) %>%
-    summarise(mean=sum(relabun)) %>%
-    filter(genus != "g__")%>%
-    arrange(-mean) %>%
-    select(genus) %>%
-    mutate(genus= sub("^g__", "", genus)) %>%
-    pull()
-
-genus_summary_sort <- genus_summary %>%
-    group_by(genus) %>%
-    summarise(mean=mean(relabun, na.rm=T),sd=sd(relabun, na.rm=T)) %>%
-    arrange(-mean) 
-
-genus_summary %>%
-  mutate(genus=factor(genus, levels=rev(genus_summary_sort %>% pull(genus)))) %>%
-  filter(relabun > 0) %>%
-  ggplot(aes(x=relabun, y=genus, group=genus, color=phylum)) +
-  scale_color_manual(values=phylum_colors) +
-  geom_jitter(alpha=0.5) + 
-  facet_grid(.~group2)+
-  theme_minimal() + 
-  theme(axis.text.y = element_text(size=6))+
-  labs(y="Family", x="Relative abundance", color="Phylum")
-
-```
-

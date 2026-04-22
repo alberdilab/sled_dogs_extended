@@ -2,12 +2,43 @@
 
 ```{r load_data_alpha, comment="", message=FALSE, warning=FALSE}
 load("data/data.Rdata")
+load("data/alpha_all.RData")
+
+genome_metadata <- genome_metadata %>% 
+  mutate(phylum = case_when(
+        phylum == "Bacillota_A" ~ "Bacillota",
+        phylum == "Bacillota_C" ~ "Bacillota",
+        phylum == "Bacillota_B" ~ "Bacillota",
+        phylum == "Bacillota_I" ~ "Bacillota",
+        TRUE ~ phylum))
+
+remove_sled <- read_csv("data/sample_metadata.csv") %>% 
+  filter(season=="winter")
+
+sample_metadata <- sample_metadata %>%
+  mutate(country = if_else(country == "Shangai domestic dog", "Shangai", country)) %>% 
+  filter(!sample %in% remove_sled$sample) %>%
+  mutate(
+    dog_type = case_when(
+      breed == "Wolf"        ~ "wolf",
+      country == "Greenland" ~ "sled_dog",
+      TRUE                   ~ "domestic"
+    )
+  )
+
+genome_counts_filt <- genome_counts_filt %>%
+  select(one_of(c("genome",sample_metadata$sample)))%>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0))
+
+genome_metadata <- genome_metadata %>%
+  semi_join(., genome_counts_filt, by = "genome") %>%
+  arrange(match(genome,genome_counts_filt$genome))
+
+genome_tree <- keep.tip(genome_tree, tip=genome_metadata$genome)
 ```
 
-## Summary table
-
-```{r alpha_div, comment="", message=FALSE, warning=FALSE}
-# Calculate Hill numbers
+```{r alpha_div, comment="", message=FALSE, warning=FALSE, eval=FALSE}
 richness <- genome_counts_filt %>%
   column_to_rownames(var = "genome") %>%
   dplyr::select(where(~ !all(. == 0))) %>%
@@ -35,98 +66,171 @@ phylogenetic <- genome_counts_filt %>%
   dplyr::rename(phylogenetic = 1) %>%
   rownames_to_column(var = "sample")
 
-# Merge all metrics
 alpha_div <- richness %>%
   full_join(neutral, by = join_by(sample == sample)) %>%
   full_join(phylogenetic, by = join_by(sample == sample))
 ```
 
-### Plots
+```{r save_alpha, eval=FALSE}
+save(alpha_div, file="data/alpha_all.RData")
+```
 
-```{r alpha_div_boxplot, comment="",echo=FALSE, message=FALSE, warning=FALSE}
-#Richness
-plot1 <- alpha_div %>%
+## Countries
+```{r alpha_plots_loc, fig.height=5, fig.width=12, fig.fullwidth=TRUE}
+alpha_div %>%
   pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  mutate(metric=factor(metric,levels=c("richness","neutral","phylogenetic", "functional"))) %>%
   left_join(sample_metadata, by = join_by(sample == sample)) %>%
-  filter(metric=="richness") %>%
   ggplot(aes(y = value, x = country, group=country, color=country, fill=country)) +
-      geom_jitter(width = 0.2, show.legend = FALSE) +
-      geom_boxplot(width = 0.5, alpha=0.5,outlier.shape = NA, show.legend = FALSE) +
-coord_cartesian(xlim = c(1, NA)) +
+  geom_boxplot(alpha = 0.5, outlier.shape = NA) +
+  geom_jitter(width = 0.2, alpha = 0.5) +
+  facet_wrap(. ~factor(metric, labels=c("richness" = "Richness", "neutral" = "Neutral", "phylogenetic" = "Phylogenetic")), scales = "free", ncol = 5) +
+  coord_cartesian(xlim = c(1, NA)) +
   theme_classic() +
   theme(
     strip.background = element_blank(),
+    strip.text = element_text(size =12, lineheight = 0.6),
     panel.grid.minor.x = element_line(size = .1, color = "grey"),
-    axis.text = element_text(size=10),
-    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
-    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))
-    )+
-  labs(x = "Origin", y = "Richness")
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_blank()
+  )
+```
 
-#Neutral
-plot2 <- alpha_div %>%
+
+```{r}
+alpha_div %>%
   pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  mutate(metric=factor(metric,levels=c("richness","neutral","phylogenetic"))) %>%
+  left_join(sample_metadata, by = "sample") %>%
+  group_by(metric) %>%
+  kruskal_test(value ~ country) %>% 
+  adjust_pvalue(method = "BH") %>%
+  filter(p.adj < 0.05) %>% 
+  tt()
+```
+```{r}
+alpha_div %>%
+  pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  mutate(metric=factor(metric,levels=c("richness","neutral","phylogenetic")))%>%
+  left_join(sample_metadata, by = "sample") %>%
+  group_by(metric) %>%
+  wilcox_test(value ~ country, p.adjust.method = "BH")%>% 
+  filter(p.adj < 0.05)
+```
+
+
+No significant differences
+Note: Greenland only not different to USA (richness) and India (phylogenetic)
+```{r}
+alpha_div %>%
+  pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  mutate(metric=factor(metric,levels=c("richness","neutral","phylogenetic")))%>%
+  left_join(sample_metadata, by = "sample") %>%
+  group_by(metric) %>%
+  wilcox_test(value ~ country, p.adjust.method = "BH")%>% 
+  filter(p.adj > 0.05)
+```
+
+## Dog group
+
+```{r alpha_div_diets_summary_all, comment="", message=FALSE, warning=FALSE}
+alpha_div %>%
+  pivot_longer(-sample, names_to = "alpha", values_to = "value") %>%
   left_join(sample_metadata, by = join_by(sample == sample)) %>%
-  filter(metric=="neutral") %>%
-  ggplot(aes(y = value, x = country, group=country, color=country, fill=country)) +
-      geom_jitter(width = 0.2, show.legend = FALSE) +
-      geom_boxplot(width = 0.5, alpha=0.5,outlier.shape = NA, show.legend = FALSE) +
-coord_cartesian(xlim = c(1, NA)) +
+  group_by(alpha) %>%
+  summarise(
+     total_mean = mean(value, na.rm = T),
+    total_sd = sd(value, na.rm = T),
+    Dog_mean = mean(value[dog_type == "domestic"], na.rm = T),
+    Dog_sd = sd(value[dog_type == "domestic"], na.rm = T),
+    Sled_dog_mean = mean(value[dog_type == "sled_dog"], na.rm = T),
+    Sled_dog_sd = sd(value[dog_type == "sled_dog"], na.rm = T),
+    Wolf_mean = mean(value[dog_type == "wolf"], na.rm = T),
+    Wolf_sd = sd(value[dog_type == "wolf"], na.rm = T)
+  ) %>%
+  mutate(
+    total = str_c(round(total_mean, 3), "±", round(total_sd, 3)),
+    Domestic_dogs = str_c(round(Dog_mean, 3), "±", round(Dog_sd, 3)),
+    Sled_dogs = str_c(round(Sled_dog_mean, 3), "±", round(Sled_dog_sd, 3)),
+    Wolves = str_c(round(Wolf_mean, 3), "±", round(Wolf_sd, 3))
+  ) %>%
+  arrange(-Sled_dog_mean) %>%
+  dplyr::select(alpha, total, Domestic_dogs, Sled_dogs, Wolves) %>%
+  tt()
+```
+
+```{r alpha_plots, fig.height=5, fig.width=10, fig.fullwidth=TRUE}
+type_colors <- c('#41B6C0','#E5D388',"#bb6749")
+new_labels <- c(
+    "domestic" = "Domestic dogs",
+    "sled_dog" = "Sled dogs",
+    "wolf" = "Wolves"
+    )
+alpha_div %>%
+  pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  mutate(metric = factor(
+    metric,
+    levels = c("richness", "neutral", "phylogenetic", "functional")
+  )) %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  ggplot(aes(
+    y = value,
+    x = dog_type,
+    group = dog_type,
+    color = dog_type,
+    fill = dog_type
+  )) +
+  geom_boxplot(alpha = 0.5, outlier.shape = NA) +
+  geom_jitter(width = 0.2, alpha = 0.5) +
+  scale_color_manual(
+    name = "Canids",
+    values = type_colors,
+    labels = new_labels
+  ) +
+  scale_fill_manual(
+    name = "Canids",
+    values = type_colors,
+    labels = new_labels
+  ) +
+  facet_wrap(. ~ factor(
+    metric,
+    labels = c(
+      "richness" = "Richness",
+      "neutral" = "Neutral",
+      "phylogenetic" = "Phylogenetic"
+    )
+  ),
+  scales = "free",
+  ncol = 5) +
+  coord_cartesian(xlim = c(1, NA)) +
   theme_classic() +
   theme(
     strip.background = element_blank(),
+    strip.text = element_text(size = 12, lineheight = 0.6),
     panel.grid.minor.x = element_line(size = .1, color = "grey"),
-    axis.text = element_text(size=10),
-    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
-    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))
-    )+
-  labs(x = "Origin", y = "Neutral")
-
-#Phylogenetic
-plot3 <- alpha_div %>%
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_blank()
+  )
+```
+```{r}
+alpha_div %>%
   pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
-  left_join(sample_metadata, by = join_by(sample == sample)) %>%
-  filter(metric=="phylogenetic") %>%
-  ggplot(aes(y = value, x = country, group=country, color=country, fill=country)) +
-      geom_jitter(width = 0.2, show.legend = FALSE) +
-      geom_boxplot(width = 0.5, alpha=0.5,outlier.shape = NA, show.legend = FALSE) +
-coord_cartesian(xlim = c(1, NA)) +
-  theme_classic() +
-  theme(
-    strip.background = element_blank(),
-    panel.grid.minor.x = element_line(size = .1, color = "grey"),
-    axis.text = element_text(size=10),
-    axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
-    axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))
-    )+
-  labs(x = "Origin", y = "Phylogenetic")
+  mutate(metric=factor(metric,levels=c("richness","neutral","phylogenetic"))) %>%
+  left_join(sample_metadata, by = "sample") %>%
+  group_by(metric) %>%
+  kruskal_test(value ~ dog_type) %>% 
+  adjust_pvalue(method = "BH") %>%
+  filter(p.adj < 0.05) %>% 
+  tt()
 ```
-
-```{r div_plot_together, comment="", echo=FALSE, message=FALSE, warning=FALSE, fig.height=8, fig.width=10, fig.fullwidth=TRUE}
-grid.arrange(arrangeGrob(plot1,plot2,plot3, ncol = 3))
+```{r}
+alpha_div %>%
+  pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  mutate(metric=factor(metric,levels=c("richness","neutral","phylogenetic")))%>%
+  left_join(sample_metadata, by = "sample") %>%
+  group_by(metric) %>%
+  wilcox_test(value ~ dog_type, p.adjust.method = "BH")%>% 
+  filter(p.adj < 0.05)
 ```
-
-
-### Mixed models
-
-```{r mixed_rich_prepost, comment="", echo=FALSE, message=FALSE, warning=FALSE}
-alpha_div_meta <- alpha_div %>%
-  left_join(sample_metadata, by = join_by(sample == sample)) %>% 
-    filter(!diet =="Wild")
-
-Model_richness <- glmer.nb(richness ~ diet+(1|individual), data = alpha_div_meta)
-summary(Model_richness)
-
-Model_neutral <- lme(fixed = neutral ~ diet, data = alpha_div_meta,
-               random = ~ 1 | individual)#log(seq_depth)+
-summary(Model_neutral)
-
-Model_phylo <- lme(fixed = phylogenetic ~ diet, data = alpha_div_meta,
-               random = ~ 1 | individual)
-summary(Model_phylo)
-
-Model_funct <- lme(fixed = functional ~ diet, data = alpha_div_meta,
-               random = ~ 1 | individual)
-summary(Model_funct)
-```
-

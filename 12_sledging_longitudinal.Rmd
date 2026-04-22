@@ -1,0 +1,363 @@
+```{r load_data_longi, comment="", message=FALSE, warning=FALSE}
+load("data/data.Rdata")
+load("data/beta.Rdata")
+genome_metadata <- genome_metadata %>% 
+  mutate(phylum = case_when(
+        phylum == "Bacillota_A" ~ "Bacillota",
+        phylum == "Bacillota_C" ~ "Bacillota",
+        phylum == "Bacillota_B" ~ "Bacillota",
+        phylum == "Bacillota_I" ~ "Bacillota",
+        TRUE ~ phylum))
+
+day_info <- read_csv("data/sample_metadata.csv")
+
+sample_metadata <- sample_metadata %>% 
+  left_join(., day_info %>% select(sample, animal, day, season), by="sample") %>% 
+  filter(locality == "Ittoqqortoormiit" & season=="winter")%>%
+  filter(!day %in% c("day_6", "day_7")) %>% 
+  mutate(animal_id = str_remove(animal, "\\d$"))
+
+genome_counts_filt <- genome_counts_filt %>%
+  select(one_of(c("genome",sample_metadata$sample)))%>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0))
+
+genome_metadata <- genome_metadata %>%
+  semi_join(., genome_counts_filt, by = "genome") %>%
+  arrange(match(genome,genome_counts_filt$genome))
+
+genome_tree <- keep.tip(genome_tree, tip=genome_metadata$genome)
+```
+
+## Taxonomy overview 
+
+```{r taxonomy_barplot_longi, fig.height=8, fig.width=20, fig.fullwidth=TRUE}
+genome_counts_filt %>%
+  mutate_at(vars(-genome),  ~ . / sum(.)) %>% 
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>% 
+  left_join(., genome_metadata, by = join_by(genome == genome)) %>% 
+  left_join(., sample_metadata, by = join_by(sample == sample)) %>% 
+  filter(count > 0) %>% 
+  ggplot(., aes(x=animal_id, y=count, fill=phylum, group=phylum)) + 
+  geom_bar(stat="identity", colour="white", linewidth=0.1) + 
+  scale_fill_manual(values=phylum_colors) +
+  facet_grid(~ day, scale="free", space="free")+
+  guides(fill = guide_legend(ncol = 1)) +
+  theme(
+    axis.title.x = element_blank(),
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    strip.background = element_rect(fill = "white"),
+    strip.text = element_text(size = 12, lineheight = 0.6),
+    strip.placement = "outside",
+    axis.text.x = element_text(size = 10, angle=45, hjust = 1),
+    axis.ticks.x = element_blank(),
+    axis.line = element_line(
+      linewidth = 0.5,
+      linetype = "solid",
+      colour = "black")
+  ) +
+  labs(fill = "Phylum", y = "Relative abundance", x = "Samples")
+```
+
+### Phylum relative abundances
+```{r taxonomy_phylum_longi, warning=FALSE, comments="", message=FALSE}
+phylum_summary <- genome_counts_filt %>%
+  mutate_at(vars(-genome),~./sum(.)) %>% 
+  pivot_longer(-genome, names_to = "sample", values_to = "count") %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  left_join(genome_metadata, by = join_by(genome == genome)) %>%
+  group_by(sample,phylum, day) %>%
+  summarise(relabun=sum(count))
+```
+
+```{r taxonomy_phylum_summary_longi, warning=FALSE, comments="", message=FALSE}
+phylum_summary %>%
+  group_by(day, phylum) %>%
+  summarise(
+    n = sum(!is.na(relabun)),
+    total_mean = mean(relabun * 100, na.rm = TRUE),
+    total_sd = ifelse(n > 1, sd(relabun * 100, na.rm = TRUE), 0),
+    .groups = "drop"
+  ) %>%
+    arrange(desc(total_mean)) %>%   # ← reorder rows only
+  mutate(
+    total = stringr::str_c(round(total_mean, 3), "±", round(total_sd, 3))
+  ) %>%
+  dplyr::select(phylum, day, total) %>%
+  pivot_wider(names_from = "day", values_from = "total", names_sort = FALSE) %>%
+select(phylum, day_1, day_2, day_3, day_4, day_5) %>% 
+  tt()
+```
+
+
+## Alpha diversity
+```{r alpha_div_longi, comment="", message=FALSE, warning=FALSE}
+richness <- genome_counts_filt %>%
+  column_to_rownames(var = "genome") %>%
+  dplyr::select(where(~ !all(. == 0))) %>%
+  hilldiv(., q = 0) %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(richness = 1) %>%
+  rownames_to_column(var = "sample")
+
+neutral <- genome_counts_filt %>%
+  column_to_rownames(var = "genome") %>%
+  dplyr::select(where(~ !all(. == 0))) %>%
+  hilldiv(., q = 1) %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(neutral = 1) %>%
+  rownames_to_column(var = "sample")
+
+phylogenetic <- genome_counts_filt %>%
+  column_to_rownames(var = "genome") %>%
+  dplyr::select(where(~ !all(. == 0))) %>%
+  hilldiv(., q = 1, tree = genome_tree) %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(phylogenetic = 1) %>%
+  rownames_to_column(var = "sample")
+
+alpha_div <- richness %>%
+  full_join(neutral, by = join_by(sample == sample)) %>%
+  full_join(phylogenetic, by = join_by(sample == sample))
+```
+
+```{r alpha_plots_longi, fig.height=5, fig.width=12, fig.fullwidth=TRUE}
+alpha_div %>%
+  pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  mutate(metric=factor(metric,levels=c("richness","neutral","phylogenetic", "functional"))) %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  ggplot(aes(y = value, x = day, group=day, color=day, fill=day)) +
+  geom_boxplot(alpha = 0.5, outlier.shape = NA) +
+  geom_jitter(width = 0.2, alpha = 0.5) +
+  facet_wrap(. ~factor(metric, labels=c("richness" = "Richness", "neutral" = "Neutral", "phylogenetic" = "Phylogenetic")), scales = "free", ncol = 5) +
+  coord_cartesian(xlim = c(1, NA)) +
+  theme_classic() +
+  theme(
+    strip.background = element_blank(),
+    strip.text = element_text(size =12, lineheight = 0.6),
+    panel.grid.minor.x = element_line(size = .1, color = "grey"),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_blank()
+  )
+```
+```{r plots_paired_longi, fig.height=5, fig.width=12, fig.fullwidth=TRUE}
+alpha_div %>%
+  pivot_longer(-sample, names_to = "metric", values_to = "value") %>%
+  mutate(metric = factor(metric, levels = c("richness","neutral","phylogenetic"))) %>%
+  left_join(sample_metadata, by = "sample") %>%
+  ggplot(aes(x = day, y = value, group = animal_id, color = day)) +
+  geom_boxplot(aes(group = day, fill = day), alpha = 0.5, outlier.shape = NA) +
+  geom_line(alpha = 0.4) +   # ← connects same animal across days
+  geom_jitter(width = 0.2, alpha = 0.5) +
+  facet_wrap(
+    ~ factor(metric, labels = c(
+      "richness" = "Richness",
+      "neutral" = "Neutral",
+      "phylogenetic" = "Phylogenetic")),
+    scales = "free",
+    ncol = 5
+  ) +
+  coord_cartesian(xlim = c(1, NA)) +
+  theme_classic() +
+  theme(
+    strip.background = element_blank(),
+    strip.text = element_text(size = 12, lineheight = 0.6),
+    panel.grid.minor.x = element_line(size = .1, color = "grey"),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_blank()
+  )
+```
+
+```{r alpha_div_diets_summary_longi, comment="", message=FALSE, warning=FALSE}
+alpha_div %>%
+  pivot_longer(-sample, names_to = "alpha", values_to = "value") %>%
+  left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  group_by(day, alpha) %>%
+  summarise(
+    total_mean = mean(value, na.rm = T),
+    total_sd = sd(value, na.rm = T)
+  ) %>%
+  mutate(
+    total = str_c(round(total_mean, 3), "±", round(total_sd, 3))
+  ) %>%
+  arrange(-total_mean) %>%
+  dplyr::select(alpha, day, total) %>%
+  pivot_wider(names_from = alpha, values_from = total) %>% 
+  tt()
+```
+
+
+## Beta diversity
+```{r}
+#Neutral
+samples_to_keep <- sample_metadata %>%
+  select(sample) %>% 
+  pull()
+neutral <- as.matrix(beta_q1n$S)
+neutral_sub <- neutral[samples_to_keep, samples_to_keep]
+neutral_dis <- as.dist(neutral_sub)
+
+# sample_metadata_ordered <- sample_metadata %>% 
+#   arrange(match(sample,labels(neutral_dis))) %>% 
+#   column_to_rownames(., "sample")
+
+sample_metadata_ordered <- sample_metadata %>%
+  filter(sample %in% samples_to_keep) %>%
+  column_to_rownames("sample") %>%
+  .[labels(neutral_dis), ]
+
+sample_metadata_ordered_row <- sample_metadata %>% 
+  arrange(match(sample,labels(neutral_dis)))
+
+disp <- betadisper(neutral_dis, sample_metadata_ordered$day)
+anova(disp)
+
+adonis2(
+  neutral_dis ~ day,
+  data = sample_metadata_ordered,
+  permutations = how(blocks = sample_metadata_ordered$animal_id)
+)
+```
+
+```{r neutral_animal_id_plot, fig.height=7, fig.width=12, fig.fullwidth=TRUE}
+neutral_dis %>%
+  vegan::metaMDS(., trymax = 500, k = 2, trace=0) %>%
+  vegan::scores() %>%
+  as_tibble(., rownames = "sample") %>%
+  dplyr::left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  group_by(animal_id) %>%
+  mutate(x_cen = mean(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
+  ungroup() %>% 
+  ggplot(aes(x = NMDS1, y = NMDS2, color = animal_id)) +
+  geom_point(size = 3, alpha = 0.5) +
+  geom_segment(aes(x = x_cen, y = y_cen, xend = NMDS1, yend = NMDS2), alpha = 0.5, show.legend = FALSE) +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(size = 12),
+    axis.title = element_text(size = 12, face = "bold"),
+    axis.text = element_text(face = "bold", size = 12),
+    panel.background = element_blank(),
+    axis.line = element_line(
+      size = 0.5,
+      linetype = "solid",
+      colour = "black"
+    ),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14),
+    legend.position = "right",
+    legend.box = "vertical"
+  )
+
+# +
+#   geom_text_repel(aes(label = animal_id), size = 3)
+
+```
+```{r neutral_day_plot_longi, fig.height=7, fig.width=12, fig.fullwidth=TRUE}
+neutral_dis %>%
+  vegan::metaMDS(., trymax = 500, k = 2, trace=0) %>%
+  vegan::scores() %>%
+  as_tibble(., rownames = "sample") %>%
+  dplyr::left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  group_by(day) %>%
+  mutate(x_cen = mean(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
+  ungroup() %>% 
+  ggplot(aes(x = NMDS1, y = NMDS2, color = day)) +
+  geom_point(size = 3, alpha = 0.5) +
+  geom_segment(aes(x = x_cen, y = y_cen, xend = NMDS1, yend = NMDS2), alpha = 0.5, show.legend = FALSE) +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(size = 12),
+    axis.title = element_text(size = 12, face = "bold"),
+    axis.text = element_text(face = "bold", size = 12),
+    panel.background = element_blank(),
+    axis.line = element_line(
+      size = 0.5,
+      linetype = "solid",
+      colour = "black"
+    ),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14),
+    legend.position = "right",
+    legend.box = "vertical"
+  )
+```
+```{r}
+cca_ord <- capscale(neutral_dis ~ day, data = sample_metadata_ordered)
+
+CAP_df <- as.data.frame(vegan::scores(cca_ord, display = "sites")) %>%
+  rownames_to_column('sample') %>%
+  left_join(sample_metadata_ordered_row, by = 'sample') %>%
+  column_to_rownames('sample')%>%
+  mutate(x_cen = mean(CAP1, na.rm = TRUE)) %>%
+  mutate(y_cen = mean(CAP2, na.rm = TRUE))
+
+CAP_df %>%
+  ggplot(aes(CAP1, CAP2, color = day, group = animal_id)) +
+  geom_point() +
+  geom_path(alpha = 0.4) +
+  theme_classic()
+```
+
+# temporal divergence
+Microbiome divergence from baseline increased significantly over time (day effect: p < 0.001)
+```{r}
+meta <- sample_metadata_ordered %>%
+  rownames_to_column("sample")
+
+baseline_df <- meta %>%
+  filter(day == "day_1") %>%
+  select(animal_id, baseline_sample = sample)
+
+df_dist <- meta %>%
+  left_join(baseline_df, by = "animal_id") %>%
+  mutate(dist = as.matrix(neutral_dis)[cbind(sample, baseline_sample)]) %>%
+  mutate(
+    day_num = as.numeric(gsub("day_", "", day)),
+    animal_id = factor(animal_id)
+  )
+
+m1 <- lmerTest::lmer(dist ~ day_num + (1 | animal_id), data = df_dist) #Do individuals diverge from their baseline over time? Does distance from baseline (day 1) change over time, while accounting for repeated measures within each animal?
+summary(m1)
+anova(m1)
+#day_num = 0.0866, p = 1.76e-05. On average, microbiome distance from baseline increases significantly over time
+```
+
+# do animals respond differently over time?
+Inclusion of random slopes did not improve model fit and resulted in singularity, indicating consistent temporal trajectories across individuals.
+```{r}
+m2 <- lmerTest::lmer(dist ~ day_num + (day_num | animal_id), data = df_dist)
+isSingular(m2)
+summary(m2)
+anova(m1)
+```
+
+```{r}
+anova(m1, m2)
+```
+
+Divergence occurred early (day 1–2) and then plateaued
+```{r}
+m1_cat <- lmer(dist ~ day + (1 | animal_id), data = df_dist)
+emmeans(m1_cat, pairwise ~ day)
+```
+
+```{r}
+ggplot(df_dist, aes(day_num, dist, group = animal_id)) +
+  geom_line(alpha = 0.3) +
+  stat_summary(aes(group = 1), fun = mean, geom = "line", size = 1.2) +
+  stat_summary(aes(group = 1), fun.data = mean_se, geom = "errorbar", width = 0.1) +
+  theme_classic()
+```
+

@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 5 Community composition | AlberdiLab | Aizpurua et al. 2025</title>
+  <meta name="description" content="Data analysis code for the study on the study of gut microbiomes of sled dogs and beyond." />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 5 Community composition | AlberdiLab | Aizpurua et al. 2025" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Data analysis code for the study on the study of gut microbiomes of sled dogs and beyond." />
+  <meta name="github-repo" content="alberdilab/sled_dogs_extended" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 5 Community composition | AlberdiLab | Aizpurua et al. 2025" />
+  
+  <meta name="twitter:description" content="Data analysis code for the study on the study of gut microbiomes of sled dogs and beyond." />
+  
+
+<meta name="author" content="Ostaizka Aizpurua" />
+<meta name="author" content="Antton Alberdi" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="mag-catalogue.html"/>
+<link rel="next" href="alpha-diversity.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#prepare-the-r-environment"><i class="fa fa-check"></i><b>1.1</b> Prepare the R environment</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#environment"><i class="fa fa-check"></i><b>1.1.1</b> Environment</a></li>
+<li class="chapter" data-level="1.1.2" data-path="index.html"><a href="index.html#libraries"><i class="fa fa-check"></i><b>1.1.2</b> Libraries</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="prepare-data.html"><a href="prepare-data.html"><i class="fa fa-check"></i><b>2</b> Prepare data</a>
+<ul>
+<li class="chapter" data-level="2.0.1" data-path="prepare-data.html"><a href="prepare-data.html#reads"><i class="fa fa-check"></i><b>2.0.1</b> Reads</a></li>
+<li class="chapter" data-level="2.0.2" data-path="prepare-data.html"><a href="prepare-data.html#sample-metadata"><i class="fa fa-check"></i><b>2.0.2</b> Sample metadata</a></li>
+<li class="chapter" data-level="2.0.3" data-path="prepare-data.html"><a href="prepare-data.html#filter-read-counts"><i class="fa fa-check"></i><b>2.0.3</b> Filter read counts</a></li>
+<li class="chapter" data-level="2.0.4" data-path="prepare-data.html"><a href="prepare-data.html#genome-taxonomy"><i class="fa fa-check"></i><b>2.0.4</b> Genome taxonomy</a></li>
+<li class="chapter" data-level="2.0.5" data-path="prepare-data.html"><a href="prepare-data.html#genome-base-hits"><i class="fa fa-check"></i><b>2.0.5</b> Genome base hits</a></li>
+<li class="chapter" data-level="2.0.6" data-path="prepare-data.html"><a href="prepare-data.html#genome-tree"><i class="fa fa-check"></i><b>2.0.6</b> Genome tree</a></li>
+<li class="chapter" data-level="2.0.7" data-path="prepare-data.html"><a href="prepare-data.html#genome-annotations"><i class="fa fa-check"></i><b>2.0.7</b> Genome annotations</a></li>
+<li class="chapter" data-level="2.1" data-path="prepare-data.html"><a href="prepare-data.html#create-working-objects"><i class="fa fa-check"></i><b>2.1</b> Create working objects</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="prepare-data.html"><a href="prepare-data.html#filter-reads-by-coverage"><i class="fa fa-check"></i><b>2.1.1</b> Filter reads by coverage</a></li>
+<li class="chapter" data-level="2.1.2" data-path="prepare-data.html"><a href="prepare-data.html#transform-reads-into-genome-counts"><i class="fa fa-check"></i><b>2.1.2</b> Transform reads into genome counts</a></li>
+<li class="chapter" data-level="2.1.3" data-path="prepare-data.html"><a href="prepare-data.html#distill-annotations-into-gifts"><i class="fa fa-check"></i><b>2.1.3</b> Distill annotations into GIFTs</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="prepare-data.html"><a href="prepare-data.html#prepare-color-scheme"><i class="fa fa-check"></i><b>2.2</b> Prepare color scheme</a></li>
+<li class="chapter" data-level="2.3" data-path="prepare-data.html"><a href="prepare-data.html#wrap-working-objects"><i class="fa fa-check"></i><b>2.3</b> Wrap working objects</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-statistics.html"><a href="data-statistics.html"><i class="fa fa-check"></i><b>3</b> Data statistics</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="data-statistics.html"><a href="data-statistics.html#sample-overview"><i class="fa fa-check"></i><b>3.1</b> Sample overview</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="mag-catalogue.html"><a href="mag-catalogue.html"><i class="fa fa-check"></i><b>4</b> MAG catalogue</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="mag-catalogue.html"><a href="mag-catalogue.html#genome-phylogeny"><i class="fa fa-check"></i><b>4.1</b> Genome phylogeny</a></li>
+<li class="chapter" data-level="4.2" data-path="mag-catalogue.html"><a href="mag-catalogue.html#taxonomy-overview"><i class="fa fa-check"></i><b>4.2</b> Taxonomy overview</a></li>
+<li class="chapter" data-level="4.3" data-path="mag-catalogue.html"><a href="mag-catalogue.html#genome-quality"><i class="fa fa-check"></i><b>4.3</b> Genome quality</a></li>
+<li class="chapter" data-level="4.4" data-path="mag-catalogue.html"><a href="mag-catalogue.html#functional-overview"><i class="fa fa-check"></i><b>4.4</b> Functional overview</a></li>
+<li class="chapter" data-level="4.5" data-path="mag-catalogue.html"><a href="mag-catalogue.html#functional-ordination"><i class="fa fa-check"></i><b>4.5</b> Functional ordination</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="community-composition.html"><a href="community-composition.html"><i class="fa fa-check"></i><b>5</b> Community composition</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="community-composition.html"><a href="community-composition.html#filter-data"><i class="fa fa-check"></i><b>5.1</b> Filter data</a></li>
+<li class="chapter" data-level="5.2" data-path="community-composition.html"><a href="community-composition.html#taxonomy-overview-1"><i class="fa fa-check"></i><b>5.2</b> Taxonomy overview</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="community-composition.html"><a href="community-composition.html#stacked-barplot"><i class="fa fa-check"></i><b>5.2.1</b> Stacked barplot</a></li>
+<li class="chapter" data-level="5.2.2" data-path="community-composition.html"><a href="community-composition.html#genus-and-species-annotation"><i class="fa fa-check"></i><b>5.2.2</b> Genus and species annotation</a></li>
+<li class="chapter" data-level="5.2.3" data-path="community-composition.html"><a href="community-composition.html#phylum-relative-abundances"><i class="fa fa-check"></i><b>5.2.3</b> Phylum relative abundances</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="alpha-diversity.html"><a href="alpha-diversity.html"><i class="fa fa-check"></i><b>6</b> Alpha diversity</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="alpha-diversity.html"><a href="alpha-diversity.html#countries"><i class="fa fa-check"></i><b>6.1</b> Countries</a></li>
+<li class="chapter" data-level="6.2" data-path="alpha-diversity.html"><a href="alpha-diversity.html#dog-group"><i class="fa fa-check"></i><b>6.2</b> Dog group</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="beta-diversity.html"><a href="beta-diversity.html"><i class="fa fa-check"></i><b>7</b> Beta diversity</a>
+<ul>
+<li class="chapter" data-level="7.0.1" data-path="beta-diversity.html"><a href="beta-diversity.html#permanova-analysis"><i class="fa fa-check"></i><b>7.0.1</b> Permanova analysis</a></li>
+<li class="chapter" data-level="7.0.2" data-path="beta-diversity.html"><a href="beta-diversity.html#plots"><i class="fa fa-check"></i><b>7.0.2</b> Plots</a></li>
+<li class="chapter" data-level="7.1" data-path="beta-diversity.html"><a href="beta-diversity.html#phylum"><i class="fa fa-check"></i><b>7.1</b> Phylum</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="beta-diversity.html"><a href="beta-diversity.html#domestic-vs-sled_dog"><i class="fa fa-check"></i><b>7.1.1</b> Domestic vs sled_dog</a></li>
+<li class="chapter" data-level="7.1.2" data-path="beta-diversity.html"><a href="beta-diversity.html#sled_dog-vs-wolves"><i class="fa fa-check"></i><b>7.1.2</b> Sled_dog vs wolves</a></li>
+<li class="chapter" data-level="7.1.3" data-path="beta-diversity.html"><a href="beta-diversity.html#plots-1"><i class="fa fa-check"></i><b>7.1.3</b> Plots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html"><i class="fa fa-check"></i><b>8</b> Sled dogs vs domestic dogs vs wolves</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#mag-level"><i class="fa fa-check"></i><b>8.1</b> MAG level</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#domestic_vs_sled_dog"><i class="fa fa-check"></i><b>8.1.1</b> domestic_vs_sled_dog</a></li>
+<li class="chapter" data-level="8.1.2" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#sled_dog-vs-wolves-1"><i class="fa fa-check"></i><b>8.1.2</b> sled_dog vs wolves</a></li>
+<li class="chapter" data-level="8.1.3" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#plots-2"><i class="fa fa-check"></i><b>8.1.3</b> Plots</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#species-level"><i class="fa fa-check"></i><b>8.2</b> Species level</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#domestic_vs_sled_dog-1"><i class="fa fa-check"></i><b>8.2.1</b> domestic_vs_sled_dog</a></li>
+<li class="chapter" data-level="8.2.2" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#sled_dog-vs-wolves-2"><i class="fa fa-check"></i><b>8.2.2</b> sled_dog vs wolves</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#phylum-1"><i class="fa fa-check"></i><b>8.3</b> Phylum</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#domestic_vs_sled_dog-2"><i class="fa fa-check"></i><b>8.3.1</b> domestic_vs_sled_dog</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#functional-differences"><i class="fa fa-check"></i><b>8.4</b> Functional differences</a></li>
+<li class="chapter" data-level="8.5" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#mci"><i class="fa fa-check"></i><b>8.5</b> MCI</a></li>
+<li class="chapter" data-level="8.6" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#type"><i class="fa fa-check"></i><b>8.6</b> Type</a></li>
+<li class="chapter" data-level="8.7" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#community-elements-differences"><i class="fa fa-check"></i><b>8.7</b> Community elements differences:</a></li>
+<li class="chapter" data-level="8.8" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#community-function-differences"><i class="fa fa-check"></i><b>8.8</b> Community function differences:</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="amr-and-vf.html"><a href="amr-and-vf.html"><i class="fa fa-check"></i><b>9</b> AMR and VF</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="amr-and-vf.html"><a href="amr-and-vf.html#genome-size"><i class="fa fa-check"></i><b>9.1</b> Genome size</a></li>
+<li class="chapter" data-level="9.2" data-path="amr-and-vf.html"><a href="amr-and-vf.html#amr"><i class="fa fa-check"></i><b>9.2</b> AMR</a></li>
+<li class="chapter" data-level="9.3" data-path="amr-and-vf.html"><a href="amr-and-vf.html#virulence-factors"><i class="fa fa-check"></i><b>9.3</b> Virulence factors</a></li>
+<li class="chapter" data-level="9.4" data-path="amr-and-vf.html"><a href="amr-and-vf.html#size-function-correlations"><i class="fa fa-check"></i><b>9.4</b> Size-function correlations</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html"><i class="fa fa-check"></i><b>10</b> Sled dogs: differences across localities</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#taxonomy"><i class="fa fa-check"></i><b>10.1</b> Taxonomy</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#phylum-relative-abundances-1"><i class="fa fa-check"></i><b>10.1.1</b> Phylum relative abundances</a></li>
+<li class="chapter" data-level="10.1.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#upset-shared-mags"><i class="fa fa-check"></i><b>10.1.2</b> Upset: shared MAGs</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#alpha-diversity-1"><i class="fa fa-check"></i><b>10.2</b> Alpha diversity</a></li>
+<li class="chapter" data-level="10.3" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#beta-diversity-1"><i class="fa fa-check"></i><b>10.3</b> Beta diversity</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#richness-1"><i class="fa fa-check"></i><b>10.3.1</b> Richness</a></li>
+<li class="chapter" data-level="10.3.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#neutral-1"><i class="fa fa-check"></i><b>10.3.2</b> Neutral</a></li>
+<li class="chapter" data-level="10.3.3" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#phylogenetic-1"><i class="fa fa-check"></i><b>10.3.3</b> Phylogenetic</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#is-there-any-location-closer-to-domestic-dogs"><i class="fa fa-check"></i><b>10.4</b> Is there any location closer to domestic dogs?</a></li>
+<li class="chapter" data-level="10.5" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#differential-abundance"><i class="fa fa-check"></i><b>10.5</b> Differential abundance</a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#differences-across-localities"><i class="fa fa-check"></i><b>10.5.1</b> Differences across localities</a></li>
+<li class="chapter" data-level="10.5.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#differences-between-military-and-civilian-owned-dogs"><i class="fa fa-check"></i><b>10.5.2</b> Differences between military and civilian-owned dogs</a></li>
+<li class="chapter" data-level="10.5.3" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#species-level-1"><i class="fa fa-check"></i><b>10.5.3</b> Species level</a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#functional-differences-1"><i class="fa fa-check"></i><b>10.6</b> Functional differences</a>
+<ul>
+<li class="chapter" data-level="10.6.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#different-localities-in-greenland"><i class="fa fa-check"></i><b>10.6.1</b> Different localities in Greenland</a></li>
+<li class="chapter" data-level="10.6.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#military-vs-civilian-owned-dogs"><i class="fa fa-check"></i><b>10.6.2</b> Military vs civilian-owned dogs</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html"><i class="fa fa-check"></i><b>11</b> Seasonal differences in eastern Greenland</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#taxonomy-1"><i class="fa fa-check"></i><b>11.1</b> Taxonomy</a>
+<ul>
+<li class="chapter" data-level="11.1.1" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#phylum-relative-abundances-2"><i class="fa fa-check"></i><b>11.1.1</b> Phylum relative abundances</a></li>
+<li class="chapter" data-level="11.1.2" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#differences-in-phylum-ancombc"><i class="fa fa-check"></i><b>11.1.2</b> Differences in phylum (ancombc)</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#alpha-diversity-2"><i class="fa fa-check"></i><b>11.2</b> Alpha diversity</a></li>
+<li class="chapter" data-level="11.3" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#beta-diversity-2"><i class="fa fa-check"></i><b>11.3</b> Beta diversity</a></li>
+<li class="chapter" data-level="11.4" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#differences-in-mag-abundances-ancombc2"><i class="fa fa-check"></i><b>11.4</b> Differences in MAG abundances: Ancombc2</a></li>
+<li class="chapter" data-level="11.5" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#functional-differences-2"><i class="fa fa-check"></i><b>11.5</b> Functional differences</a></li>
+<li class="chapter" data-level="11.6" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#groups-mci"><i class="fa fa-check"></i><b>11.6</b> Groups MCI</a>
+<ul>
+<li class="chapter" data-level="11.6.1" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#community-elements-differences-1"><i class="fa fa-check"></i><b>11.6.1</b> Community elements differences:</a></li>
+</ul></li>
+<li class="chapter" data-level="11.7" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#taxonomy-overview-2"><i class="fa fa-check"></i><b>11.7</b> Taxonomy overview</a>
+<ul>
+<li class="chapter" data-level="11.7.1" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#phylum-relative-abundances-3"><i class="fa fa-check"></i><b>11.7.1</b> Phylum relative abundances</a></li>
+</ul></li>
+<li class="chapter" data-level="11.8" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#alpha-diversity-3"><i class="fa fa-check"></i><b>11.8</b> Alpha diversity</a></li>
+<li class="chapter" data-level="11.9" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#beta-diversity-3"><i class="fa fa-check"></i><b>11.9</b> Beta diversity</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="temporal-divergence.html"><a href="temporal-divergence.html"><i class="fa fa-check"></i><b>12</b> temporal divergence</a></li>
+<li class="chapter" data-level="13" data-path="do-animals-respond-differently-over-time.html"><a href="do-animals-respond-differently-over-time.html"><i class="fa fa-check"></i><b>13</b> do animals respond differently over time?</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">AlberdiLab | Aizpurua et al. 2025</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="community-composition" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">Chapter 5</span> Community composition<a href="community-composition.html#community-composition" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="filter-data" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Filter data<a href="community-composition.html#filter-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb48-1"><a href="community-composition.html#cb48-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;data/data.Rdata&quot;</span>)</span>
+<span id="cb48-2"><a href="community-composition.html#cb48-2" tabindex="-1"></a>genome_metadata <span class="ot">&lt;-</span> genome_metadata <span class="sc">%&gt;%</span> </span>
+<span id="cb48-3"><a href="community-composition.html#cb48-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">phylum =</span> <span class="fu">case_when</span>(</span>
+<span id="cb48-4"><a href="community-composition.html#cb48-4" tabindex="-1"></a>        phylum <span class="sc">==</span> <span class="st">&quot;Bacillota_A&quot;</span> <span class="sc">~</span> <span class="st">&quot;Bacillota&quot;</span>,</span>
+<span id="cb48-5"><a href="community-composition.html#cb48-5" tabindex="-1"></a>        phylum <span class="sc">==</span> <span class="st">&quot;Bacillota_C&quot;</span> <span class="sc">~</span> <span class="st">&quot;Bacillota&quot;</span>,</span>
+<span id="cb48-6"><a href="community-composition.html#cb48-6" tabindex="-1"></a>        phylum <span class="sc">==</span> <span class="st">&quot;Bacillota_B&quot;</span> <span class="sc">~</span> <span class="st">&quot;Bacillota&quot;</span>,</span>
+<span id="cb48-7"><a href="community-composition.html#cb48-7" tabindex="-1"></a>        phylum <span class="sc">==</span> <span class="st">&quot;Bacillota_I&quot;</span> <span class="sc">~</span> <span class="st">&quot;Bacillota&quot;</span>,</span>
+<span id="cb48-8"><a href="community-composition.html#cb48-8" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> phylum))</span>
+<span id="cb48-9"><a href="community-composition.html#cb48-9" tabindex="-1"></a></span>
+<span id="cb48-10"><a href="community-composition.html#cb48-10" tabindex="-1"></a>remove_sled <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/sample_metadata.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb48-11"><a href="community-composition.html#cb48-11" tabindex="-1"></a>  <span class="fu">filter</span>(season<span class="sc">==</span><span class="st">&quot;winter&quot;</span>)</span>
+<span id="cb48-12"><a href="community-composition.html#cb48-12" tabindex="-1"></a></span>
+<span id="cb48-13"><a href="community-composition.html#cb48-13" tabindex="-1"></a>sample_metadata <span class="ot">&lt;-</span> sample_metadata <span class="sc">%&gt;%</span></span>
+<span id="cb48-14"><a href="community-composition.html#cb48-14" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">if_else</span>(country <span class="sc">==</span> <span class="st">&quot;Shangai domestic dog&quot;</span>, <span class="st">&quot;Shangai&quot;</span>, country)) <span class="sc">%&gt;%</span> </span>
+<span id="cb48-15"><a href="community-composition.html#cb48-15" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>sample <span class="sc">%in%</span> remove_sled<span class="sc">$</span>sample) <span class="sc">%&gt;%</span></span>
+<span id="cb48-16"><a href="community-composition.html#cb48-16" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb48-17"><a href="community-composition.html#cb48-17" tabindex="-1"></a>    <span class="at">dog_type =</span> <span class="fu">case_when</span>(</span>
+<span id="cb48-18"><a href="community-composition.html#cb48-18" tabindex="-1"></a>      breed <span class="sc">==</span> <span class="st">&quot;Wolf&quot;</span>        <span class="sc">~</span> <span class="st">&quot;wolf&quot;</span>,</span>
+<span id="cb48-19"><a href="community-composition.html#cb48-19" tabindex="-1"></a>      country <span class="sc">==</span> <span class="st">&quot;Greenland&quot;</span> <span class="sc">~</span> <span class="st">&quot;sled_dog&quot;</span>,</span>
+<span id="cb48-20"><a href="community-composition.html#cb48-20" tabindex="-1"></a>      <span class="cn">TRUE</span>                   <span class="sc">~</span> <span class="st">&quot;domestic&quot;</span></span>
+<span id="cb48-21"><a href="community-composition.html#cb48-21" tabindex="-1"></a>    )</span>
+<span id="cb48-22"><a href="community-composition.html#cb48-22" tabindex="-1"></a>  )</span>
+<span id="cb48-23"><a href="community-composition.html#cb48-23" tabindex="-1"></a></span>
+<span id="cb48-24"><a href="community-composition.html#cb48-24" tabindex="-1"></a>genome_counts_filt <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb48-25"><a href="community-composition.html#cb48-25" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">one_of</span>(<span class="fu">c</span>(<span class="st">&quot;genome&quot;</span>,sample_metadata<span class="sc">$</span>sample)))<span class="sc">%&gt;%</span></span>
+<span id="cb48-26"><a href="community-composition.html#cb48-26" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">rowSums</span>(. <span class="sc">!=</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb48-27"><a href="community-composition.html#cb48-27" tabindex="-1"></a>  <span class="fu">select_if</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))</span>
+<span id="cb48-28"><a href="community-composition.html#cb48-28" tabindex="-1"></a></span>
+<span id="cb48-29"><a href="community-composition.html#cb48-29" tabindex="-1"></a>genome_metadata <span class="ot">&lt;-</span> genome_metadata <span class="sc">%&gt;%</span></span>
+<span id="cb48-30"><a href="community-composition.html#cb48-30" tabindex="-1"></a>  <span class="fu">semi_join</span>(., genome_counts_filt, <span class="at">by =</span> <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb48-31"><a href="community-composition.html#cb48-31" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">match</span>(genome,genome_counts_filt<span class="sc">$</span>genome))</span>
+<span id="cb48-32"><a href="community-composition.html#cb48-32" tabindex="-1"></a></span>
+<span id="cb48-33"><a href="community-composition.html#cb48-33" tabindex="-1"></a>genome_tree <span class="ot">&lt;-</span> <span class="fu">keep.tip</span>(genome_tree, <span class="at">tip=</span>genome_metadata<span class="sc">$</span>genome)</span></code></pre></div>
+</div>
+<div id="taxonomy-overview-1" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Taxonomy overview<a href="community-composition.html#taxonomy-overview-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="stacked-barplot" class="section level3 hasAnchor" number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span> Stacked barplot<a href="community-composition.html#stacked-barplot" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb49-1"><a href="community-composition.html#cb49-1" tabindex="-1"></a>genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb49-2"><a href="community-composition.html#cb49-2" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(<span class="sc">-</span>genome),<span class="sc">~</span>.<span class="sc">/</span><span class="fu">sum</span>(.)) <span class="sc">%&gt;%</span> </span>
+<span id="cb49-3"><a href="community-composition.html#cb49-3" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>genome, <span class="at">names_to =</span> <span class="st">&quot;sample&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb49-4"><a href="community-composition.html#cb49-4" tabindex="-1"></a>  <span class="fu">left_join</span>(., genome_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(genome <span class="sc">==</span> genome)) <span class="sc">%&gt;%</span> </span>
+<span id="cb49-5"><a href="community-composition.html#cb49-5" tabindex="-1"></a>  <span class="fu">left_join</span>(., sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span> </span>
+<span id="cb49-6"><a href="community-composition.html#cb49-6" tabindex="-1"></a>  <span class="fu">filter</span>(count <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb49-7"><a href="community-composition.html#cb49-7" tabindex="-1"></a>  <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x=</span>sample,<span class="at">y=</span>count, <span class="at">fill=</span>phylum, <span class="at">group=</span>phylum)) <span class="sc">+</span> </span>
+<span id="cb49-8"><a href="community-composition.html#cb49-8" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="at">colour=</span><span class="st">&quot;white&quot;</span>, <span class="at">linewidth=</span><span class="fl">0.1</span>) <span class="sc">+</span> </span>
+<span id="cb49-9"><a href="community-composition.html#cb49-9" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values=</span>phylum_colors) <span class="sc">+</span></span>
+<span id="cb49-10"><a href="community-composition.html#cb49-10" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span> country, <span class="at">scale=</span><span class="st">&quot;free&quot;</span>, <span class="at">space=</span><span class="st">&quot;free&quot;</span>)<span class="sc">+</span></span>
+<span id="cb49-11"><a href="community-composition.html#cb49-11" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">fill =</span> <span class="fu">guide_legend</span>(<span class="at">ncol =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb49-12"><a href="community-composition.html#cb49-12" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb49-13"><a href="community-composition.html#cb49-13" tabindex="-1"></a>          <span class="at">axis.title.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb49-14"><a href="community-composition.html#cb49-14" tabindex="-1"></a>          <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb49-15"><a href="community-composition.html#cb49-15" tabindex="-1"></a>          <span class="at">panel.border =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb49-16"><a href="community-composition.html#cb49-16" tabindex="-1"></a>          <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb49-17"><a href="community-composition.html#cb49-17" tabindex="-1"></a>          <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb49-18"><a href="community-composition.html#cb49-18" tabindex="-1"></a>          <span class="at">strip.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;white&quot;</span>),</span>
+<span id="cb49-19"><a href="community-composition.html#cb49-19" tabindex="-1"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>, <span class="at">lineheight =</span> <span class="fl">0.6</span>),</span>
+<span id="cb49-20"><a href="community-composition.html#cb49-20" tabindex="-1"></a>    <span class="at">strip.placement =</span> <span class="st">&quot;outside&quot;</span>,</span>
+<span id="cb49-21"><a href="community-composition.html#cb49-21" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(), <span class="at">axis.ticks.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb49-22"><a href="community-composition.html#cb49-22" tabindex="-1"></a>          <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">linewidth =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">colour =</span> <span class="st">&quot;black&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb49-23"><a href="community-composition.html#cb49-23" tabindex="-1"></a>   <span class="fu">labs</span>(<span class="at">fill=</span><span class="st">&quot;Phylum&quot;</span>,<span class="at">y =</span> <span class="st">&quot;Relative abundance&quot;</span>,<span class="at">x=</span><span class="st">&quot;Samples&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/taxonomy_barplot_canids-1.png" width="1920" /></p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb50-1"><a href="community-composition.html#cb50-1" tabindex="-1"></a>genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb50-2"><a href="community-composition.html#cb50-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="sc">-</span>genome, <span class="sc">~</span> . <span class="sc">/</span> <span class="fu">sum</span>(.))) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-3"><a href="community-composition.html#cb50-3" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>genome, <span class="at">names_to =</span> <span class="st">&quot;sample&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb50-4"><a href="community-composition.html#cb50-4" tabindex="-1"></a>  <span class="fu">left_join</span>(., genome_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(genome <span class="sc">==</span> genome)) <span class="sc">%&gt;%</span></span>
+<span id="cb50-5"><a href="community-composition.html#cb50-5" tabindex="-1"></a>  <span class="fu">left_join</span>(., sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb50-6"><a href="community-composition.html#cb50-6" tabindex="-1"></a>  <span class="fu">filter</span>(count <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-7"><a href="community-composition.html#cb50-7" tabindex="-1"></a>  <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x=</span>sample,<span class="at">y=</span>count, <span class="at">fill=</span>phylum, <span class="at">group=</span>phylum)) <span class="sc">+</span> </span>
+<span id="cb50-8"><a href="community-composition.html#cb50-8" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="at">colour=</span><span class="st">&quot;white&quot;</span>, <span class="at">linewidth=</span><span class="fl">0.1</span>) <span class="sc">+</span> </span>
+<span id="cb50-9"><a href="community-composition.html#cb50-9" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> phylum_colors) <span class="sc">+</span></span>
+<span id="cb50-10"><a href="community-composition.html#cb50-10" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span><span class="fu">factor</span>(dog_type, <span class="at">labels=</span><span class="fu">c</span>(<span class="st">&quot;domestic&quot;</span> <span class="ot">=</span> <span class="st">&quot;Domestic dogs&quot;</span>, <span class="st">&quot;sled_dog&quot;</span> <span class="ot">=</span> <span class="st">&quot;Sled dogs&quot;</span>, <span class="st">&quot;wolf&quot;</span> <span class="ot">=</span> <span class="st">&quot;Wolves&quot;</span>)), <span class="at">scale=</span><span class="st">&quot;free&quot;</span>, <span class="at">space=</span><span class="st">&quot;free&quot;</span>)<span class="sc">+</span></span>
+<span id="cb50-11"><a href="community-composition.html#cb50-11" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="fu">guide_legend</span>(<span class="at">ncol =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb50-12"><a href="community-composition.html#cb50-12" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb50-13"><a href="community-composition.html#cb50-13" tabindex="-1"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb50-14"><a href="community-composition.html#cb50-14" tabindex="-1"></a>    <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb50-15"><a href="community-composition.html#cb50-15" tabindex="-1"></a>    <span class="at">panel.border =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb50-16"><a href="community-composition.html#cb50-16" tabindex="-1"></a>    <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb50-17"><a href="community-composition.html#cb50-17" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb50-18"><a href="community-composition.html#cb50-18" tabindex="-1"></a>    <span class="at">strip.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;white&quot;</span>),</span>
+<span id="cb50-19"><a href="community-composition.html#cb50-19" tabindex="-1"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">lineheight =</span> <span class="fl">0.6</span>),</span>
+<span id="cb50-20"><a href="community-composition.html#cb50-20" tabindex="-1"></a>    <span class="at">strip.placement =</span> <span class="st">&quot;outside&quot;</span>,</span>
+<span id="cb50-21"><a href="community-composition.html#cb50-21" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb50-22"><a href="community-composition.html#cb50-22" tabindex="-1"></a>    <span class="at">axis.ticks.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb50-23"><a href="community-composition.html#cb50-23" tabindex="-1"></a>    <span class="at">axis.line =</span> <span class="fu">element_line</span>(</span>
+<span id="cb50-24"><a href="community-composition.html#cb50-24" tabindex="-1"></a>      <span class="at">linewidth =</span> <span class="fl">0.5</span>,</span>
+<span id="cb50-25"><a href="community-composition.html#cb50-25" tabindex="-1"></a>      <span class="at">linetype =</span> <span class="st">&quot;solid&quot;</span>,</span>
+<span id="cb50-26"><a href="community-composition.html#cb50-26" tabindex="-1"></a>      <span class="at">colour =</span> <span class="st">&quot;black&quot;</span></span>
+<span id="cb50-27"><a href="community-composition.html#cb50-27" tabindex="-1"></a>    )</span>
+<span id="cb50-28"><a href="community-composition.html#cb50-28" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb50-29"><a href="community-composition.html#cb50-29" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">&quot;Phylum&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Relative abundance&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Samples&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/taxonomy_barplot-1.png" width="1440" /></p>
+<p><strong>Number of bacteria phyla</strong></p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb51-1"><a href="community-composition.html#cb51-1" tabindex="-1"></a>genome_metadata <span class="sc">%&gt;%</span> </span>
+<span id="cb51-2"><a href="community-composition.html#cb51-2" tabindex="-1"></a>  <span class="fu">filter</span>(domain <span class="sc">==</span> <span class="st">&quot;Bacteria&quot;</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb51-3"><a href="community-composition.html#cb51-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(phylum) <span class="sc">%&gt;%</span></span>
+<span id="cb51-4"><a href="community-composition.html#cb51-4" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb51-5"><a href="community-composition.html#cb51-5" tabindex="-1"></a>  <span class="fu">pull</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb51-6"><a href="community-composition.html#cb51-6" tabindex="-1"></a>  <span class="fu">length</span>()</span></code></pre></div>
+<pre class="script-output"><code>[1] 12</code></pre>
+<p><strong>Number of Archaea phyla</strong></p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb53-1"><a href="community-composition.html#cb53-1" tabindex="-1"></a>genome_metadata <span class="sc">%&gt;%</span> </span>
+<span id="cb53-2"><a href="community-composition.html#cb53-2" tabindex="-1"></a>  <span class="fu">filter</span>(domain <span class="sc">==</span> <span class="st">&quot;Archaea&quot;</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb53-3"><a href="community-composition.html#cb53-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(phylum) <span class="sc">%&gt;%</span></span>
+<span id="cb53-4"><a href="community-composition.html#cb53-4" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb53-5"><a href="community-composition.html#cb53-5" tabindex="-1"></a>  <span class="fu">pull</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb53-6"><a href="community-composition.html#cb53-6" tabindex="-1"></a>  <span class="fu">length</span>()</span></code></pre></div>
+<pre class="script-output"><code>[1] 0</code></pre>
+</div>
+<div id="genus-and-species-annotation" class="section level3 hasAnchor" number="5.2.2">
+<h3><span class="header-section-number">5.2.2</span> Genus and species annotation<a href="community-composition.html#genus-and-species-annotation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Number of MAGs without species-level annotation</strong></p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb55-1"><a href="community-composition.html#cb55-1" tabindex="-1"></a>genome_metadata <span class="sc">%&gt;%</span></span>
+<span id="cb55-2"><a href="community-composition.html#cb55-2" tabindex="-1"></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">&quot;&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb55-3"><a href="community-composition.html#cb55-3" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">Mag_nospecies =</span> <span class="fu">n</span>())<span class="sc">%&gt;%</span></span>
+<span id="cb55-4"><a href="community-composition.html#cb55-4" tabindex="-1"></a>  <span class="fu">select</span>(Mag_nospecies) <span class="sc">%&gt;%</span> </span>
+<span id="cb55-5"><a href="community-composition.html#cb55-5" tabindex="-1"></a>  <span class="fu">pull</span>()</span></code></pre></div>
+<pre class="script-output"><code>[1] 374</code></pre>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb57-1"><a href="community-composition.html#cb57-1" tabindex="-1"></a>total_mag_phylum <span class="ot">&lt;-</span> genome_metadata <span class="sc">%&gt;%</span></span>
+<span id="cb57-2"><a href="community-composition.html#cb57-2" tabindex="-1"></a>  <span class="fu">group_by</span>(phylum) <span class="sc">%&gt;%</span></span>
+<span id="cb57-3"><a href="community-composition.html#cb57-3" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count_total =</span> <span class="fu">n</span>())</span>
+<span id="cb57-4"><a href="community-composition.html#cb57-4" tabindex="-1"></a>genome_metadata <span class="sc">%&gt;%</span></span>
+<span id="cb57-5"><a href="community-composition.html#cb57-5" tabindex="-1"></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">&quot;&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb57-6"><a href="community-composition.html#cb57-6" tabindex="-1"></a>  <span class="fu">group_by</span>(phylum) <span class="sc">%&gt;%</span></span>
+<span id="cb57-7"><a href="community-composition.html#cb57-7" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count_nospecies =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-8"><a href="community-composition.html#cb57-8" tabindex="-1"></a>  <span class="fu">left_join</span>(total_mag_phylum, <span class="at">by =</span> <span class="fu">join_by</span>(phylum <span class="sc">==</span> phylum)) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-9"><a href="community-composition.html#cb57-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">percentage_nosp=</span><span class="dv">100</span><span class="sc">*</span>count_nospecies<span class="sc">/</span>count_total) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-10"><a href="community-composition.html#cb57-10" tabindex="-1"></a>  <span class="fu">arrange</span>(percentage_nosp) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-11"><a href="community-composition.html#cb57-11" tabindex="-1"></a>  <span class="fu">tt</span>()</span></code></pre></div>
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_zng174ktue7mr3n0kend(i, j, css_id) {
+          var table = document.getElementById("tinytable_zng174ktue7mr3n0kend");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_zng174ktue7mr3n0kend');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_zng174ktue7mr3n0kend(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_zng174ktue7mr3n0kend");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 9, j: 0 }, { i: 9, j: 1 }, { i: 9, j: 2 }, { i: 9, j: 3 },  ], css_id: 'tinytable_css_9vww760tlvtxybowcfih',}, 
+          { positions: [ { i: 0, j: 0 }, { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 },  ], css_id: 'tinytable_css_7hg1n0axxdvznpp0bk7v',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_zng174ktue7mr3n0kend(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_9vww760tlvtxybowcfih, .table th.tinytable_css_9vww760tlvtxybowcfih { border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_7hg1n0axxdvznpp0bk7v, .table th.tinytable_css_7hg1n0axxdvznpp0bk7v { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_zng174ktue7mr3n0kend" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'>
+        <thead>
+        
+              <tr>
+                <th scope="col">phylum</th>
+                <th scope="col">count_nospecies</th>
+                <th scope="col">count_total</th>
+                <th scope="col">percentage_nosp</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>Fusobacteriota</td>
+                  <td>5</td>
+                  <td>153</td>
+                  <td>3.267974</td>
+                </tr>
+                <tr>
+                  <td>Actinomycetota</td>
+                  <td>29</td>
+                  <td>229</td>
+                  <td>12.663755</td>
+                </tr>
+                <tr>
+                  <td>Campylobacterota</td>
+                  <td>15</td>
+                  <td>81</td>
+                  <td>18.518519</td>
+                </tr>
+                <tr>
+                  <td>Pseudomonadota</td>
+                  <td>42</td>
+                  <td>146</td>
+                  <td>28.767123</td>
+                </tr>
+                <tr>
+                  <td>Bacillota</td>
+                  <td>226</td>
+                  <td>688</td>
+                  <td>32.848837</td>
+                </tr>
+                <tr>
+                  <td>Deferribacterota</td>
+                  <td>1</td>
+                  <td>3</td>
+                  <td>33.333333</td>
+                </tr>
+                <tr>
+                  <td>Bacteroidota</td>
+                  <td>49</td>
+                  <td>138</td>
+                  <td>35.507246</td>
+                </tr>
+                <tr>
+                  <td>Spirochaetota</td>
+                  <td>4</td>
+                  <td>8</td>
+                  <td>50.000000</td>
+                </tr>
+                <tr>
+                  <td>Desulfobacterota</td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>75.000000</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+<p><strong>Percentage of MAGs without species-level annotation</strong></p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb58-1"><a href="community-composition.html#cb58-1" tabindex="-1"></a>nmags <span class="ot">&lt;-</span> <span class="fu">nrow</span>(genome_metadata)</span>
+<span id="cb58-2"><a href="community-composition.html#cb58-2" tabindex="-1"></a>nonspecies <span class="ot">&lt;-</span> genome_metadata <span class="sc">%&gt;%</span></span>
+<span id="cb58-3"><a href="community-composition.html#cb58-3" tabindex="-1"></a>    <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">&quot;&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb58-4"><a href="community-composition.html#cb58-4" tabindex="-1"></a>    <span class="fu">nrow</span>()</span>
+<span id="cb58-5"><a href="community-composition.html#cb58-5" tabindex="-1"></a>perct <span class="ot">&lt;-</span> nonspecies<span class="sc">*</span><span class="dv">100</span><span class="sc">/</span>nmags</span>
+<span id="cb58-6"><a href="community-composition.html#cb58-6" tabindex="-1"></a>perct</span></code></pre></div>
+<pre class="script-output"><code>[1] 25.66918</code></pre>
+<p><strong>Number of MAGs without genera-level annotation</strong></p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb60-1"><a href="community-composition.html#cb60-1" tabindex="-1"></a>nongenera <span class="ot">&lt;-</span> genome_metadata <span class="sc">%&gt;%</span></span>
+<span id="cb60-2"><a href="community-composition.html#cb60-2" tabindex="-1"></a>    <span class="fu">filter</span>(genus <span class="sc">==</span> <span class="st">&quot;&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb60-3"><a href="community-composition.html#cb60-3" tabindex="-1"></a>    <span class="fu">nrow</span>()</span>
+<span id="cb60-4"><a href="community-composition.html#cb60-4" tabindex="-1"></a><span class="fu">cat</span>(nongenera)</span></code></pre></div>
+<pre class="script-output"><code>11</code></pre>
+</div>
+<div id="phylum-relative-abundances" class="section level3 hasAnchor" number="5.2.3">
+<h3><span class="header-section-number">5.2.3</span> Phylum relative abundances<a href="community-composition.html#phylum-relative-abundances" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb62-1"><a href="community-composition.html#cb62-1" tabindex="-1"></a>phylum_summary <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb62-2"><a href="community-composition.html#cb62-2" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(<span class="sc">-</span>genome),<span class="sc">~</span>.<span class="sc">/</span><span class="fu">sum</span>(.)) <span class="sc">%&gt;%</span> </span>
+<span id="cb62-3"><a href="community-composition.html#cb62-3" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>genome, <span class="at">names_to =</span> <span class="st">&quot;sample&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb62-4"><a href="community-composition.html#cb62-4" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb62-5"><a href="community-composition.html#cb62-5" tabindex="-1"></a>  <span class="fu">left_join</span>(genome_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(genome <span class="sc">==</span> genome)) <span class="sc">%&gt;%</span></span>
+<span id="cb62-6"><a href="community-composition.html#cb62-6" tabindex="-1"></a>  <span class="fu">group_by</span>(sample,phylum,dog_type) <span class="sc">%&gt;%</span></span>
+<span id="cb62-7"><a href="community-composition.html#cb62-7" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">relabun=</span><span class="fu">sum</span>(count))</span></code></pre></div>
+<div id="origin-dogs-vs-sled-dogs-vs-wolves" class="section level4 hasAnchor" number="5.2.3.1">
+<h4><span class="header-section-number">5.2.3.1</span> Origin: Dogs vs Sled dogs vs Wolves<a href="community-composition.html#origin-dogs-vs-sled-dogs-vs-wolves" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb63-1"><a href="community-composition.html#cb63-1" tabindex="-1"></a>phylum_summary <span class="sc">%&gt;%</span></span>
+<span id="cb63-2"><a href="community-composition.html#cb63-2" tabindex="-1"></a>  <span class="fu">group_by</span>(phylum) <span class="sc">%&gt;%</span></span>
+<span id="cb63-3"><a href="community-composition.html#cb63-3" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb63-4"><a href="community-composition.html#cb63-4" tabindex="-1"></a>    <span class="at">total_mean =</span> <span class="fu">mean</span>(relabun <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb63-5"><a href="community-composition.html#cb63-5" tabindex="-1"></a>    <span class="at">total_sd =</span> <span class="fu">sd</span>(relabun <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb63-6"><a href="community-composition.html#cb63-6" tabindex="-1"></a>    <span class="at">Dog_mean =</span> <span class="fu">mean</span>(relabun[dog_type <span class="sc">==</span> <span class="st">&quot;domestic&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb63-7"><a href="community-composition.html#cb63-7" tabindex="-1"></a>    <span class="at">Dog_sd =</span> <span class="fu">sd</span>(relabun[dog_type <span class="sc">==</span> <span class="st">&quot;domestic&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb63-8"><a href="community-composition.html#cb63-8" tabindex="-1"></a>    <span class="at">Sled_dog_mean =</span> <span class="fu">mean</span>(relabun[dog_type <span class="sc">==</span> <span class="st">&quot;sled_dog&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb63-9"><a href="community-composition.html#cb63-9" tabindex="-1"></a>    <span class="at">Sled_dog_sd =</span> <span class="fu">sd</span>(relabun[dog_type <span class="sc">==</span> <span class="st">&quot;sled_dog&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb63-10"><a href="community-composition.html#cb63-10" tabindex="-1"></a>    <span class="at">Wolf_mean =</span> <span class="fu">mean</span>(relabun[dog_type <span class="sc">==</span> <span class="st">&quot;wolf&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T),</span>
+<span id="cb63-11"><a href="community-composition.html#cb63-11" tabindex="-1"></a>    <span class="at">Wolf_sd =</span> <span class="fu">sd</span>(relabun[dog_type <span class="sc">==</span> <span class="st">&quot;wolf&quot;</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">na.rm =</span> T)</span>
+<span id="cb63-12"><a href="community-composition.html#cb63-12" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb63-13"><a href="community-composition.html#cb63-13" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb63-14"><a href="community-composition.html#cb63-14" tabindex="-1"></a>    <span class="at">total =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(total_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(total_sd, <span class="dv">3</span>)),</span>
+<span id="cb63-15"><a href="community-composition.html#cb63-15" tabindex="-1"></a>    <span class="at">Domestic_dogs =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Dog_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Dog_sd, <span class="dv">3</span>)),</span>
+<span id="cb63-16"><a href="community-composition.html#cb63-16" tabindex="-1"></a>    <span class="at">Sled_dogs =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Sled_dog_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Sled_dog_sd, <span class="dv">3</span>)),</span>
+<span id="cb63-17"><a href="community-composition.html#cb63-17" tabindex="-1"></a>    <span class="at">Wolves =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Wolf_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Wolf_sd, <span class="dv">3</span>))</span>
+<span id="cb63-18"><a href="community-composition.html#cb63-18" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb63-19"><a href="community-composition.html#cb63-19" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>total_mean) <span class="sc">%&gt;%</span></span>
+<span id="cb63-20"><a href="community-composition.html#cb63-20" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(phylum, total, Domestic_dogs, Sled_dogs, Wolves) <span class="sc">%&gt;%</span></span>
+<span id="cb63-21"><a href="community-composition.html#cb63-21" tabindex="-1"></a>  <span class="fu">tt</span>()</span></code></pre></div>
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_moot2qfd020ggrlqblyd(i, j, css_id) {
+          var table = document.getElementById("tinytable_moot2qfd020ggrlqblyd");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_moot2qfd020ggrlqblyd');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_moot2qfd020ggrlqblyd(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_moot2qfd020ggrlqblyd");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 0, j: 0 }, { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 },  ], css_id: 'tinytable_css_s6e502osuxv1vwhpe555',}, 
+          { positions: [ { i: 12, j: 0 }, { i: 12, j: 1 }, { i: 12, j: 2 }, { i: 12, j: 3 }, { i: 12, j: 4 },  ], css_id: 'tinytable_css_26611jm9xcafn3dc5gg6',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_moot2qfd020ggrlqblyd(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_s6e502osuxv1vwhpe555, .table th.tinytable_css_s6e502osuxv1vwhpe555 { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_26611jm9xcafn3dc5gg6, .table th.tinytable_css_26611jm9xcafn3dc5gg6 { border-bottom: solid #d3d8dc 0.1em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_moot2qfd020ggrlqblyd" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'>
+        <thead>
+        
+              <tr>
+                <th scope="col">phylum</th>
+                <th scope="col">total</th>
+                <th scope="col">Domestic_dogs</th>
+                <th scope="col">Sled_dogs</th>
+                <th scope="col">Wolves</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>Bacillota</td>
+                  <td>35.865±19.914</td>
+                  <td>41.871±21.939</td>
+                  <td>28.627±12.756</td>
+                  <td>11.541±4.234</td>
+                </tr>
+                <tr>
+                  <td>Bacteroidota</td>
+                  <td>30.594±19.753</td>
+                  <td>28.644±23.038</td>
+                  <td>31.983±12.879</td>
+                  <td>56.336±10.036</td>
+                </tr>
+                <tr>
+                  <td>Fusobacteriota</td>
+                  <td>16.516±14.463</td>
+                  <td>9.976±12.345</td>
+                  <td>25.515±12.448</td>
+                  <td>22.244±8.591</td>
+                </tr>
+                <tr>
+                  <td>Pseudomonadota</td>
+                  <td>9.205±13.329</td>
+                  <td>9.149±15.913</td>
+                  <td>9.466±8.949</td>
+                  <td>5.846±1.751</td>
+                </tr>
+                <tr>
+                  <td>Actinomycetota</td>
+                  <td>5.247±6.791</td>
+                  <td>6.96±7.921</td>
+                  <td>2.964±3.893</td>
+                  <td>2.359±2.012</td>
+                </tr>
+                <tr>
+                  <td>Campylobacterota</td>
+                  <td>2.217±6.853</td>
+                  <td>3.166±8.835</td>
+                  <td>0.899±1.531</td>
+                  <td>1.646±1.629</td>
+                </tr>
+                <tr>
+                  <td>Deferribacterota</td>
+                  <td>0.174±0.41</td>
+                  <td>0.045±0.19</td>
+                  <td>0.367±0.552</td>
+                  <td>0±0.001</td>
+                </tr>
+                <tr>
+                  <td>Spirochaetota</td>
+                  <td>0.112±0.88</td>
+                  <td>0.135±1.155</td>
+                  <td>0.084±0.158</td>
+                  <td>0.002±0</td>
+                </tr>
+                <tr>
+                  <td>Cyanobacteriota</td>
+                  <td>0.028±0.158</td>
+                  <td>0.004±0.007</td>
+                  <td>0.063±0.245</td>
+                  <td>0.013±0.005</td>
+                </tr>
+                <tr>
+                  <td>Desulfobacterota</td>
+                  <td>0.024±0.134</td>
+                  <td>0.018±0.156</td>
+                  <td>0.032±0.099</td>
+                  <td>0.012±0.031</td>
+                </tr>
+                <tr>
+                  <td>Verrucomicrobiota</td>
+                  <td>0.016±0.147</td>
+                  <td>0.027±0.193</td>
+                  <td>0±0</td>
+                  <td>0±0</td>
+                </tr>
+                <tr>
+                  <td>Fibrobacterota</td>
+                  <td>0.003±0.046</td>
+                  <td>0.005±0.06</td>
+                  <td>0±0</td>
+                  <td>0.001±0.001</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+<p><strong>Using CLR transformation</strong></p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb64-1"><a href="community-composition.html#cb64-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">0206</span>)</span>
+<span id="cb64-2"><a href="community-composition.html#cb64-2" tabindex="-1"></a>phylo_counts <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb64-3"><a href="community-composition.html#cb64-3" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb64-4"><a href="community-composition.html#cb64-4" tabindex="-1"></a>  <span class="fu">otu_table</span>(., <span class="at">taxa_are_rows =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb64-5"><a href="community-composition.html#cb64-5" tabindex="-1"></a></span>
+<span id="cb64-6"><a href="community-composition.html#cb64-6" tabindex="-1"></a>phylo_geno_meta <span class="ot">&lt;-</span> genome_metadata <span class="sc">%&gt;%</span></span>
+<span id="cb64-7"><a href="community-composition.html#cb64-7" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="at">var=</span><span class="st">&quot;genome&quot;</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb64-8"><a href="community-composition.html#cb64-8" tabindex="-1"></a>  <span class="fu">as.matrix</span>()<span class="sc">%&gt;%</span></span>
+<span id="cb64-9"><a href="community-composition.html#cb64-9" tabindex="-1"></a>  <span class="fu">tax_table</span>()</span>
+<span id="cb64-10"><a href="community-composition.html#cb64-10" tabindex="-1"></a></span>
+<span id="cb64-11"><a href="community-composition.html#cb64-11" tabindex="-1"></a>physeq_genome_filt <span class="ot">&lt;-</span> <span class="fu">phyloseq</span>(phylo_counts,phylo_geno_meta)</span>
+<span id="cb64-12"><a href="community-composition.html#cb64-12" tabindex="-1"></a>physeq_phylum <span class="ot">&lt;-</span> <span class="fu">tax_glom</span>(physeq_genome_filt, <span class="at">taxrank =</span> <span class="st">&quot;phylum&quot;</span>)</span>
+<span id="cb64-13"><a href="community-composition.html#cb64-13" tabindex="-1"></a>physeq_phylum_clr <span class="ot">&lt;-</span> microbiome<span class="sc">::</span><span class="fu">transform</span>(physeq_phylum, <span class="st">&quot;clr&quot;</span>)</span>
+<span id="cb64-14"><a href="community-composition.html#cb64-14" tabindex="-1"></a></span>
+<span id="cb64-15"><a href="community-composition.html#cb64-15" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">psmelt</span>(physeq_phylum_clr)</span>
+<span id="cb64-16"><a href="community-composition.html#cb64-16" tabindex="-1"></a></span>
+<span id="cb64-17"><a href="community-composition.html#cb64-17" tabindex="-1"></a>results <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb64-18"><a href="community-composition.html#cb64-18" tabindex="-1"></a>  <span class="fu">left_join</span>(., sample_metadata, <span class="at">by=</span><span class="fu">join_by</span>(<span class="st">&quot;Sample&quot;</span><span class="sc">==</span><span class="st">&quot;sample&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb64-19"><a href="community-composition.html#cb64-19" tabindex="-1"></a>  <span class="fu">group_by</span>(phylum) <span class="sc">%&gt;%</span></span>
+<span id="cb64-20"><a href="community-composition.html#cb64-20" tabindex="-1"></a>  <span class="fu">do</span>({</span>
+<span id="cb64-21"><a href="community-composition.html#cb64-21" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Abundance <span class="sc">~</span> dog_type, <span class="at">data =</span> .)</span>
+<span id="cb64-22"><a href="community-composition.html#cb64-22" tabindex="-1"></a>    <span class="fu">as.data.frame</span>(<span class="fu">pairs</span>(<span class="fu">emmeans</span>(model, <span class="sc">~</span> dog_type), <span class="at">adjust =</span> <span class="st">&quot;BH&quot;</span>))</span>
+<span id="cb64-23"><a href="community-composition.html#cb64-23" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
+<span id="cb64-24"><a href="community-composition.html#cb64-24" tabindex="-1"></a>  <span class="fu">ungroup</span>()<span class="sc">%&gt;%</span> </span>
+<span id="cb64-25"><a href="community-composition.html#cb64-25" tabindex="-1"></a>  <span class="fu">filter</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb65-1"><a href="community-composition.html#cb65-1" tabindex="-1"></a>results <span class="sc">%&gt;%</span> </span>
+<span id="cb65-2"><a href="community-composition.html#cb65-2" tabindex="-1"></a>  <span class="fu">filter</span>(contrast<span class="sc">==</span><span class="st">&quot;domestic - sled_dog&quot;</span>)</span></code></pre></div>
+<pre class="script-output"><code># A tibble: 12 × 7
+   phylum            contrast            estimate    SE    df t.ratio  p.value
+   &lt;chr&gt;             &lt;chr&gt;                  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+ 1 Actinomycetota    domestic - sled_dog    1.84  0.155   319   11.9  6.63e-27
+ 2 Bacillota         domestic - sled_dog    1.48  0.114   319   12.9  1.53e-30
+ 3 Bacteroidota      domestic - sled_dog    0.325 0.152   319    2.14 3.30e- 2
+ 4 Campylobacterota  domestic - sled_dog    1.42  0.183   319    7.76 3.58e-13
+ 5 Cyanobacteriota   domestic - sled_dog   -1.85  0.173   319  -10.7  1.89e-22
+ 6 Deferribacterota  domestic - sled_dog   -5.91  0.434   319  -13.6  3.43e-33
+ 7 Desulfobacterota  domestic - sled_dog   -0.745 0.223   319   -3.34 2.83e- 3
+ 8 Fibrobacterota    domestic - sled_dog    2.12  0.208   319   10.2  9.61e-21
+ 9 Fusobacteriota    domestic - sled_dog   -0.602 0.169   319   -3.56 1.28e- 3
+10 Pseudomonadota    domestic - sled_dog    0.474 0.168   319    2.83 1.51e- 2
+11 Spirochaetota     domestic - sled_dog   -1.22  0.206   319   -5.95 2.15e- 8
+12 Verrucomicrobiota domestic - sled_dog    2.67  0.343   319    7.79 2.83e-13</code></pre>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb67-1"><a href="community-composition.html#cb67-1" tabindex="-1"></a>results <span class="sc">%&gt;%</span> </span>
+<span id="cb67-2"><a href="community-composition.html#cb67-2" tabindex="-1"></a>  <span class="fu">filter</span>(contrast<span class="sc">==</span><span class="st">&quot;domestic - wolf&quot;</span>)</span></code></pre></div>
+<pre class="script-output"><code># A tibble: 5 × 7
+  phylum           contrast        estimate    SE    df t.ratio  p.value
+  &lt;chr&gt;            &lt;chr&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+1 Bacillota        domestic - wolf     1.54 0.384   319    4.02 0.000109
+2 Bacteroidota     domestic - wolf    -1.18 0.510   319   -2.31 0.0327  
+3 Cyanobacteriota  domestic - wolf    -2.03 0.584   319   -3.49 0.000841
+4 Deferribacterota domestic - wolf     3.04 1.46    319    2.09 0.0377  
+5 Fusobacteriota   domestic - wolf    -1.40 0.569   319   -2.47 0.0212  </code></pre>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb69-1"><a href="community-composition.html#cb69-1" tabindex="-1"></a>results <span class="sc">%&gt;%</span> </span>
+<span id="cb69-2"><a href="community-composition.html#cb69-2" tabindex="-1"></a>  <span class="fu">filter</span>(contrast<span class="sc">==</span><span class="st">&quot;sled_dog - wolf&quot;</span>)</span></code></pre></div>
+<pre class="script-output"><code># A tibble: 6 × 7
+  phylum            contrast        estimate    SE    df t.ratio       p.value
+  &lt;chr&gt;             &lt;chr&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;
+1 Bacteroidota      sled_dog - wolf    -1.50 0.514   319   -2.92 0.0113       
+2 Campylobacterota  sled_dog - wolf    -1.89 0.621   319   -3.04 0.00378      
+3 Deferribacterota  sled_dog - wolf     8.95 1.47    319    6.09 0.00000000481
+4 Fibrobacterota    sled_dog - wolf    -2.97 0.706   319   -4.21 0.0000506    
+5 Spirochaetota     sled_dog - wolf     1.97 0.698   319    2.82 0.00757      
+6 Verrucomicrobiota sled_dog - wolf    -2.79 1.16    319   -2.40 0.0257       </code></pre>
+
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="mag-catalogue.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="alpha-diversity.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>

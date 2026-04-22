@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 6 Alpha diversity | AlberdiLab | Aizpurua et al. 2025</title>
+  <meta name="description" content="Data analysis code for the study on the study of gut microbiomes of sled dogs and beyond." />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 6 Alpha diversity | AlberdiLab | Aizpurua et al. 2025" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Data analysis code for the study on the study of gut microbiomes of sled dogs and beyond." />
+  <meta name="github-repo" content="alberdilab/sled_dogs_extended" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 Alpha diversity | AlberdiLab | Aizpurua et al. 2025" />
+  
+  <meta name="twitter:description" content="Data analysis code for the study on the study of gut microbiomes of sled dogs and beyond." />
+  
+
+<meta name="author" content="Ostaizka Aizpurua" />
+<meta name="author" content="Antton Alberdi" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="community-composition.html"/>
+<link rel="next" href="beta-diversity.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#prepare-the-r-environment"><i class="fa fa-check"></i><b>1.1</b> Prepare the R environment</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#environment"><i class="fa fa-check"></i><b>1.1.1</b> Environment</a></li>
+<li class="chapter" data-level="1.1.2" data-path="index.html"><a href="index.html#libraries"><i class="fa fa-check"></i><b>1.1.2</b> Libraries</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="prepare-data.html"><a href="prepare-data.html"><i class="fa fa-check"></i><b>2</b> Prepare data</a>
+<ul>
+<li class="chapter" data-level="2.0.1" data-path="prepare-data.html"><a href="prepare-data.html#reads"><i class="fa fa-check"></i><b>2.0.1</b> Reads</a></li>
+<li class="chapter" data-level="2.0.2" data-path="prepare-data.html"><a href="prepare-data.html#sample-metadata"><i class="fa fa-check"></i><b>2.0.2</b> Sample metadata</a></li>
+<li class="chapter" data-level="2.0.3" data-path="prepare-data.html"><a href="prepare-data.html#filter-read-counts"><i class="fa fa-check"></i><b>2.0.3</b> Filter read counts</a></li>
+<li class="chapter" data-level="2.0.4" data-path="prepare-data.html"><a href="prepare-data.html#genome-taxonomy"><i class="fa fa-check"></i><b>2.0.4</b> Genome taxonomy</a></li>
+<li class="chapter" data-level="2.0.5" data-path="prepare-data.html"><a href="prepare-data.html#genome-base-hits"><i class="fa fa-check"></i><b>2.0.5</b> Genome base hits</a></li>
+<li class="chapter" data-level="2.0.6" data-path="prepare-data.html"><a href="prepare-data.html#genome-tree"><i class="fa fa-check"></i><b>2.0.6</b> Genome tree</a></li>
+<li class="chapter" data-level="2.0.7" data-path="prepare-data.html"><a href="prepare-data.html#genome-annotations"><i class="fa fa-check"></i><b>2.0.7</b> Genome annotations</a></li>
+<li class="chapter" data-level="2.1" data-path="prepare-data.html"><a href="prepare-data.html#create-working-objects"><i class="fa fa-check"></i><b>2.1</b> Create working objects</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="prepare-data.html"><a href="prepare-data.html#filter-reads-by-coverage"><i class="fa fa-check"></i><b>2.1.1</b> Filter reads by coverage</a></li>
+<li class="chapter" data-level="2.1.2" data-path="prepare-data.html"><a href="prepare-data.html#transform-reads-into-genome-counts"><i class="fa fa-check"></i><b>2.1.2</b> Transform reads into genome counts</a></li>
+<li class="chapter" data-level="2.1.3" data-path="prepare-data.html"><a href="prepare-data.html#distill-annotations-into-gifts"><i class="fa fa-check"></i><b>2.1.3</b> Distill annotations into GIFTs</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="prepare-data.html"><a href="prepare-data.html#prepare-color-scheme"><i class="fa fa-check"></i><b>2.2</b> Prepare color scheme</a></li>
+<li class="chapter" data-level="2.3" data-path="prepare-data.html"><a href="prepare-data.html#wrap-working-objects"><i class="fa fa-check"></i><b>2.3</b> Wrap working objects</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-statistics.html"><a href="data-statistics.html"><i class="fa fa-check"></i><b>3</b> Data statistics</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="data-statistics.html"><a href="data-statistics.html#sample-overview"><i class="fa fa-check"></i><b>3.1</b> Sample overview</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="mag-catalogue.html"><a href="mag-catalogue.html"><i class="fa fa-check"></i><b>4</b> MAG catalogue</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="mag-catalogue.html"><a href="mag-catalogue.html#genome-phylogeny"><i class="fa fa-check"></i><b>4.1</b> Genome phylogeny</a></li>
+<li class="chapter" data-level="4.2" data-path="mag-catalogue.html"><a href="mag-catalogue.html#taxonomy-overview"><i class="fa fa-check"></i><b>4.2</b> Taxonomy overview</a></li>
+<li class="chapter" data-level="4.3" data-path="mag-catalogue.html"><a href="mag-catalogue.html#genome-quality"><i class="fa fa-check"></i><b>4.3</b> Genome quality</a></li>
+<li class="chapter" data-level="4.4" data-path="mag-catalogue.html"><a href="mag-catalogue.html#functional-overview"><i class="fa fa-check"></i><b>4.4</b> Functional overview</a></li>
+<li class="chapter" data-level="4.5" data-path="mag-catalogue.html"><a href="mag-catalogue.html#functional-ordination"><i class="fa fa-check"></i><b>4.5</b> Functional ordination</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="community-composition.html"><a href="community-composition.html"><i class="fa fa-check"></i><b>5</b> Community composition</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="community-composition.html"><a href="community-composition.html#filter-data"><i class="fa fa-check"></i><b>5.1</b> Filter data</a></li>
+<li class="chapter" data-level="5.2" data-path="community-composition.html"><a href="community-composition.html#taxonomy-overview-1"><i class="fa fa-check"></i><b>5.2</b> Taxonomy overview</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="community-composition.html"><a href="community-composition.html#stacked-barplot"><i class="fa fa-check"></i><b>5.2.1</b> Stacked barplot</a></li>
+<li class="chapter" data-level="5.2.2" data-path="community-composition.html"><a href="community-composition.html#genus-and-species-annotation"><i class="fa fa-check"></i><b>5.2.2</b> Genus and species annotation</a></li>
+<li class="chapter" data-level="5.2.3" data-path="community-composition.html"><a href="community-composition.html#phylum-relative-abundances"><i class="fa fa-check"></i><b>5.2.3</b> Phylum relative abundances</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="alpha-diversity.html"><a href="alpha-diversity.html"><i class="fa fa-check"></i><b>6</b> Alpha diversity</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="alpha-diversity.html"><a href="alpha-diversity.html#countries"><i class="fa fa-check"></i><b>6.1</b> Countries</a></li>
+<li class="chapter" data-level="6.2" data-path="alpha-diversity.html"><a href="alpha-diversity.html#dog-group"><i class="fa fa-check"></i><b>6.2</b> Dog group</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="beta-diversity.html"><a href="beta-diversity.html"><i class="fa fa-check"></i><b>7</b> Beta diversity</a>
+<ul>
+<li class="chapter" data-level="7.0.1" data-path="beta-diversity.html"><a href="beta-diversity.html#permanova-analysis"><i class="fa fa-check"></i><b>7.0.1</b> Permanova analysis</a></li>
+<li class="chapter" data-level="7.0.2" data-path="beta-diversity.html"><a href="beta-diversity.html#plots"><i class="fa fa-check"></i><b>7.0.2</b> Plots</a></li>
+<li class="chapter" data-level="7.1" data-path="beta-diversity.html"><a href="beta-diversity.html#phylum"><i class="fa fa-check"></i><b>7.1</b> Phylum</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="beta-diversity.html"><a href="beta-diversity.html#domestic-vs-sled_dog"><i class="fa fa-check"></i><b>7.1.1</b> Domestic vs sled_dog</a></li>
+<li class="chapter" data-level="7.1.2" data-path="beta-diversity.html"><a href="beta-diversity.html#sled_dog-vs-wolves"><i class="fa fa-check"></i><b>7.1.2</b> Sled_dog vs wolves</a></li>
+<li class="chapter" data-level="7.1.3" data-path="beta-diversity.html"><a href="beta-diversity.html#plots-1"><i class="fa fa-check"></i><b>7.1.3</b> Plots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html"><i class="fa fa-check"></i><b>8</b> Sled dogs vs domestic dogs vs wolves</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#mag-level"><i class="fa fa-check"></i><b>8.1</b> MAG level</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#domestic_vs_sled_dog"><i class="fa fa-check"></i><b>8.1.1</b> domestic_vs_sled_dog</a></li>
+<li class="chapter" data-level="8.1.2" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#sled_dog-vs-wolves-1"><i class="fa fa-check"></i><b>8.1.2</b> sled_dog vs wolves</a></li>
+<li class="chapter" data-level="8.1.3" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#plots-2"><i class="fa fa-check"></i><b>8.1.3</b> Plots</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#species-level"><i class="fa fa-check"></i><b>8.2</b> Species level</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#domestic_vs_sled_dog-1"><i class="fa fa-check"></i><b>8.2.1</b> domestic_vs_sled_dog</a></li>
+<li class="chapter" data-level="8.2.2" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#sled_dog-vs-wolves-2"><i class="fa fa-check"></i><b>8.2.2</b> sled_dog vs wolves</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#phylum-1"><i class="fa fa-check"></i><b>8.3</b> Phylum</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#domestic_vs_sled_dog-2"><i class="fa fa-check"></i><b>8.3.1</b> domestic_vs_sled_dog</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#functional-differences"><i class="fa fa-check"></i><b>8.4</b> Functional differences</a></li>
+<li class="chapter" data-level="8.5" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#mci"><i class="fa fa-check"></i><b>8.5</b> MCI</a></li>
+<li class="chapter" data-level="8.6" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#type"><i class="fa fa-check"></i><b>8.6</b> Type</a></li>
+<li class="chapter" data-level="8.7" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#community-elements-differences"><i class="fa fa-check"></i><b>8.7</b> Community elements differences:</a></li>
+<li class="chapter" data-level="8.8" data-path="sled-dogs-vs-domestic-dogs-vs-wolves.html"><a href="sled-dogs-vs-domestic-dogs-vs-wolves.html#community-function-differences"><i class="fa fa-check"></i><b>8.8</b> Community function differences:</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="amr-and-vf.html"><a href="amr-and-vf.html"><i class="fa fa-check"></i><b>9</b> AMR and VF</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="amr-and-vf.html"><a href="amr-and-vf.html#genome-size"><i class="fa fa-check"></i><b>9.1</b> Genome size</a></li>
+<li class="chapter" data-level="9.2" data-path="amr-and-vf.html"><a href="amr-and-vf.html#amr"><i class="fa fa-check"></i><b>9.2</b> AMR</a></li>
+<li class="chapter" data-level="9.3" data-path="amr-and-vf.html"><a href="amr-and-vf.html#virulence-factors"><i class="fa fa-check"></i><b>9.3</b> Virulence factors</a></li>
+<li class="chapter" data-level="9.4" data-path="amr-and-vf.html"><a href="amr-and-vf.html#size-function-correlations"><i class="fa fa-check"></i><b>9.4</b> Size-function correlations</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html"><i class="fa fa-check"></i><b>10</b> Sled dogs: differences across localities</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#taxonomy"><i class="fa fa-check"></i><b>10.1</b> Taxonomy</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#phylum-relative-abundances-1"><i class="fa fa-check"></i><b>10.1.1</b> Phylum relative abundances</a></li>
+<li class="chapter" data-level="10.1.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#upset-shared-mags"><i class="fa fa-check"></i><b>10.1.2</b> Upset: shared MAGs</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#alpha-diversity-1"><i class="fa fa-check"></i><b>10.2</b> Alpha diversity</a></li>
+<li class="chapter" data-level="10.3" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#beta-diversity-1"><i class="fa fa-check"></i><b>10.3</b> Beta diversity</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#richness-1"><i class="fa fa-check"></i><b>10.3.1</b> Richness</a></li>
+<li class="chapter" data-level="10.3.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#neutral-1"><i class="fa fa-check"></i><b>10.3.2</b> Neutral</a></li>
+<li class="chapter" data-level="10.3.3" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#phylogenetic-1"><i class="fa fa-check"></i><b>10.3.3</b> Phylogenetic</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#is-there-any-location-closer-to-domestic-dogs"><i class="fa fa-check"></i><b>10.4</b> Is there any location closer to domestic dogs?</a></li>
+<li class="chapter" data-level="10.5" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#differential-abundance"><i class="fa fa-check"></i><b>10.5</b> Differential abundance</a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#differences-across-localities"><i class="fa fa-check"></i><b>10.5.1</b> Differences across localities</a></li>
+<li class="chapter" data-level="10.5.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#differences-between-military-and-civilian-owned-dogs"><i class="fa fa-check"></i><b>10.5.2</b> Differences between military and civilian-owned dogs</a></li>
+<li class="chapter" data-level="10.5.3" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#species-level-1"><i class="fa fa-check"></i><b>10.5.3</b> Species level</a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#functional-differences-1"><i class="fa fa-check"></i><b>10.6</b> Functional differences</a>
+<ul>
+<li class="chapter" data-level="10.6.1" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#different-localities-in-greenland"><i class="fa fa-check"></i><b>10.6.1</b> Different localities in Greenland</a></li>
+<li class="chapter" data-level="10.6.2" data-path="sled-dogs-differences-across-localities.html"><a href="sled-dogs-differences-across-localities.html#military-vs-civilian-owned-dogs"><i class="fa fa-check"></i><b>10.6.2</b> Military vs civilian-owned dogs</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html"><i class="fa fa-check"></i><b>11</b> Seasonal differences in eastern Greenland</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#taxonomy-1"><i class="fa fa-check"></i><b>11.1</b> Taxonomy</a>
+<ul>
+<li class="chapter" data-level="11.1.1" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#phylum-relative-abundances-2"><i class="fa fa-check"></i><b>11.1.1</b> Phylum relative abundances</a></li>
+<li class="chapter" data-level="11.1.2" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#differences-in-phylum-ancombc"><i class="fa fa-check"></i><b>11.1.2</b> Differences in phylum (ancombc)</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#alpha-diversity-2"><i class="fa fa-check"></i><b>11.2</b> Alpha diversity</a></li>
+<li class="chapter" data-level="11.3" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#beta-diversity-2"><i class="fa fa-check"></i><b>11.3</b> Beta diversity</a></li>
+<li class="chapter" data-level="11.4" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#differences-in-mag-abundances-ancombc2"><i class="fa fa-check"></i><b>11.4</b> Differences in MAG abundances: Ancombc2</a></li>
+<li class="chapter" data-level="11.5" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#functional-differences-2"><i class="fa fa-check"></i><b>11.5</b> Functional differences</a></li>
+<li class="chapter" data-level="11.6" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#groups-mci"><i class="fa fa-check"></i><b>11.6</b> Groups MCI</a>
+<ul>
+<li class="chapter" data-level="11.6.1" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#community-elements-differences-1"><i class="fa fa-check"></i><b>11.6.1</b> Community elements differences:</a></li>
+</ul></li>
+<li class="chapter" data-level="11.7" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#taxonomy-overview-2"><i class="fa fa-check"></i><b>11.7</b> Taxonomy overview</a>
+<ul>
+<li class="chapter" data-level="11.7.1" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#phylum-relative-abundances-3"><i class="fa fa-check"></i><b>11.7.1</b> Phylum relative abundances</a></li>
+</ul></li>
+<li class="chapter" data-level="11.8" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#alpha-diversity-3"><i class="fa fa-check"></i><b>11.8</b> Alpha diversity</a></li>
+<li class="chapter" data-level="11.9" data-path="seasonal-differences-in-eastern-greenland.html"><a href="seasonal-differences-in-eastern-greenland.html#beta-diversity-3"><i class="fa fa-check"></i><b>11.9</b> Beta diversity</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="temporal-divergence.html"><a href="temporal-divergence.html"><i class="fa fa-check"></i><b>12</b> temporal divergence</a></li>
+<li class="chapter" data-level="13" data-path="do-animals-respond-differently-over-time.html"><a href="do-animals-respond-differently-over-time.html"><i class="fa fa-check"></i><b>13</b> do animals respond differently over time?</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">AlberdiLab | Aizpurua et al. 2025</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="alpha-diversity" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">Chapter 6</span> Alpha diversity<a href="alpha-diversity.html#alpha-diversity" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb71-1"><a href="alpha-diversity.html#cb71-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;data/data.Rdata&quot;</span>)</span>
+<span id="cb71-2"><a href="alpha-diversity.html#cb71-2" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;data/alpha_all.RData&quot;</span>)</span>
+<span id="cb71-3"><a href="alpha-diversity.html#cb71-3" tabindex="-1"></a></span>
+<span id="cb71-4"><a href="alpha-diversity.html#cb71-4" tabindex="-1"></a>genome_metadata <span class="ot">&lt;-</span> genome_metadata <span class="sc">%&gt;%</span> </span>
+<span id="cb71-5"><a href="alpha-diversity.html#cb71-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">phylum =</span> <span class="fu">case_when</span>(</span>
+<span id="cb71-6"><a href="alpha-diversity.html#cb71-6" tabindex="-1"></a>        phylum <span class="sc">==</span> <span class="st">&quot;Bacillota_A&quot;</span> <span class="sc">~</span> <span class="st">&quot;Bacillota&quot;</span>,</span>
+<span id="cb71-7"><a href="alpha-diversity.html#cb71-7" tabindex="-1"></a>        phylum <span class="sc">==</span> <span class="st">&quot;Bacillota_C&quot;</span> <span class="sc">~</span> <span class="st">&quot;Bacillota&quot;</span>,</span>
+<span id="cb71-8"><a href="alpha-diversity.html#cb71-8" tabindex="-1"></a>        phylum <span class="sc">==</span> <span class="st">&quot;Bacillota_B&quot;</span> <span class="sc">~</span> <span class="st">&quot;Bacillota&quot;</span>,</span>
+<span id="cb71-9"><a href="alpha-diversity.html#cb71-9" tabindex="-1"></a>        phylum <span class="sc">==</span> <span class="st">&quot;Bacillota_I&quot;</span> <span class="sc">~</span> <span class="st">&quot;Bacillota&quot;</span>,</span>
+<span id="cb71-10"><a href="alpha-diversity.html#cb71-10" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> phylum))</span>
+<span id="cb71-11"><a href="alpha-diversity.html#cb71-11" tabindex="-1"></a></span>
+<span id="cb71-12"><a href="alpha-diversity.html#cb71-12" tabindex="-1"></a>remove_sled <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/sample_metadata.csv&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb71-13"><a href="alpha-diversity.html#cb71-13" tabindex="-1"></a>  <span class="fu">filter</span>(season<span class="sc">==</span><span class="st">&quot;winter&quot;</span>)</span>
+<span id="cb71-14"><a href="alpha-diversity.html#cb71-14" tabindex="-1"></a></span>
+<span id="cb71-15"><a href="alpha-diversity.html#cb71-15" tabindex="-1"></a>sample_metadata <span class="ot">&lt;-</span> sample_metadata <span class="sc">%&gt;%</span></span>
+<span id="cb71-16"><a href="alpha-diversity.html#cb71-16" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">if_else</span>(country <span class="sc">==</span> <span class="st">&quot;Shangai domestic dog&quot;</span>, <span class="st">&quot;Shangai&quot;</span>, country)) <span class="sc">%&gt;%</span> </span>
+<span id="cb71-17"><a href="alpha-diversity.html#cb71-17" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>sample <span class="sc">%in%</span> remove_sled<span class="sc">$</span>sample) <span class="sc">%&gt;%</span></span>
+<span id="cb71-18"><a href="alpha-diversity.html#cb71-18" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb71-19"><a href="alpha-diversity.html#cb71-19" tabindex="-1"></a>    <span class="at">dog_type =</span> <span class="fu">case_when</span>(</span>
+<span id="cb71-20"><a href="alpha-diversity.html#cb71-20" tabindex="-1"></a>      breed <span class="sc">==</span> <span class="st">&quot;Wolf&quot;</span>        <span class="sc">~</span> <span class="st">&quot;wolf&quot;</span>,</span>
+<span id="cb71-21"><a href="alpha-diversity.html#cb71-21" tabindex="-1"></a>      country <span class="sc">==</span> <span class="st">&quot;Greenland&quot;</span> <span class="sc">~</span> <span class="st">&quot;sled_dog&quot;</span>,</span>
+<span id="cb71-22"><a href="alpha-diversity.html#cb71-22" tabindex="-1"></a>      <span class="cn">TRUE</span>                   <span class="sc">~</span> <span class="st">&quot;domestic&quot;</span></span>
+<span id="cb71-23"><a href="alpha-diversity.html#cb71-23" tabindex="-1"></a>    )</span>
+<span id="cb71-24"><a href="alpha-diversity.html#cb71-24" tabindex="-1"></a>  )</span>
+<span id="cb71-25"><a href="alpha-diversity.html#cb71-25" tabindex="-1"></a></span>
+<span id="cb71-26"><a href="alpha-diversity.html#cb71-26" tabindex="-1"></a>genome_counts_filt <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb71-27"><a href="alpha-diversity.html#cb71-27" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">one_of</span>(<span class="fu">c</span>(<span class="st">&quot;genome&quot;</span>,sample_metadata<span class="sc">$</span>sample)))<span class="sc">%&gt;%</span></span>
+<span id="cb71-28"><a href="alpha-diversity.html#cb71-28" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">rowSums</span>(. <span class="sc">!=</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb71-29"><a href="alpha-diversity.html#cb71-29" tabindex="-1"></a>  <span class="fu">select_if</span>(<span class="sc">~!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))</span>
+<span id="cb71-30"><a href="alpha-diversity.html#cb71-30" tabindex="-1"></a></span>
+<span id="cb71-31"><a href="alpha-diversity.html#cb71-31" tabindex="-1"></a>genome_metadata <span class="ot">&lt;-</span> genome_metadata <span class="sc">%&gt;%</span></span>
+<span id="cb71-32"><a href="alpha-diversity.html#cb71-32" tabindex="-1"></a>  <span class="fu">semi_join</span>(., genome_counts_filt, <span class="at">by =</span> <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb71-33"><a href="alpha-diversity.html#cb71-33" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">match</span>(genome,genome_counts_filt<span class="sc">$</span>genome))</span>
+<span id="cb71-34"><a href="alpha-diversity.html#cb71-34" tabindex="-1"></a></span>
+<span id="cb71-35"><a href="alpha-diversity.html#cb71-35" tabindex="-1"></a>genome_tree <span class="ot">&lt;-</span> <span class="fu">keep.tip</span>(genome_tree, <span class="at">tip=</span>genome_metadata<span class="sc">$</span>genome)</span></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb72-1"><a href="alpha-diversity.html#cb72-1" tabindex="-1"></a>richness <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb72-2"><a href="alpha-diversity.html#cb72-2" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-3"><a href="alpha-diversity.html#cb72-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb72-4"><a href="alpha-diversity.html#cb72-4" tabindex="-1"></a>  <span class="fu">hilldiv</span>(., <span class="at">q =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-5"><a href="alpha-diversity.html#cb72-5" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb72-6"><a href="alpha-diversity.html#cb72-6" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb72-7"><a href="alpha-diversity.html#cb72-7" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">richness =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-8"><a href="alpha-diversity.html#cb72-8" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;sample&quot;</span>)</span>
+<span id="cb72-9"><a href="alpha-diversity.html#cb72-9" tabindex="-1"></a></span>
+<span id="cb72-10"><a href="alpha-diversity.html#cb72-10" tabindex="-1"></a>neutral <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb72-11"><a href="alpha-diversity.html#cb72-11" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-12"><a href="alpha-diversity.html#cb72-12" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb72-13"><a href="alpha-diversity.html#cb72-13" tabindex="-1"></a>  <span class="fu">hilldiv</span>(., <span class="at">q =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-14"><a href="alpha-diversity.html#cb72-14" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb72-15"><a href="alpha-diversity.html#cb72-15" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb72-16"><a href="alpha-diversity.html#cb72-16" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">neutral =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-17"><a href="alpha-diversity.html#cb72-17" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;sample&quot;</span>)</span>
+<span id="cb72-18"><a href="alpha-diversity.html#cb72-18" tabindex="-1"></a></span>
+<span id="cb72-19"><a href="alpha-diversity.html#cb72-19" tabindex="-1"></a>phylogenetic <span class="ot">&lt;-</span> genome_counts_filt <span class="sc">%&gt;%</span></span>
+<span id="cb72-20"><a href="alpha-diversity.html#cb72-20" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">&quot;genome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-21"><a href="alpha-diversity.html#cb72-21" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">all</span>(. <span class="sc">==</span> <span class="dv">0</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb72-22"><a href="alpha-diversity.html#cb72-22" tabindex="-1"></a>  <span class="fu">hilldiv</span>(., <span class="at">q =</span> <span class="dv">1</span>, <span class="at">tree =</span> genome_tree) <span class="sc">%&gt;%</span></span>
+<span id="cb72-23"><a href="alpha-diversity.html#cb72-23" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb72-24"><a href="alpha-diversity.html#cb72-24" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb72-25"><a href="alpha-diversity.html#cb72-25" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">phylogenetic =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-26"><a href="alpha-diversity.html#cb72-26" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;sample&quot;</span>)</span>
+<span id="cb72-27"><a href="alpha-diversity.html#cb72-27" tabindex="-1"></a></span>
+<span id="cb72-28"><a href="alpha-diversity.html#cb72-28" tabindex="-1"></a>alpha_div <span class="ot">&lt;-</span> richness <span class="sc">%&gt;%</span></span>
+<span id="cb72-29"><a href="alpha-diversity.html#cb72-29" tabindex="-1"></a>  <span class="fu">full_join</span>(neutral, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb72-30"><a href="alpha-diversity.html#cb72-30" tabindex="-1"></a>  <span class="fu">full_join</span>(phylogenetic, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample))</span></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb73-1"><a href="alpha-diversity.html#cb73-1" tabindex="-1"></a><span class="fu">save</span>(alpha_div, <span class="at">file=</span><span class="st">&quot;data/alpha_all.RData&quot;</span>)</span></code></pre></div>
+<div id="countries" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Countries<a href="alpha-diversity.html#countries" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb74-1"><a href="alpha-diversity.html#cb74-1" tabindex="-1"></a>alpha_div <span class="sc">%&gt;%</span></span>
+<span id="cb74-2"><a href="alpha-diversity.html#cb74-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>sample, <span class="at">names_to =</span> <span class="st">&quot;metric&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb74-3"><a href="alpha-diversity.html#cb74-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">metric=</span><span class="fu">factor</span>(metric,<span class="at">levels=</span><span class="fu">c</span>(<span class="st">&quot;richness&quot;</span>,<span class="st">&quot;neutral&quot;</span>,<span class="st">&quot;phylogenetic&quot;</span>, <span class="st">&quot;functional&quot;</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb74-4"><a href="alpha-diversity.html#cb74-4" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb74-5"><a href="alpha-diversity.html#cb74-5" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> value, <span class="at">x =</span> country, <span class="at">group=</span>country, <span class="at">color=</span>country, <span class="at">fill=</span>country)) <span class="sc">+</span></span>
+<span id="cb74-6"><a href="alpha-diversity.html#cb74-6" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb74-7"><a href="alpha-diversity.html#cb74-7" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb74-8"><a href="alpha-diversity.html#cb74-8" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(. <span class="sc">~</span><span class="fu">factor</span>(metric, <span class="at">labels=</span><span class="fu">c</span>(<span class="st">&quot;richness&quot;</span> <span class="ot">=</span> <span class="st">&quot;Richness&quot;</span>, <span class="st">&quot;neutral&quot;</span> <span class="ot">=</span> <span class="st">&quot;Neutral&quot;</span>, <span class="st">&quot;phylogenetic&quot;</span> <span class="ot">=</span> <span class="st">&quot;Phylogenetic&quot;</span>)), <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>, <span class="at">ncol =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb74-9"><a href="alpha-diversity.html#cb74-9" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>)) <span class="sc">+</span></span>
+<span id="cb74-10"><a href="alpha-diversity.html#cb74-10" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb74-11"><a href="alpha-diversity.html#cb74-11" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb74-12"><a href="alpha-diversity.html#cb74-12" tabindex="-1"></a>    <span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb74-13"><a href="alpha-diversity.html#cb74-13" tabindex="-1"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span><span class="dv">12</span>, <span class="at">lineheight =</span> <span class="fl">0.6</span>),</span>
+<span id="cb74-14"><a href="alpha-diversity.html#cb74-14" tabindex="-1"></a>    <span class="at">panel.grid.minor.x =</span> <span class="fu">element_line</span>(<span class="at">size =</span> .<span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;grey&quot;</span>),</span>
+<span id="cb74-15"><a href="alpha-diversity.html#cb74-15" tabindex="-1"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb74-16"><a href="alpha-diversity.html#cb74-16" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb74-17"><a href="alpha-diversity.html#cb74-17" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb74-18"><a href="alpha-diversity.html#cb74-18" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="_main_files/figure-html/alpha_plots_loc-1.png" width="1152" /></p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb75-1"><a href="alpha-diversity.html#cb75-1" tabindex="-1"></a>alpha_div <span class="sc">%&gt;%</span></span>
+<span id="cb75-2"><a href="alpha-diversity.html#cb75-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>sample, <span class="at">names_to =</span> <span class="st">&quot;metric&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb75-3"><a href="alpha-diversity.html#cb75-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">metric=</span><span class="fu">factor</span>(metric,<span class="at">levels=</span><span class="fu">c</span>(<span class="st">&quot;richness&quot;</span>,<span class="st">&quot;neutral&quot;</span>,<span class="st">&quot;phylogenetic&quot;</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb75-4"><a href="alpha-diversity.html#cb75-4" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="st">&quot;sample&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb75-5"><a href="alpha-diversity.html#cb75-5" tabindex="-1"></a>  <span class="fu">group_by</span>(metric) <span class="sc">%&gt;%</span></span>
+<span id="cb75-6"><a href="alpha-diversity.html#cb75-6" tabindex="-1"></a>  <span class="fu">kruskal_test</span>(value <span class="sc">~</span> country) <span class="sc">%&gt;%</span> </span>
+<span id="cb75-7"><a href="alpha-diversity.html#cb75-7" tabindex="-1"></a>  <span class="fu">adjust_pvalue</span>(<span class="at">method =</span> <span class="st">&quot;BH&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb75-8"><a href="alpha-diversity.html#cb75-8" tabindex="-1"></a>  <span class="fu">filter</span>(p.adj <span class="sc">&lt;</span> <span class="fl">0.05</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb75-9"><a href="alpha-diversity.html#cb75-9" tabindex="-1"></a>  <span class="fu">tt</span>()</span></code></pre></div>
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_yjypar4dv5e65ccn97tu(i, j, css_id) {
+          var table = document.getElementById("tinytable_yjypar4dv5e65ccn97tu");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_yjypar4dv5e65ccn97tu');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_yjypar4dv5e65ccn97tu(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_yjypar4dv5e65ccn97tu");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 0, j: 0 }, { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 }, { i: 0, j: 6 }, { i: 0, j: 7 },  ], css_id: 'tinytable_css_6pfk9berzb0insfnc9kx',}, 
+          { positions: [ { i: 3, j: 0 }, { i: 3, j: 1 }, { i: 3, j: 2 }, { i: 3, j: 3 }, { i: 3, j: 4 }, { i: 3, j: 5 }, { i: 3, j: 6 }, { i: 3, j: 7 },  ], css_id: 'tinytable_css_15qgkgjwoapa6moqf8cu',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_yjypar4dv5e65ccn97tu(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_6pfk9berzb0insfnc9kx, .table th.tinytable_css_6pfk9berzb0insfnc9kx { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_15qgkgjwoapa6moqf8cu, .table th.tinytable_css_15qgkgjwoapa6moqf8cu { border-bottom: solid #d3d8dc 0.1em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_yjypar4dv5e65ccn97tu" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'>
+        <thead>
+        
+              <tr>
+                <th scope="col">metric</th>
+                <th scope="col">.y.</th>
+                <th scope="col">n</th>
+                <th scope="col">statistic</th>
+                <th scope="col">df</th>
+                <th scope="col">p</th>
+                <th scope="col">method</th>
+                <th scope="col">p.adj</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>richness</td>
+                  <td>value</td>
+                  <td>322</td>
+                  <td>132.27768</td>
+                  <td>6</td>
+                  <td>4.26e-26</td>
+                  <td>Kruskal-Wallis</td>
+                  <td>1.278e-25</td>
+                </tr>
+                <tr>
+                  <td>neutral</td>
+                  <td>value</td>
+                  <td>322</td>
+                  <td>123.92041</td>
+                  <td>6</td>
+                  <td>2.44e-24</td>
+                  <td>Kruskal-Wallis</td>
+                  <td>3.660e-24</td>
+                </tr>
+                <tr>
+                  <td>phylogenetic</td>
+                  <td>value</td>
+                  <td>322</td>
+                  <td>87.97157</td>
+                  <td>6</td>
+                  <td>7.99e-17</td>
+                  <td>Kruskal-Wallis</td>
+                  <td>7.990e-17</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+<div class="sourceCode" id="cb76"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb76-1"><a href="alpha-diversity.html#cb76-1" tabindex="-1"></a>alpha_div <span class="sc">%&gt;%</span></span>
+<span id="cb76-2"><a href="alpha-diversity.html#cb76-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>sample, <span class="at">names_to =</span> <span class="st">&quot;metric&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb76-3"><a href="alpha-diversity.html#cb76-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">metric=</span><span class="fu">factor</span>(metric,<span class="at">levels=</span><span class="fu">c</span>(<span class="st">&quot;richness&quot;</span>,<span class="st">&quot;neutral&quot;</span>,<span class="st">&quot;phylogenetic&quot;</span>)))<span class="sc">%&gt;%</span></span>
+<span id="cb76-4"><a href="alpha-diversity.html#cb76-4" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="st">&quot;sample&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb76-5"><a href="alpha-diversity.html#cb76-5" tabindex="-1"></a>  <span class="fu">group_by</span>(metric) <span class="sc">%&gt;%</span></span>
+<span id="cb76-6"><a href="alpha-diversity.html#cb76-6" tabindex="-1"></a>  <span class="fu">wilcox_test</span>(value <span class="sc">~</span> country, <span class="at">p.adjust.method =</span> <span class="st">&quot;BH&quot;</span>)<span class="sc">%&gt;%</span> </span>
+<span id="cb76-7"><a href="alpha-diversity.html#cb76-7" tabindex="-1"></a>  <span class="fu">filter</span>(p.adj <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span></code></pre></div>
+<pre class="script-output"><code># A tibble: 34 × 10
+   metric   .y.   group1    group2          n1    n2 statistic        p    p.adj p.adj.signif
+   &lt;fct&gt;    &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;        &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+ 1 richness value Greenland India          130    34     3814. 7.89e-11 5.52e-10 ****        
+ 2 richness value Greenland Laos           130    28     2690. 7.44e- 5 1.95e- 4 ***         
+ 3 richness value Greenland Mongolia       130    11     1156. 6.98e- 4 1   e- 3 **          
+ 4 richness value Greenland Shangai        130    51     5894. 4.28e-16 8.99e-15 ****        
+ 5 richness value Greenland South Africa   130    19     2396. 4.05e-11 4.25e-10 ****        
+ 6 richness value Greenland USA            130    49     3930. 1.6 e- 2 2.3 e- 2 *           
+ 7 richness value India     Laos            34    28      283  6   e- 3 1   e- 2 *           
+ 8 richness value India     USA             34    49      300. 7.98e- 7 2.79e- 6 ****        
+ 9 richness value Laos      Shangai         28    51     1038. 9.31e- 4 2   e- 3 **          
+10 richness value Laos      South Africa    28    19      464  1.85e- 5 5.55e- 5 ****        
+# ℹ 24 more rows</code></pre>
+<p>No significant differences
+Note: Greenland only not different to USA (richness) and India (phylogenetic)</p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb78-1"><a href="alpha-diversity.html#cb78-1" tabindex="-1"></a>alpha_div <span class="sc">%&gt;%</span></span>
+<span id="cb78-2"><a href="alpha-diversity.html#cb78-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>sample, <span class="at">names_to =</span> <span class="st">&quot;metric&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb78-3"><a href="alpha-diversity.html#cb78-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">metric=</span><span class="fu">factor</span>(metric,<span class="at">levels=</span><span class="fu">c</span>(<span class="st">&quot;richness&quot;</span>,<span class="st">&quot;neutral&quot;</span>,<span class="st">&quot;phylogenetic&quot;</span>)))<span class="sc">%&gt;%</span></span>
+<span id="cb78-4"><a href="alpha-diversity.html#cb78-4" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="st">&quot;sample&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb78-5"><a href="alpha-diversity.html#cb78-5" tabindex="-1"></a>  <span class="fu">group_by</span>(metric) <span class="sc">%&gt;%</span></span>
+<span id="cb78-6"><a href="alpha-diversity.html#cb78-6" tabindex="-1"></a>  <span class="fu">wilcox_test</span>(value <span class="sc">~</span> country, <span class="at">p.adjust.method =</span> <span class="st">&quot;BH&quot;</span>)<span class="sc">%&gt;%</span> </span>
+<span id="cb78-7"><a href="alpha-diversity.html#cb78-7" tabindex="-1"></a>  <span class="fu">filter</span>(p.adj <span class="sc">&gt;</span> <span class="fl">0.05</span>)</span></code></pre></div>
+<pre class="script-output"><code># A tibble: 29 × 10
+   metric   .y.   group1 group2          n1    n2 statistic     p p.adj p.adj.signif
+   &lt;fct&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;        &lt;int&gt; &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       
+ 1 richness value India  Mongolia        34    11      118  0.07  0.078 ns          
+ 2 richness value India  Shangai         34    51      862. 0.971 0.971 ns          
+ 3 richness value India  South Africa    34    19      430  0.048 0.056 ns          
+ 4 richness value Laos   Mongolia        28    11      168  0.673 0.707 ns          
+ 5 neutral  value India  Laos            34    28      427  0.495 0.646 ns          
+ 6 neutral  value India  Mongolia        34    11      212  0.523 0.646 ns          
+ 7 neutral  value India  Shangai         34    51      911  0.696 0.738 ns          
+ 8 neutral  value India  South Africa    34    19      384  0.265 0.423 ns          
+ 9 neutral  value India  USA             34    49      716  0.282 0.423 ns          
+10 neutral  value Laos   Mongolia        28    11      221  0.037 0.07  ns          
+# ℹ 19 more rows</code></pre>
+</div>
+<div id="dog-group" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Dog group<a href="alpha-diversity.html#dog-group" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb80-1"><a href="alpha-diversity.html#cb80-1" tabindex="-1"></a>alpha_div <span class="sc">%&gt;%</span></span>
+<span id="cb80-2"><a href="alpha-diversity.html#cb80-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>sample, <span class="at">names_to =</span> <span class="st">&quot;alpha&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb80-3"><a href="alpha-diversity.html#cb80-3" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb80-4"><a href="alpha-diversity.html#cb80-4" tabindex="-1"></a>  <span class="fu">group_by</span>(alpha) <span class="sc">%&gt;%</span></span>
+<span id="cb80-5"><a href="alpha-diversity.html#cb80-5" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb80-6"><a href="alpha-diversity.html#cb80-6" tabindex="-1"></a>     <span class="at">total_mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> T),</span>
+<span id="cb80-7"><a href="alpha-diversity.html#cb80-7" tabindex="-1"></a>    <span class="at">total_sd =</span> <span class="fu">sd</span>(value, <span class="at">na.rm =</span> T),</span>
+<span id="cb80-8"><a href="alpha-diversity.html#cb80-8" tabindex="-1"></a>    <span class="at">Dog_mean =</span> <span class="fu">mean</span>(value[dog_type <span class="sc">==</span> <span class="st">&quot;domestic&quot;</span>], <span class="at">na.rm =</span> T),</span>
+<span id="cb80-9"><a href="alpha-diversity.html#cb80-9" tabindex="-1"></a>    <span class="at">Dog_sd =</span> <span class="fu">sd</span>(value[dog_type <span class="sc">==</span> <span class="st">&quot;domestic&quot;</span>], <span class="at">na.rm =</span> T),</span>
+<span id="cb80-10"><a href="alpha-diversity.html#cb80-10" tabindex="-1"></a>    <span class="at">Sled_dog_mean =</span> <span class="fu">mean</span>(value[dog_type <span class="sc">==</span> <span class="st">&quot;sled_dog&quot;</span>], <span class="at">na.rm =</span> T),</span>
+<span id="cb80-11"><a href="alpha-diversity.html#cb80-11" tabindex="-1"></a>    <span class="at">Sled_dog_sd =</span> <span class="fu">sd</span>(value[dog_type <span class="sc">==</span> <span class="st">&quot;sled_dog&quot;</span>], <span class="at">na.rm =</span> T),</span>
+<span id="cb80-12"><a href="alpha-diversity.html#cb80-12" tabindex="-1"></a>    <span class="at">Wolf_mean =</span> <span class="fu">mean</span>(value[dog_type <span class="sc">==</span> <span class="st">&quot;wolf&quot;</span>], <span class="at">na.rm =</span> T),</span>
+<span id="cb80-13"><a href="alpha-diversity.html#cb80-13" tabindex="-1"></a>    <span class="at">Wolf_sd =</span> <span class="fu">sd</span>(value[dog_type <span class="sc">==</span> <span class="st">&quot;wolf&quot;</span>], <span class="at">na.rm =</span> T)</span>
+<span id="cb80-14"><a href="alpha-diversity.html#cb80-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb80-15"><a href="alpha-diversity.html#cb80-15" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb80-16"><a href="alpha-diversity.html#cb80-16" tabindex="-1"></a>    <span class="at">total =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(total_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(total_sd, <span class="dv">3</span>)),</span>
+<span id="cb80-17"><a href="alpha-diversity.html#cb80-17" tabindex="-1"></a>    <span class="at">Domestic_dogs =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Dog_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Dog_sd, <span class="dv">3</span>)),</span>
+<span id="cb80-18"><a href="alpha-diversity.html#cb80-18" tabindex="-1"></a>    <span class="at">Sled_dogs =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Sled_dog_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Sled_dog_sd, <span class="dv">3</span>)),</span>
+<span id="cb80-19"><a href="alpha-diversity.html#cb80-19" tabindex="-1"></a>    <span class="at">Wolves =</span> <span class="fu">str_c</span>(<span class="fu">round</span>(Wolf_mean, <span class="dv">3</span>), <span class="st">&quot;±&quot;</span>, <span class="fu">round</span>(Wolf_sd, <span class="dv">3</span>))</span>
+<span id="cb80-20"><a href="alpha-diversity.html#cb80-20" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb80-21"><a href="alpha-diversity.html#cb80-21" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>Sled_dog_mean) <span class="sc">%&gt;%</span></span>
+<span id="cb80-22"><a href="alpha-diversity.html#cb80-22" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(alpha, total, Domestic_dogs, Sled_dogs, Wolves) <span class="sc">%&gt;%</span></span>
+<span id="cb80-23"><a href="alpha-diversity.html#cb80-23" tabindex="-1"></a>  <span class="fu">tt</span>()</span></code></pre></div>
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_919xbfax414icipk66gg(i, j, css_id) {
+          var table = document.getElementById("tinytable_919xbfax414icipk66gg");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_919xbfax414icipk66gg');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_919xbfax414icipk66gg(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_919xbfax414icipk66gg");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 3, j: 0 }, { i: 3, j: 1 }, { i: 3, j: 2 }, { i: 3, j: 3 }, { i: 3, j: 4 },  ], css_id: 'tinytable_css_r4kv6nyhhms8x0ag7qo2',}, 
+          { positions: [ { i: 0, j: 0 }, { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 },  ], css_id: 'tinytable_css_hfzvh0nnia2lgam7l28w',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_919xbfax414icipk66gg(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_r4kv6nyhhms8x0ag7qo2, .table th.tinytable_css_r4kv6nyhhms8x0ag7qo2 { border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_hfzvh0nnia2lgam7l28w, .table th.tinytable_css_hfzvh0nnia2lgam7l28w { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_919xbfax414icipk66gg" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'>
+        <thead>
+        
+              <tr>
+                <th scope="col">alpha</th>
+                <th scope="col">total</th>
+                <th scope="col">Domestic_dogs</th>
+                <th scope="col">Sled_dogs</th>
+                <th scope="col">Wolves</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>richness</td>
+                  <td>1283.267±141.237</td>
+                  <td>1234.216±162.371</td>
+                  <td>1353.315±59.3</td>
+                  <td>1278.714±50.767</td>
+                </tr>
+                <tr>
+                  <td>neutral</td>
+                  <td>119.192±65.185</td>
+                  <td>89.388±55.592</td>
+                  <td>164.471±51.469</td>
+                  <td>65.957±21.913</td>
+                </tr>
+                <tr>
+                  <td>phylogenetic</td>
+                  <td>7.131±1.986</td>
+                  <td>6.508±2.042</td>
+                  <td>8.113±1.457</td>
+                  <td>5.358±0.902</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+<div class="sourceCode" id="cb81"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb81-1"><a href="alpha-diversity.html#cb81-1" tabindex="-1"></a>type_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&#39;#41B6C0&#39;</span>,<span class="st">&#39;#E5D388&#39;</span>,<span class="st">&quot;#bb6749&quot;</span>)</span>
+<span id="cb81-2"><a href="alpha-diversity.html#cb81-2" tabindex="-1"></a>new_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb81-3"><a href="alpha-diversity.html#cb81-3" tabindex="-1"></a>    <span class="st">&quot;domestic&quot;</span> <span class="ot">=</span> <span class="st">&quot;Domestic dogs&quot;</span>,</span>
+<span id="cb81-4"><a href="alpha-diversity.html#cb81-4" tabindex="-1"></a>    <span class="st">&quot;sled_dog&quot;</span> <span class="ot">=</span> <span class="st">&quot;Sled dogs&quot;</span>,</span>
+<span id="cb81-5"><a href="alpha-diversity.html#cb81-5" tabindex="-1"></a>    <span class="st">&quot;wolf&quot;</span> <span class="ot">=</span> <span class="st">&quot;Wolves&quot;</span></span>
+<span id="cb81-6"><a href="alpha-diversity.html#cb81-6" tabindex="-1"></a>    )</span>
+<span id="cb81-7"><a href="alpha-diversity.html#cb81-7" tabindex="-1"></a>alpha_div <span class="sc">%&gt;%</span></span>
+<span id="cb81-8"><a href="alpha-diversity.html#cb81-8" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>sample, <span class="at">names_to =</span> <span class="st">&quot;metric&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb81-9"><a href="alpha-diversity.html#cb81-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">metric =</span> <span class="fu">factor</span>(</span>
+<span id="cb81-10"><a href="alpha-diversity.html#cb81-10" tabindex="-1"></a>    metric,</span>
+<span id="cb81-11"><a href="alpha-diversity.html#cb81-11" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;richness&quot;</span>, <span class="st">&quot;neutral&quot;</span>, <span class="st">&quot;phylogenetic&quot;</span>, <span class="st">&quot;functional&quot;</span>)</span>
+<span id="cb81-12"><a href="alpha-diversity.html#cb81-12" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
+<span id="cb81-13"><a href="alpha-diversity.html#cb81-13" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="fu">join_by</span>(sample <span class="sc">==</span> sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb81-14"><a href="alpha-diversity.html#cb81-14" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
+<span id="cb81-15"><a href="alpha-diversity.html#cb81-15" tabindex="-1"></a>    <span class="at">y =</span> value,</span>
+<span id="cb81-16"><a href="alpha-diversity.html#cb81-16" tabindex="-1"></a>    <span class="at">x =</span> dog_type,</span>
+<span id="cb81-17"><a href="alpha-diversity.html#cb81-17" tabindex="-1"></a>    <span class="at">group =</span> dog_type,</span>
+<span id="cb81-18"><a href="alpha-diversity.html#cb81-18" tabindex="-1"></a>    <span class="at">color =</span> dog_type,</span>
+<span id="cb81-19"><a href="alpha-diversity.html#cb81-19" tabindex="-1"></a>    <span class="at">fill =</span> dog_type</span>
+<span id="cb81-20"><a href="alpha-diversity.html#cb81-20" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb81-21"><a href="alpha-diversity.html#cb81-21" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb81-22"><a href="alpha-diversity.html#cb81-22" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb81-23"><a href="alpha-diversity.html#cb81-23" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb81-24"><a href="alpha-diversity.html#cb81-24" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;Canids&quot;</span>,</span>
+<span id="cb81-25"><a href="alpha-diversity.html#cb81-25" tabindex="-1"></a>    <span class="at">values =</span> type_colors,</span>
+<span id="cb81-26"><a href="alpha-diversity.html#cb81-26" tabindex="-1"></a>    <span class="at">labels =</span> new_labels</span>
+<span id="cb81-27"><a href="alpha-diversity.html#cb81-27" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb81-28"><a href="alpha-diversity.html#cb81-28" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb81-29"><a href="alpha-diversity.html#cb81-29" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;Canids&quot;</span>,</span>
+<span id="cb81-30"><a href="alpha-diversity.html#cb81-30" tabindex="-1"></a>    <span class="at">values =</span> type_colors,</span>
+<span id="cb81-31"><a href="alpha-diversity.html#cb81-31" tabindex="-1"></a>    <span class="at">labels =</span> new_labels</span>
+<span id="cb81-32"><a href="alpha-diversity.html#cb81-32" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb81-33"><a href="alpha-diversity.html#cb81-33" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(. <span class="sc">~</span> <span class="fu">factor</span>(</span>
+<span id="cb81-34"><a href="alpha-diversity.html#cb81-34" tabindex="-1"></a>    metric,</span>
+<span id="cb81-35"><a href="alpha-diversity.html#cb81-35" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb81-36"><a href="alpha-diversity.html#cb81-36" tabindex="-1"></a>      <span class="st">&quot;richness&quot;</span> <span class="ot">=</span> <span class="st">&quot;Richness&quot;</span>,</span>
+<span id="cb81-37"><a href="alpha-diversity.html#cb81-37" tabindex="-1"></a>      <span class="st">&quot;neutral&quot;</span> <span class="ot">=</span> <span class="st">&quot;Neutral&quot;</span>,</span>
+<span id="cb81-38"><a href="alpha-diversity.html#cb81-38" tabindex="-1"></a>      <span class="st">&quot;phylogenetic&quot;</span> <span class="ot">=</span> <span class="st">&quot;Phylogenetic&quot;</span></span>
+<span id="cb81-39"><a href="alpha-diversity.html#cb81-39" tabindex="-1"></a>    )</span>
+<span id="cb81-40"><a href="alpha-diversity.html#cb81-40" tabindex="-1"></a>  ),</span>
+<span id="cb81-41"><a href="alpha-diversity.html#cb81-41" tabindex="-1"></a>  <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>,</span>
+<span id="cb81-42"><a href="alpha-diversity.html#cb81-42" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb81-43"><a href="alpha-diversity.html#cb81-43" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>)) <span class="sc">+</span></span>
+<span id="cb81-44"><a href="alpha-diversity.html#cb81-44" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb81-45"><a href="alpha-diversity.html#cb81-45" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb81-46"><a href="alpha-diversity.html#cb81-46" tabindex="-1"></a>    <span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb81-47"><a href="alpha-diversity.html#cb81-47" tabindex="-1"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">lineheight =</span> <span class="fl">0.6</span>),</span>
+<span id="cb81-48"><a href="alpha-diversity.html#cb81-48" tabindex="-1"></a>    <span class="at">panel.grid.minor.x =</span> <span class="fu">element_line</span>(<span class="at">size =</span> .<span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;grey&quot;</span>),</span>
+<span id="cb81-49"><a href="alpha-diversity.html#cb81-49" tabindex="-1"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb81-50"><a href="alpha-diversity.html#cb81-50" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb81-51"><a href="alpha-diversity.html#cb81-51" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb81-52"><a href="alpha-diversity.html#cb81-52" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="_main_files/figure-html/alpha_plots-1.png" width="960" /></p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb82-1"><a href="alpha-diversity.html#cb82-1" tabindex="-1"></a>alpha_div <span class="sc">%&gt;%</span></span>
+<span id="cb82-2"><a href="alpha-diversity.html#cb82-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>sample, <span class="at">names_to =</span> <span class="st">&quot;metric&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb82-3"><a href="alpha-diversity.html#cb82-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">metric=</span><span class="fu">factor</span>(metric,<span class="at">levels=</span><span class="fu">c</span>(<span class="st">&quot;richness&quot;</span>,<span class="st">&quot;neutral&quot;</span>,<span class="st">&quot;phylogenetic&quot;</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb82-4"><a href="alpha-diversity.html#cb82-4" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="st">&quot;sample&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb82-5"><a href="alpha-diversity.html#cb82-5" tabindex="-1"></a>  <span class="fu">group_by</span>(metric) <span class="sc">%&gt;%</span></span>
+<span id="cb82-6"><a href="alpha-diversity.html#cb82-6" tabindex="-1"></a>  <span class="fu">kruskal_test</span>(value <span class="sc">~</span> dog_type) <span class="sc">%&gt;%</span> </span>
+<span id="cb82-7"><a href="alpha-diversity.html#cb82-7" tabindex="-1"></a>  <span class="fu">adjust_pvalue</span>(<span class="at">method =</span> <span class="st">&quot;BH&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb82-8"><a href="alpha-diversity.html#cb82-8" tabindex="-1"></a>  <span class="fu">filter</span>(p.adj <span class="sc">&lt;</span> <span class="fl">0.05</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb82-9"><a href="alpha-diversity.html#cb82-9" tabindex="-1"></a>  <span class="fu">tt</span>()</span></code></pre></div>
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_4k5m7wmpsm3p50ffv4r6(i, j, css_id) {
+          var table = document.getElementById("tinytable_4k5m7wmpsm3p50ffv4r6");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_4k5m7wmpsm3p50ffv4r6');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_4k5m7wmpsm3p50ffv4r6(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_4k5m7wmpsm3p50ffv4r6");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 3, j: 0 }, { i: 3, j: 1 }, { i: 3, j: 2 }, { i: 3, j: 3 }, { i: 3, j: 4 }, { i: 3, j: 5 }, { i: 3, j: 6 }, { i: 3, j: 7 },  ], css_id: 'tinytable_css_gvkdhf996j399q5czobd',}, 
+          { positions: [ { i: 0, j: 0 }, { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 }, { i: 0, j: 6 }, { i: 0, j: 7 },  ], css_id: 'tinytable_css_by691hsr08p1uzzsunvk',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_4k5m7wmpsm3p50ffv4r6(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_gvkdhf996j399q5czobd, .table th.tinytable_css_gvkdhf996j399q5czobd { border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_by691hsr08p1uzzsunvk, .table th.tinytable_css_by691hsr08p1uzzsunvk { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_4k5m7wmpsm3p50ffv4r6" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'>
+        <thead>
+        
+              <tr>
+                <th scope="col">metric</th>
+                <th scope="col">.y.</th>
+                <th scope="col">n</th>
+                <th scope="col">statistic</th>
+                <th scope="col">df</th>
+                <th scope="col">p</th>
+                <th scope="col">method</th>
+                <th scope="col">p.adj</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>richness</td>
+                  <td>value</td>
+                  <td>322</td>
+                  <td>81.48955</td>
+                  <td>2</td>
+                  <td>2.02e-18</td>
+                  <td>Kruskal-Wallis</td>
+                  <td>3.030e-18</td>
+                </tr>
+                <tr>
+                  <td>neutral</td>
+                  <td>value</td>
+                  <td>322</td>
+                  <td>116.49599</td>
+                  <td>2</td>
+                  <td>5.05e-26</td>
+                  <td>Kruskal-Wallis</td>
+                  <td>1.515e-25</td>
+                </tr>
+                <tr>
+                  <td>phylogenetic</td>
+                  <td>value</td>
+                  <td>322</td>
+                  <td>66.70117</td>
+                  <td>2</td>
+                  <td>3.28e-15</td>
+                  <td>Kruskal-Wallis</td>
+                  <td>3.280e-15</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+<div class="sourceCode" id="cb83"><pre class="sourceCode r script-source"><code class="sourceCode r"><span id="cb83-1"><a href="alpha-diversity.html#cb83-1" tabindex="-1"></a>alpha_div <span class="sc">%&gt;%</span></span>
+<span id="cb83-2"><a href="alpha-diversity.html#cb83-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>sample, <span class="at">names_to =</span> <span class="st">&quot;metric&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb83-3"><a href="alpha-diversity.html#cb83-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">metric=</span><span class="fu">factor</span>(metric,<span class="at">levels=</span><span class="fu">c</span>(<span class="st">&quot;richness&quot;</span>,<span class="st">&quot;neutral&quot;</span>,<span class="st">&quot;phylogenetic&quot;</span>)))<span class="sc">%&gt;%</span></span>
+<span id="cb83-4"><a href="alpha-diversity.html#cb83-4" tabindex="-1"></a>  <span class="fu">left_join</span>(sample_metadata, <span class="at">by =</span> <span class="st">&quot;sample&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb83-5"><a href="alpha-diversity.html#cb83-5" tabindex="-1"></a>  <span class="fu">group_by</span>(metric) <span class="sc">%&gt;%</span></span>
+<span id="cb83-6"><a href="alpha-diversity.html#cb83-6" tabindex="-1"></a>  <span class="fu">wilcox_test</span>(value <span class="sc">~</span> dog_type, <span class="at">p.adjust.method =</span> <span class="st">&quot;BH&quot;</span>)<span class="sc">%&gt;%</span> </span>
+<span id="cb83-7"><a href="alpha-diversity.html#cb83-7" tabindex="-1"></a>  <span class="fu">filter</span>(p.adj <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span></code></pre></div>
+<pre class="script-output"><code># A tibble: 6 × 10
+  metric       .y.   group1   group2      n1    n2 statistic        p    p.adj p.adj.signif
+  &lt;fct&gt;        &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;       
+1 richness     value domestic sled_dog   185   130     4926. 4.69e-19 1.41e-18 ****        
+2 richness     value sled_dog wolf       130     7      756. 3   e- 3 5   e- 3 **          
+3 neutral      value domestic sled_dog   185   130     3634  5.45e-26 1.64e-25 ****        
+4 neutral      value sled_dog wolf       130     7      868  5.52e- 5 8.28e- 5 ****        
+5 phylogenetic value domestic sled_dog   185   130     5917  1.66e-14 4.98e-14 ****        
+6 phylogenetic value sled_dog wolf       130     7      866  6   e- 5 9   e- 5 ****        </code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="community-composition.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="beta-diversity.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>
