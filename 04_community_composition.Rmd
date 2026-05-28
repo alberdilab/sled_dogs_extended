@@ -162,7 +162,11 @@ nongenera <- genome_metadata %>%
 cat(nongenera)
 ```
 
-
+**Percentage of MAGs without genera-level annotation**
+```{r gen_percet, comment="", message=FALSE, warning=FALSE}
+perct_g <- nongenera*100/nmags
+perct_g
+```
 
 ### Phylum relative abundances
 

@@ -12,6 +12,8 @@ read_counts <- read_tsv("data/counts.tsv") %>%
 
 ### Sample metadata
 ```{r load_sample_metadata, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+sample_metadata_illu <- read_csv("data/metadata_illu.csv") 
+
 sample_metadata <- read_csv("data/sample_metadata.csv") %>% 
   left_join(sample_metadata_illu[c(1,4,9)], by=join_by("sample"=="DogID")) %>% 
   filter(!Samples %in% c("Blank", "Saliva")) %>% 
@@ -114,7 +116,6 @@ genome_coverage <- genome_coverage %>%
   filter(genome %in% common_genomes) %>%
   select(genome, all_of(common_samples)) %>%
   arrange(match(genome, common_genomes))
-
 ```
 
 ```{r filter_coverage, warning=FALSE, comments="", message=FALSE, eval=FALSE}
@@ -124,7 +125,6 @@ min_coverage=0.3
 #   mutate(across(-1, ~ . * read_counts[[cur_column()]]))
 
 read_counts_filt <- read_counts %>%
-  # keep genome column separate
   select(genome) %>%
   bind_cols(
     genome_coverage %>%
@@ -145,8 +145,9 @@ genome_counts_filt <- read_counts_filt %>%
 
 ### Distill annotations into GIFTs
 
+
 ```{r distill_annotations, warning=FALSE, comments="", message=FALSE, eval=FALSE}
-genome_gifts <- distill(genome_annotations,GIFT_db,genomecol=1,annotcol=c(6,8,9), verbosity=TRUE)
+genome_gifts <- distill(genome_annotations,GIFT_db,genomecol=1,annotcol=c(6,7,8,9), verbosity=TRUE)
 genome_gifts <- genome_gifts[, !grepl("^S", colnames(genome_gifts))]
 ```
 
@@ -177,7 +178,7 @@ save(sample_metadata,
 #    genome_counts,
      genome_counts_filt,
      genome_tree,
-#     genome_gifts,
+    genome_gifts,
      phylum_colors,
      file = "data/data.Rdata")
 ```

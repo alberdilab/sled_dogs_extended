@@ -4,7 +4,7 @@
 set.seed(1234)
 load("data/data.Rdata")
 load("data/beta.Rdata")
-load("data/genome_gifts.RData")
+load("data/genome_gifts_corrected.Rdata")
 
 genome_metadata <- genome_metadata %>% 
   mutate(phylum = case_when(
@@ -77,7 +77,7 @@ genome_counts_filt %>%
     strip.background = element_rect(fill = "white"),
     strip.text = element_text(size = 8, lineheight = 0.6),
     strip.placement = "outside",
-    axis.text.x = element_blank(),
+    axis.text.x = element_text(size = 7, hjust=1, angle=90),
     axis.ticks.x = element_blank(),
     axis.line = element_line(
       linewidth = 0.5,
@@ -374,6 +374,8 @@ beta_q0n_dis %>%
 
 **PERMANOVA**
 ```{r permanova_greenland_q1_sled, comment="", message=FALSE, warning=FALSE}
+# sample_metadata <- sample_metadata %>% 
+#   filter(!str_starts(sample, "GL_02"))
 beta_q1n_mat <- as.matrix(beta_q1n$S)
 
 beta_q1n_filtered <- beta_q1n_mat[rownames(beta_q1n_mat) %in% sample_metadata$sample,
@@ -426,7 +428,7 @@ beta_q1n_dis %>%
       legend.title = element_text(size = 14),
       legend.position = "right", legend.box = "vertical"
     ) +
-  labs(color='Locality')
+  labs(color='Locality')+ geom_text_repel(aes(label=sample), size=2)
 ```
 
 ***Centroid distance based on the NMDS***
@@ -435,7 +437,7 @@ betadisper_obj <- betadisper(beta_q1n_dis, sample_metadata_ordered$locality)
 dist(betadisper_obj$centroids)
 ```
 
-**PCoa**
+**PCoA**
 ```{r}
 pcoa_res <- ape::pcoa(beta_q1n_dis)
 
@@ -1370,15 +1372,46 @@ GIFTs_functions_community %>%
 ```
 
 ```{r}
-MCI <- GIFTs_functions_community %>%
+MCI_pf <- GIFTs_functions_community %>%
   rowMeans() %>%
   as_tibble(., rownames = "sample") %>%
   left_join(sample_metadata, by = join_by(sample == sample)) 
 
-shapiro.test(residuals(lm(value ~ locality, data = MCI)))
-bartlett.test(value ~ locality, data = MCI)
+shapiro.test(residuals(lm(value ~ locality, data = MCI_pf))) 
+bartlett.test(value ~ locality, data = MCI_pf)  
 
-kruskal.test(value ~ locality, data = MCI)
+kruskal.test(value ~ locality, data = MCI_pf)
+pw <- pairwise.wilcox.test(
+  x = MCI_pf$value,
+  g = MCI_pf$locality,
+  p.adjust.method = "BH"
+)
+
+wilcox_tbl <- pw$p.value %>%
+  as.data.frame() %>%
+  rownames_to_column("group1") %>%
+  pivot_longer(
+    -group1,
+    names_to = "group2",
+    values_to = "p_adjust"
+  ) %>%
+  filter(!is.na(p_adjust)) %>%
+  mutate(
+    comparison = paste(group1, "vs", group2),
+    p_adjust = round(p_adjust, 3),
+    sig = case_when(
+      p_adjust < 0.001 ~ "***",
+      p_adjust < 0.01  ~ "**",
+      p_adjust < 0.05  ~ "*",
+      TRUE ~ ""
+    )
+  ) %>%
+  select(comparison, p_adjust, sig)
+
+wilcox_tbl %>%
+  rename("Compared countries" = comparison,
+         "Adjusted p-value" = p_adjust) %>%
+  tt()
 ```
 
 **Enriched pathways**
@@ -1595,7 +1628,7 @@ gift_colors <- read_tsv("data/gift_colors.tsv") %>%
   mutate(legend=str_c(Code_function," - ",Function))
 ```
 
-```{r final_plot_season, comment="", message=FALSE, warning=FALSE, fig.height=8, fig.width=12, fig.fullwidth=TRUE}
+```{r final_plot_season, comment="", message=FALSE, warning=FALSE, fig.height=12, fig.width=12, fig.fullwidth=TRUE}
 enrichment_code %>%
   left_join(gift_colors[c(1,3,4)], by=join_by(Code_function==Code_function))%>%
   ggplot(aes(x=forcats::fct_reorder(Function,log2FC), y=log2FC, fill=legend)) + 
@@ -1603,9 +1636,9 @@ enrichment_code %>%
   scale_color_manual(values = gift_colors$Color)+
   geom_hline(yintercept=0) + 
   coord_flip()+
-  geom_text(aes(45, 0.040), label = "Enriched in\n Danenborg", color="#666666") +
-  geom_text(aes(9, -0.040), label = "Enriched in\n civilian ", color="#666666") +
-  theme(axis.text = element_text(size = 10),
+  geom_text(aes(85, 0.040), label = "Enriched in\n Sirius dogs", color="#666666") +
+  geom_text(aes(31, -0.050), label = "Enriched in\n civilian dogs", color="#666666") +
+  theme(axis.text = element_text(size = 8),
         axis.title = element_text(size = 12),
         legend.position = "right", 
         panel.background = element_blank())+
@@ -1627,6 +1660,7 @@ enrichment_code %>%
 ```{r}
 enrichment_code %>% 
   filter(log2FC>0) %>% 
+    arrange(Function) %>% 
   select(Function) %>% 
   pull()
 ```
@@ -1644,6 +1678,7 @@ enrichment_code %>%
 ```{r}
 enrichment_code %>% 
   filter(log2FC<0) %>% 
+  arrange(Function) %>% 
   select(Function) %>% 
   pull()
 ```
@@ -1670,4 +1705,62 @@ ggplot(plot_data, aes(x = dog_group, y = value, fill = dog_group)) +
     y = "Trait Value" )
 ```
 
+```{r}
+fuso <- genome_metadata %>%
+  filter(genus == "Bifidobacterium") %>% 
+  dplyr::select(genome) %>%
+  pull()
+
+genome_counts_filt_transposed <- genome_counts_filt %>%
+  column_to_rownames("genome") %>% 
+  t() %>% 
+  as.data.frame()
+
+genome_zeroRepl <- zCompositions::cmultRepl(genome_counts_filt_transposed, method = "GBM", output = "prop", z.warning = 0.95)
+
+metadata_clr <- sample_metadata[sample_metadata$sample %in% rownames(genome_zeroRepl), ]
+
+clr_transform <- function(x) {
+  log(x) - mean(log(x), na.rm = TRUE)
+}
+genome_counts_clr <- data.frame(t(apply(genome_zeroRepl, 1, clr_transform)))
+
+fuso_clr <- genome_counts_clr %>%
+  rownames_to_column(., "sample") %>% 
+  pivot_longer(-sample,
+    names_to = "genome",
+    values_to = "count"
+  ) %>% 
+  filter(genome %in% fuso) %>%
+  left_join(
+    metadata_clr %>% dplyr::select(sample, locality),
+    by = "sample"
+  ) 
+
+fuso_clr %>% 
+  group_by(locality) %>% 
+  summarise(mean_fuso=round(mean(count),3), sd_fuso=round(sd(count),3)) %>% 
+  mutate(Fusobacterium_abundance=str_c(mean_fuso,"±",sd_fuso)) %>% 
+  dplyr::select(locality,Fusobacterium_abundance)
+
+kruskal_test(count ~ locality, data=fuso_clr)
+
+fuso_clr %>%
+  wilcox_test(count ~ locality, p.adjust.method = "BH")
+
+fuso_clr %>% 
+  group_by(sample) %>% 
+  summarise(mean=mean(count), .groups = "drop") %>% 
+  left_join(., sample_metadata, by="sample") %>% 
+  ggplot(., aes(x = locality, y = mean, fill = locality)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  geom_jitter(width = 0.2, size = 1, alpha = 0.4) +
+  #facet_wrap(~ Function, scales = "free_y", ncol = 4) +
+  theme_minimal() +
+  theme(strip.text = element_text(size = 18))
+  labs(
+    title = "Trait Distributions Across Localities",
+    x = "Locality",
+    y = "Trait Value")
+```
 

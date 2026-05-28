@@ -1,0 +1,931 @@
+# Important pathways
+
+```{r load_data_starch, comment="", message=FALSE, warning=FALSE}
+load("data/data.Rdata")
+load("data/genome_gifts_corrected.Rdata")
+
+genome_metadata <- genome_metadata %>% 
+  mutate(phylum = case_when(
+        phylum == "Bacillota_A" ~ "Bacillota",
+        phylum == "Bacillota_C" ~ "Bacillota",
+        phylum == "Bacillota_B" ~ "Bacillota",
+        phylum == "Bacillota_I" ~ "Bacillota",
+        TRUE ~ phylum))
+
+remove_sled <- read_csv("data/sample_metadata.csv") %>% 
+  filter(season=="winter")
+
+sample_metadata <- sample_metadata %>%
+  mutate(country = if_else(country == "Shangai domestic dog", "Shangai", country)) %>% 
+  filter(!sample %in% remove_sled$sample) %>%
+  mutate(
+    dog_type = case_when(
+      breed == "Wolf"        ~ "wolf",
+      country == "Greenland" ~ "sled_dog",
+      TRUE                   ~ "domestic"
+    )
+  )
+
+genome_counts_filt <- genome_counts_filt %>%
+  select(one_of(c("genome",sample_metadata$sample)))%>%
+  filter(rowSums(. != 0, na.rm = TRUE) > 0) %>%
+  select_if(~!all(. == 0))
+
+genome_metadata <- genome_metadata %>%
+  semi_join(., genome_counts_filt, by = "genome") %>%
+  arrange(match(genome,genome_counts_filt$genome))
+
+genome_tree <- keep.tip(genome_tree, tip=genome_metadata$genome)
+```
+```{r load_genome_annotation_starch, warning=FALSE, comments="", message=FALSE}
+genome_annotations <- read_tsv("data/gene_annotations.tsv.xz") %>%
+  mutate(genome = str_extract(gene, "^[^^]+")) %>%
+  mutate(ec = str_c("[EC:",ec,"]")) %>% 
+  select(genome, everything())
+```
+```{r distill_annotations_starch, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+genome_gifts <- distill(genome_annotations,GIFT_db,genomecol=1,annotcol=c(6,7,8,9), verbosity=TRUE)
+genome_gifts <- genome_gifts[, !grepl("^S", colnames(genome_gifts))]
+```
+```{r extra_objects_starch, warning=FALSE, comments="", message=FALSE, eval=FALSE}
+save(genome_gifts, 
+     file = "data/genome_gifts_corrected.Rdata")
+```
+
+```{r}
+# =========================================================
+# STARCH DEGRADATION
+# =========================================================
+
+starch_annotations <- genome_annotations %>%
+  mutate(ec_clean = coalesce(ec, "")) %>%
+  filter(
+    cazy %in% c(
+      "GH13",
+      "GH31",
+      "GH77"
+    ) |
+      
+    kegg %in% c(
+      "K01176", # alpha-amylase
+      "K01208", # alpha-amylase
+      "K01200", # pullulanase
+      "K01279", # neopullulanase
+      "K01187"  # alpha-glucosidase
+    ) |
+      
+    str_detect(
+      ec_clean,
+      "3\\.2\\.1\\.1|3\\.2\\.1\\.54|3\\.2\\.1\\.41|3\\.2\\.1\\.135|3\\.2\\.1\\.20"
+    )
+  )
+
+starch_weight <- starch_annotations %>%
+  count(genome, name = "n_starch_genes")
+
+starch_matrix <- genome_counts_filt %>%
+  filter(genome %in% starch_weight$genome) %>%
+  left_join(starch_weight, by = "genome")
+
+starch_weighted <- starch_matrix %>%
+  mutate(
+    across(
+      -c(genome, n_starch_genes),
+      ~ . * n_starch_genes
+    )
+  )
+
+starch_mat <- starch_weighted %>%
+  select(-n_starch_genes) %>%
+  column_to_rownames("genome") %>%
+  as.matrix()
+
+starch_total <- colSums(starch_mat, na.rm = TRUE)
+
+total_microbiome <- genome_counts_filt %>%
+  select(-genome) %>%
+  colSums(na.rm = TRUE)
+
+starch_relative <- starch_total / total_microbiome
+
+starch_df <- data.frame(
+  sample = names(starch_relative),
+  starch_index = as.numeric(starch_relative)
+) %>%
+  left_join(sample_metadata, by = "sample")
+
+# =========================================================
+# 9. SUMMARY
+# =========================================================
+
+starch_df %>%
+  group_by(dog_type) %>%
+  summarise(
+    mean_fiber = mean(starch_index, na.rm = TRUE),
+    sd_fiber = sd(starch_index, na.rm = TRUE),
+    n = n()
+  )
+
+# =========================================================
+# 10. STATISTICS
+# =========================================================
+
+kruskal.test(starch_index ~ dog_type, data = starch_df)
+
+pairwise.wilcox.test(
+  starch_df$starch_index,
+  starch_df$dog_type,
+  p.adjust.method = "BH"
+)
+
+# =========================================================
+# 11. VISUALIZATION
+# =========================================================
+
+ggplot(starch_df,
+       aes(x = dog_type,
+           y = starch_index,
+           fill = dog_type)) +
+  
+  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
+  
+  geom_jitter(
+    width = 0.15,
+    size = 1,
+    alpha = 0.8
+  ) +
+  
+  theme_classic(base_size = 14) +
+  
+  labs(
+    x = "Dog group",
+    y = "Starch degradation index",
+    title = "Microbial starch degradation potential"
+  )
+```
+## starch-degrading GH13 enzyme system
+TRUE amylase core:
+3.2.1.54 → alpha-amylase ✔ (this is the key one)
+borderline / related starch enzymes:
+3.2.1.133 → glucosidase (downstream starch breakdown)
+3.2.1.135 → debranching/pullulanase-related
+```{r}
+amylase_genes <- genome_annotations %>%
+  mutate(ec_clean = coalesce(ec, "")) %>%
+  filter(
+    kegg == "K01208",
+    str_detect(cazy, "^GH13"),
+    str_detect(ec_clean, "3\\.2\\.1\\.1|3\\.2\\.1\\.54")
+  )
+
+amylase_matrix <- genome_counts_filt %>%
+  filter(genome %in% amylase_genes$genome)
+
+total_abundance <- genome_counts_filt %>%
+  column_to_rownames("genome") %>%
+  as.matrix() %>% 
+  colSums(., na.rm = TRUE)
+
+amylase_total <- amylase_matrix %>%
+  column_to_rownames("genome") %>%
+  as.matrix()%>% 
+  colSums(., na.rm = TRUE)
+
+amylase_rel <- amylase_total / total_abundance
+
+sample_amylase <- data.frame(
+  sample = names(amylase_rel),
+  amylase_rel = as.numeric(amylase_rel)
+) %>%
+  left_join(sample_metadata, by = "sample")
+
+kruskal.test(amylase_rel ~ dog_type, data = sample_amylase)
+
+pairwise.wilcox.test(
+  sample_amylase$amylase_rel,
+  sample_amylase$dog_type,
+  p.adjust.method = "BH"
+)
+
+type_colors <- c('#41B6C0','#E5D388',"#bb6749")
+
+ggplot(sample_amylase, aes(dog_type, amylase_rel, fill = dog_type, color = dog_type)) +
+  geom_boxplot(alpha=0.5) +
+  geom_jitter(width = 0.2) +
+  scale_color_manual(
+    name = "Canids",
+    values = type_colors,
+    labels = new_labels
+  ) +
+  scale_fill_manual(
+    name = "Canids",
+    values = type_colors,
+    labels = new_labels
+  ) +
+  theme_classic()+
+  theme(
+    strip.background = element_blank(),
+    strip.text = element_text(size = 12, lineheight = 0.6),
+    panel.grid.minor.x = element_line(size = .1, color = "grey"),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_blank()
+  )
+# +
+#   geom_text_repel(
+#     aes(label = sample)
+#   )
+```
+
+## Bile salt hydrolase
+```{r}
+amylase_genes <- genome_annotations %>%
+  mutate(ec_clean = coalesce(ec, "")) %>%
+  filter(
+    kegg == "K01442" |
+    str_detect(ec_clean, "3\\.5\\.1\\.24")
+  )
+
+amylase_matrix <- genome_counts_filt %>%
+  filter(genome %in% amylase_genes$genome)
+
+total_abundance <- genome_counts_filt %>%
+  column_to_rownames("genome") %>%
+  as.matrix() %>% 
+  colSums(., na.rm = TRUE)
+
+amylase_total <- amylase_matrix %>%
+  column_to_rownames("genome") %>%
+  as.matrix()%>% 
+  colSums(., na.rm = TRUE)
+
+amylase_rel <- amylase_total / total_abundance
+
+sample_amylase <- data.frame(
+  sample = names(amylase_rel),
+  amylase_rel = as.numeric(amylase_rel)
+) %>%
+  left_join(sample_metadata, by = "sample")
+
+kruskal.test(amylase_rel ~ dog_type, data = sample_amylase)
+
+ggplot(sample_amylase, aes(dog_type, amylase_rel, fill = dog_type)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.2) +
+  theme_classic()
+```
+
+## Urease (nitrogen recycling enzyme)
+```{r}
+urease_genes <- genome_annotations %>%
+  mutate(ec_clean = coalesce(ec, "")) %>%
+  filter(
+    kegg == "K01428" |
+    str_detect(ec_clean, "3\\.5\\.5\\.5")
+  )
+
+urease_matrix <- genome_counts_filt %>%
+  filter(genome %in% urease_genes$genome)
+
+total_abundance <- genome_counts_filt %>%
+  column_to_rownames("genome") %>%
+  as.matrix() %>% 
+  colSums(., na.rm = TRUE)
+
+urease_total <- urease_matrix %>%
+  column_to_rownames("genome") %>%
+  as.matrix()%>% 
+  colSums(., na.rm = TRUE)
+
+urease_relative <- urease_total / total_abundance
+
+urease_df <- data.frame(
+  sample = names(urease_relative),
+  urease_index = as.numeric(urease_relative)
+) %>%
+  left_join(sample_metadata, by = "sample")
+
+# =========================================================
+# 9. SUMMARY
+# =========================================================
+
+urease_df %>%
+  group_by(dog_type) %>%
+  summarise(
+    mean_urease = mean(urease_index, na.rm = TRUE),
+    sd_urease = sd(urease_index, na.rm = TRUE),
+    n = n()
+  )
+
+# =========================================================
+# 10. STATISTICS
+# =========================================================
+
+kruskal.test(urease_index ~ dog_type, data = urease_df)
+
+pairwise.wilcox.test(
+  urease_df$urease_index,
+  urease_df$dog_type,
+  p.adjust.method = "BH"
+)
+
+# =========================================================
+# 11. VISUALIZATION
+# =========================================================
+
+ggplot(urease_df,
+       aes(x = dog_type,
+           y = urease_index,
+           fill = dog_type)) +
+  
+  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
+  
+  geom_jitter(
+    width = 0.15,
+    size = 1,
+    alpha = 0.8
+  ) +
+  
+  theme_classic(base_size = 14) +
+  
+  labs(
+    x = "Dog group",
+    y = "Urease degradation index",
+    title = "Microbial urease degradation potential"
+  )
+```
+
+## Chitinase
+```{r}
+chitinase_genes <- genome_annotations %>%
+  mutate(ec_clean = coalesce(ec, "")) %>%
+  filter(
+    cazy == "GH13" |
+    kegg == "K01183")
+
+chitinase_matrix <- genome_counts_filt %>%
+  filter(genome %in% chitinase_genes$genome)
+
+total_abundance <- genome_counts_filt %>%
+  column_to_rownames("genome") %>%
+  as.matrix() %>% 
+  colSums(., na.rm = TRUE)
+
+chitinase_total <- chitinase_matrix %>%
+  column_to_rownames("genome") %>%
+  as.matrix()%>% 
+  colSums(., na.rm = TRUE)
+
+chitinase_relative <- chitinase_total / total_abundance
+
+chitinase_df <- data.frame(
+  sample = names(chitinase_relative),
+  chitinase_index = as.numeric(chitinase_relative)
+) %>%
+  left_join(sample_metadata, by = "sample")
+
+# =========================================================
+# 9. SUMMARY
+# =========================================================
+
+chitinase_df %>%
+  group_by(dog_type) %>%
+  summarise(
+    mean_chitinase = mean(chitinase_index, na.rm = TRUE),
+    sd_chitinase = sd(chitinase_index, na.rm = TRUE),
+    n = n()
+  )
+
+# =========================================================
+# 10. STATISTICS
+# =========================================================
+
+kruskal.test(chitinase_index ~ dog_type, data = chitinase_df)
+
+pairwise.wilcox.test(
+  chitinase_df$chitinase_index,
+  chitinase_df$dog_type,
+  p.adjust.method = "BH"
+)
+
+# =========================================================
+# 11. VISUALIZATION
+# =========================================================
+
+ggplot(chitinase_df,
+       aes(x = dog_type,
+           y = chitinase_index,
+           fill = dog_type)) +
+  
+  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
+  
+  geom_jitter(
+    width = 0.15,
+    size = 1,
+    alpha = 0.8
+  ) +
+  
+  theme_classic(base_size = 14) +
+  
+  labs(
+    x = "Dog group",
+    y = "chitinase degradation index",
+    title = "Microbial chitinase degradation potential"
+  )
+```
+
+## Fiber / plant polysaccharide degradation
+
+```{r}
+# =========================================================
+# 1. DEFINE FIBER-DEGRADATION FUNCTIONS
+# =========================================================
+
+fiber_annotations <- genome_annotations %>%
+  mutate(ec_clean = coalesce(ec, "")) %>%
+  filter(
+    cazy %in% c(
+      "GH5",   # cellulases
+      "GH10",  # xylanases
+      "GH11",  # xylanases
+      "GH43",  # hemicellulose/arabinose
+      "GH53"   # galactan degradation
+    ) |
+      
+    kegg %in% c(
+      "K01179", # endoglucanase
+      "K01181", # xylanase
+      "K01209", # arabinofuranosidase
+      "K05349", # beta-glucosidase
+      "K01728"  # pectin lyase
+    ) |
+      
+    str_detect(ec_clean,
+               "3\\.2\\.1\\.4|3\\.2\\.1\\.8|3\\.2\\.1\\.21|3\\.2\\.1\\.55|4\\.2\\.2\\.10")
+  )
+
+# =========================================================
+# 2. COUNT FIBER GENES PER GENOME (OPTIONAL WEIGHTING)
+# =========================================================
+
+fiber_weight <- fiber_annotations %>%
+  count(genome, name = "n_fiber_genes")
+
+# =========================================================
+# 3. FILTER ABUNDANCE MATRIX
+# genome_counts_filt:
+# rows = bacterial genomes
+# columns = dog samples
+# =========================================================
+
+fiber_matrix <- genome_counts_filt %>%
+  filter(genome %in% fiber_weight$genome) %>%
+  left_join(fiber_weight, by = "genome")
+
+# =========================================================
+# 4. CREATE WEIGHTED MATRIX
+# =========================================================
+
+fiber_mat_weighted <- fiber_matrix %>%
+  mutate(
+    across(
+      -c(genome, n_fiber_genes),
+      ~ . * n_fiber_genes
+    )
+  )
+
+# =========================================================
+# 5. CONVERT TO MATRIX
+# =========================================================
+
+fiber_mat <- fiber_mat_weighted %>%
+  select(-n_fiber_genes) %>%
+  column_to_rownames("genome") %>%
+  as.matrix()
+
+# =========================================================
+# 6. SAMPLE-LEVEL FIBER INDEX
+# =========================================================
+
+fiber_total <- colSums(fiber_mat, na.rm = TRUE)
+
+# =========================================================
+# 7. NORMALIZE BY TOTAL COMMUNITY ABUNDANCE
+# =========================================================
+
+total_microbiome <- genome_counts_filt %>%
+  select(-genome) %>%
+  colSums(na.rm = TRUE)
+
+fiber_relative <- fiber_total / total_microbiome
+
+# =========================================================
+# 8. CREATE FINAL TABLE
+# =========================================================
+
+fiber_df <- data.frame(
+  sample = names(fiber_relative),
+  fiber_index = as.numeric(fiber_relative)
+) %>%
+  left_join(sample_metadata, by = "sample")
+
+# =========================================================
+# 9. SUMMARY
+# =========================================================
+
+fiber_df %>%
+  group_by(dog_type) %>%
+  summarise(
+    mean_fiber = mean(fiber_index, na.rm = TRUE),
+    sd_fiber = sd(fiber_index, na.rm = TRUE),
+    n = n()
+  )
+
+# =========================================================
+# 10. STATISTICS
+# =========================================================
+
+kruskal.test(fiber_index ~ dog_type, data = fiber_df)
+
+pairwise.wilcox.test(
+  fiber_df$fiber_index,
+  fiber_df$dog_type,
+  p.adjust.method = "BH"
+)
+
+# =========================================================
+# 11. VISUALIZATION
+# =========================================================
+
+ggplot(fiber_df,
+       aes(x = dog_type,
+           y = fiber_index,
+           fill = dog_type)) +
+  
+  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
+  
+  geom_jitter(
+    width = 0.15,
+    size = 1,
+    alpha = 0.8
+  ) +
+  
+  theme_classic(base_size = 14) +
+  
+  labs(
+    x = "Dog group",
+    y = "Fiber degradation index",
+    title = "Microbial plant polysaccharide degradation potential"
+  )
+```
+
+```{r}
+# =========================================================
+# PROTEIN DEGRADATION
+# =========================================================
+
+protein_annotations <- genome_annotations %>%
+  mutate(ec_clean = coalesce(ec, "")) %>%
+  filter(
+    
+    pfam %in% c(
+      "PF00082", # subtilase
+      "PF01432", # peptidase M16
+      "PF01546", # peptidase M28
+      "PF00675"  # cysteine protease
+    ) |
+      
+    kegg %in% c(
+      "K01251", # tripeptidase
+      "K01358", # aminopeptidase
+      "K07727", # protease
+      "K08372"
+    ) |
+      
+    str_detect(
+      ec_clean,
+      "3\\.4\\."
+    )
+  )
+
+protein_weight <- protein_annotations %>%
+  count(genome, name = "n_protein_genes")
+
+protein_matrix <- genome_counts_filt %>%
+  filter(genome %in% protein_weight$genome) %>%
+  left_join(protein_weight, by = "genome")
+
+protein_weighted <- protein_matrix %>%
+  mutate(
+    across(
+      -c(genome, n_protein_genes),
+      ~ . * n_protein_genes
+    )
+  )
+
+protein_mat <- protein_weighted %>%
+  select(-n_protein_genes) %>%
+  column_to_rownames("genome") %>%
+  as.matrix()
+
+protein_total <- colSums(protein_mat, na.rm = TRUE)
+
+total_microbiome <- genome_counts_filt %>%
+  select(-genome) %>%
+  colSums(na.rm = TRUE)
+
+protein_relative <- protein_total / total_microbiome
+
+protein_df <- data.frame(
+  sample = names(protein_relative),
+  protein_index = as.numeric(protein_relative)
+) %>%
+  left_join(sample_metadata, by = "sample")
+
+# =========================================================
+# 9. SUMMARY
+# =========================================================
+
+protein_df %>%
+  group_by(dog_type) %>%
+  summarise(
+    mean_fiber = mean(protein_index, na.rm = TRUE),
+    sd_fiber = sd(protein_index, na.rm = TRUE),
+    n = n()
+  )
+
+# =========================================================
+# 10. STATISTICS
+# =========================================================
+
+kruskal.test(protein_index ~ dog_type, data = protein_df)
+
+pairwise.wilcox.test(
+  protein_df$protein_index,
+  protein_df$dog_type,
+  p.adjust.method = "BH"
+)
+
+# =========================================================
+# 11. VISUALIZATION
+# =========================================================
+
+ggplot(protein_df,
+       aes(x = dog_type,
+           y = protein_index,
+           fill = dog_type)) +
+  
+  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
+  
+  geom_jitter(
+    width = 0.15,
+    size = 1,
+    alpha = 0.8
+  ) +
+  
+  theme_classic(base_size = 14) +
+  
+  labs(
+    x = "Dog group",
+    y = "Protein degradation index",
+    title = "Microbial protein degradation potential"
+  )
+```
+Lipid degradation / fat metabolism index
+```{r}
+# =========================================================
+# LIPID DEGRADATION
+# =========================================================
+
+lipid_annotations <- genome_annotations %>%
+  mutate(ec_clean = coalesce(ec, "")) %>%
+  filter(
+    
+    kegg %in% c(
+      "K00249", # acyl-CoA dehydrogenase
+      "K01692", # enoyl-CoA hydratase
+      "K00626", # acetyl-CoA acetyltransferase
+      "K01442"  # bile salt hydrolase
+    ) |
+      
+    pfam %in% c(
+      "PF00441", # acyl-CoA dehydrogenase
+      "PF00378", # enoyl-CoA hydratase
+      "PF02737"  # thiolase
+    ) |
+      
+    str_detect(
+      ec_clean,
+      "1\\.3\\.8\\.|4\\.2\\.1\\.17|2\\.3\\.1\\.9|3\\.5\\.1\\.24"
+    )
+  )
+
+lipid_weight <- lipid_annotations %>%
+  count(genome, name = "n_lipid_genes")
+
+lipid_matrix <- genome_counts_filt %>%
+  filter(genome %in% lipid_weight$genome) %>%
+  left_join(lipid_weight, by = "genome")
+
+lipid_weighted <- lipid_matrix %>%
+  mutate(
+    across(
+      -c(genome, n_lipid_genes),
+      ~ . * n_lipid_genes
+    )
+  )
+
+lipid_mat <- lipid_weighted %>%
+  select(-n_lipid_genes) %>%
+  column_to_rownames("genome") %>%
+  as.matrix()
+
+lipid_total <- colSums(lipid_mat, na.rm = TRUE)
+
+total_microbiome <- genome_counts_filt %>%
+  select(-genome) %>%
+  colSums(na.rm = TRUE)
+
+lipid_relative <- lipid_total / total_microbiome
+
+lipid_df <- data.frame(
+  sample = names(lipid_relative),
+  lipid_index = as.numeric(lipid_relative)
+) %>%
+  left_join(sample_metadata, by = "sample")
+
+# =========================================================
+# 9. SUMMARY
+# =========================================================
+
+lipid_df %>%
+  group_by(dog_type) %>%
+  summarise(
+    mean_fiber = mean(lipid_index, na.rm = TRUE),
+    sd_fiber = sd(lipid_index, na.rm = TRUE),
+    n = n()
+  )
+
+# =========================================================
+# 10. STATISTICS
+# =========================================================
+
+kruskal.test(lipid_index ~ dog_type, data = lipid_df)
+
+pairwise.wilcox.test(
+  lipid_df$lipid_index,
+  lipid_df$dog_type,
+  p.adjust.method = "BH"
+)
+
+# =========================================================
+# 11. VISUALIZATION
+# =========================================================
+
+ggplot(lipid_df,
+       aes(x = dog_type,
+           y = lipid_index,
+           fill = dog_type)) +
+  
+  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
+  
+  geom_jitter(
+    width = 0.15,
+    size = 1,
+    alpha = 0.8
+  ) +
+  
+  theme_classic(base_size = 14) +
+  
+  labs(
+    x = "Dog group",
+    y = "Lipid degradation index",
+    title = "Microbial lipid degradation potential"
+  )
+```
+
+
+
+```{r}
+amylase <- genome_annotations %>% filter(cazy=="GH13")
+
+genome_counts_filt %>% 
+  mutate(across(-genome, ~ . / sum(.))) %>% 
+  filter(genome %in% amylase$genome) %>% 
+  column_to_rownames(., "genome") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(., "sample") %>%
+  mutate(total = rowSums(across(where(is.numeric)))) %>% 
+  left_join(sample_metadata, by="sample") %>% 
+  select(sample, dog_type, total) %>% 
+  group_by(dog_type) %>% 
+  summarise(total_mean= mean(total))
+
+gh13_per_genome <- genome_annotations %>%
+  filter(cazy == "GH13") %>%
+  count(genome, name = "GH13_gene_count")
+
+genome_annotations %>%
+  filter(cazy == "GH13")%>%
+  separate_rows(ec, sep = " ") %>%
+  filter(grepl("3.2.1", ec)) %>%
+  count(ec, genome)
+
+
+amylase_index <- genome_annotations %>%
+  mutate(
+    ec_clean = coalesce(ec, ""),
+    
+    amylase_flag = if_else(
+      cazy == "GH13" |
+      kegg == "K01208" |
+      str_detect(ec_clean, "3\\.2\\.1"),
+      1, 0
+    )
+  ) %>%
+  group_by(genome) %>%
+  summarise(amylase_score = sum(amylase_flag, na.rm = TRUE))
+  
+```
+
+
+
+```{r amylase_weight, echo=FALSE, eval=FALSE}
+
+amylase_genes <- amylase_matrix %>%
+  mutate(n_amylase = n_amylase_genes)
+
+weighted <- colSums(amylase_genes[, -1] * amylase_genes$n_amylase)
+
+
+# amylase_weight <- amylase_genes %>%
+#   count(genome, name = "n_amylase_genes")
+
+# sample_amylase <- amylase_matrix %>%
+#   column_to_rownames("genome") %>%
+#   as.matrix() %>%
+#   colSums(na.rm = TRUE) %>%
+#   as.data.frame() %>%
+#   rownames_to_column("sample") %>%
+#   rename(amylase_total = ".")
+
+# sample_amylase <- sample_amylase %>%
+#   left_join(sample_metadata, by = "sample")
+
+sample_amylase <- genome_counts_filt %>%
+    mutate(across(-genome, ~ . / sum(.))) %>% 
+  filter(genome %in% amylase_weight$genome) %>% 
+  left_join(amylase_weight, by = "genome") %>%
+  mutate(n_amylase_genes = replace_na(n_amylase_genes, 0)) %>%
+  mutate(across(-c(genome, n_amylase_genes), ~ . * n_amylase_genes))
+
+sample_amylase <- sample_amylase %>%
+  t() %>% 
+  
+  left_join(sample_metadata, by = "sample")
+
+amylase_index <- genome_annotations %>%
+  mutate(
+    ec_clean = coalesce(ec, ""),
+    
+    amylase_flag = if_else(
+      cazy == "GH13" |
+      kegg == "K01208" |
+      str_detect(ec_clean, "3\\.2\\.1\\.54"),
+      1, 0
+    )
+  ) %>%
+  group_by(genome) %>%
+  summarise(amylase_score = sum(amylase_flag, na.rm = TRUE)) %>% 
+  filter(amylase_score >0)
+
+amylase_index <- genome_annotations %>%
+  mutate(
+    ec_clean = coalesce(ec, ""),
+    
+    amylase_flag = if_else(
+      cazy == "GH13" |
+      kegg == "K01208" |
+      str_detect(ec_clean, "3\\.2\\.1"),
+      1, 0
+    )
+  ) %>%
+  group_by(genome) %>%
+  summarise(amylase_score = sum(amylase_flag, na.rm = TRUE)) %>% 
+  filter(amylase_score >0)
+
+genome_counts_filt %>% 
+  mutate(across(-genome, ~ . / sum(.))) %>% 
+  filter(genome %in% amylase_index$genome) %>% 
+  column_to_rownames(., "genome") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column(., "sample") %>%
+  mutate(total = rowSums(across(where(is.numeric)))) %>% 
+  left_join(sample_metadata, by="sample") %>% 
+  select(sample, dog_type, total) %>% 
+  group_by(dog_type) %>% 
+  summarise(total_mean= mean(total))
+
+```

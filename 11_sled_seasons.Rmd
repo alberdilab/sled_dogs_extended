@@ -3,6 +3,8 @@
 ```{r load_data_host_filt_season, comment="", message=FALSE, warning=FALSE}
 load("data/data.Rdata")
 load("data/beta.Rdata")
+load("data/genome_gifts_corrected.Rdata")
+
 
 genome_metadata <- genome_metadata %>%
   mutate(phylum = case_when(
@@ -509,7 +511,7 @@ ancombc_rand_table_mag_itto %>%
 
 ## Functional differences
 ```{r gift_analysis_season, comment="", message=FALSE, warning=FALSE}
-load("data/genome_gifts.Rdata")
+load("data/genome_gifts_corrected.Rdata")
 
 genome_counts_filt <- genome_counts_filt %>%
   filter(genome_counts_filt$genome %in% rownames(genome_gifts)) %>% 

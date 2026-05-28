@@ -185,11 +185,11 @@ adonis2(beta_q1n_dis ~ dog_type,
         tt()
 ```
 
-***Locality***
+***Country***
 
 Significant
 ```{r}
-pair_results <- pairwise.adonis(beta_q1n_dis, sample_metadata_ordered$locality, perm = 999)
+pair_results <- pairwise.adonis(beta_q1n_dis, sample_metadata_ordered$country, perm = 999)
 pair_results %>%
   filter(p.adjusted < 0.05)
 ```
@@ -231,13 +231,13 @@ sample_metadata_ordered <- sample_metadata %>%
   arrange(match(sample,labels(beta_q1p_dis))) %>% 
   column_to_rownames(., "sample")
 
-adonis2(beta_q1p_dis ~ dog_type + country + locality, 
+adonis2(beta_q1p_dis ~ dog_type + country, 
         data = sample_metadata_ordered, 
         permutations = 999) %>%
         broom::tidy() %>%
         tt()
 
-adonis2(beta_q1p_dis ~ dog_type + country + locality, 
+adonis2(beta_q1p_dis ~ dog_type + country, 
         data = sample_metadata_ordered, 
         permutations = 999, by="margin") %>%
         broom::tidy() %>%
@@ -250,11 +250,11 @@ adonis2(beta_q1p_dis ~ dog_type,
         tt()
 ```
 
-***Locality***
+***Country***
 
 Significant
 ```{r}
-pair_results <- pairwise.adonis(beta_q1p_dis, sample_metadata_ordered$locality, perm = 999)
+pair_results <- pairwise.adonis(beta_q1p_dis, sample_metadata_ordered$country, perm = 999)
 pair_results %>%
   filter(p.adjusted < 0.05)
 ```
@@ -354,7 +354,7 @@ beta_q0n$S %>%
 
 #### Neutral
 ***Country***
-```{r beta_div_nmds_neutral_country, comment="", message=FALSE, warning=FALSE, fig.height=7, fig.width=12, fig.fullwidth=TRUE}
+```{r beta_div_nmds_neutral_country, comment="", message=FALSE, warning=FALSE, fig.height=7, fig.width=10, fig.fullwidth=TRUE}
 beta_q1n_dis %>%
   vegan::metaMDS(., trymax = 500, k = 2, trace=0) %>%
   vegan::scores() %>%
@@ -365,7 +365,7 @@ beta_q1n_dis %>%
   mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
   ungroup() %>% 
   ggplot(aes(x = NMDS1, y = NMDS2, color = country)) +
-  geom_point(size = 3, alpha = 0.5) +
+  geom_point(size = 2, alpha = 0.5) +
   geom_segment(aes(x = x_cen, y = y_cen, xend = NMDS1, yend = NMDS2), alpha = 0.5, show.legend = FALSE) +
   theme_classic() +
   theme(
@@ -385,6 +385,45 @@ beta_q1n_dis %>%
     legend.box = "vertical"
   ) +
   labs(color = 'Country')
+```
+
+***Country***
+```{r beta_div_nmds_neutral_country_dog, comment="", message=FALSE, warning=FALSE, fig.height=7, fig.width=10, fig.fullwidth=TRUE}
+beta_q1n_dis %>%
+  vegan::metaMDS(., trymax = 500, k = 2, trace=0) %>%
+  vegan::scores() %>%
+  as_tibble(., rownames = "sample") %>%
+  dplyr::left_join(sample_metadata, by = join_by(sample == sample)) %>%
+  group_by(country, dog_type) %>%
+  mutate(x_cen = mean(NMDS1, na.rm = TRUE)) %>%
+  mutate(y_cen = mean(NMDS2, na.rm = TRUE)) %>%
+  ungroup() %>% 
+  ggplot(aes(x = NMDS1, y = NMDS2, color = country)) +
+  geom_point(size = 2, alpha = 0.5) +
+  geom_segment(aes(x = x_cen, y = y_cen, xend = NMDS1, yend = NMDS2), alpha = 0.5, show.legend = FALSE) +
+  # scale_color_manual(name = "Canids",
+  #                    values = type_colors,
+  #                    labels = new_labels) +
+  # scale_fill_manual(name = "Canids",
+  #                   values = type_colors,
+  #                   labels = new_labels)+
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(size = 12),
+    axis.title = element_text(size = 12, face = "bold"),
+    axis.text = element_text(face = "bold", size = 12),
+    panel.background = element_blank(),
+    axis.line = element_line(
+      size = 0.5,
+      linetype = "solid",
+      colour = "black"
+    ),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14),
+    legend.position = "right",
+    legend.box = "vertical"
+  )
 ```
 
 ***Dog type***
@@ -427,7 +466,7 @@ beta_q1n_dis %>%
   labs(color = 'Canids')
 ```
 
-##### PCoa locality
+##### PCoa country
 ```{r}
 pcoa_res <- ape::pcoa(beta_q1n_dis)
 
@@ -440,17 +479,17 @@ var_exp <- pcoa_res$values$Relative_eig * 100
 
 ```{r pcoa_neutral_loc, comment="", message=FALSE, warning=FALSE, fig.height=7, fig.width=12, fig.fullwidth=TRUE}
 centroids <- pcoa_df %>%
-  group_by(dog_type, locality) %>%
+  group_by(dog_type, country) %>%
   summarise(
     Axis.1 = mean(Axis.1),
     Axis.2 = mean(Axis.2),
     .groups = "drop"
   )
 centroids_loc <- centroids %>%
-  mutate(group = paste(dog_type, locality, sep = "_"))
+  mutate(group = paste(dog_type, country, sep = "_"))
 
 pcoa_df1 <- pcoa_df %>%
-  mutate(group = paste(dog_type, locality, sep = "_"))
+  mutate(group = paste(dog_type, country, sep = "_"))
 
 ggplot(pcoa_df1, aes(Axis.1, Axis.2, color = group)) +
   geom_point(size = 3, alpha = 0.7) +
@@ -477,7 +516,7 @@ ggplot(pcoa_df1, aes(Axis.1, Axis.2, color = group)) +
 
 ```{r centroid_distances_type_locality, comment="", message=FALSE, warning=FALSE, fig.height=10, fig.width=12, fig.fullwidth=TRUE}
 centroids_loc <- pcoa_df %>%
-  group_by(dog_type, locality) %>%
+  group_by(dog_type, country) %>%
   summarise(
     Axis.1 = mean(Axis.1),
     Axis.2 = mean(Axis.2),
@@ -485,7 +524,7 @@ centroids_loc <- pcoa_df %>%
   )
 
 centroids_loc <- centroids_loc %>%
-  mutate(group = paste(dog_type, locality, sep = "_"))
+  mutate(group = paste(dog_type, country, sep = "_"))
 
 
 coords <- centroids_loc[, c("Axis.1", "Axis.2")] %>%
@@ -508,6 +547,15 @@ ggplot(dist_loc_df, aes(x = group1, y = group2, fill = distance)) +
         axis.title = element_blank()) +
   labs(fill = "Centroids distance")
 ```
+```{r}
+ dist_loc_df %>%
+  rowwise() %>%
+  mutate(pair = paste(sort(c(group1, group2)), collapse = "_")) %>%
+  ungroup() %>%
+  distinct(pair, .keep_all = TRUE) %>%
+  select(-pair) %>% 
+  arrange(distance)
+```
 
 ##### PCoa dog type
 ```{r}
@@ -527,7 +575,7 @@ centroids <- pcoa_df %>%
     .groups = "drop"
   )
 ```
-```{r pcoa_neutral_type, comment="", message=FALSE, warning=FALSE, fig.height=7, fig.width=10, fig.fullwidth=TRUE}
+```{r pcoa_neutral_dogtype, comment="", message=FALSE, warning=FALSE, fig.height=7, fig.width=10, fig.fullwidth=TRUE}
 ggplot(pcoa_df, aes(Axis.1, Axis.2, color = dog_type)) +
   geom_point(size = 3, alpha = 0.7) +
   stat_ellipse(level = 0.95, linewidth = 1) +
@@ -629,7 +677,7 @@ dist_table <- as.data.frame(as.table(centroid_dist_mat)) %>%
   arrange(distance)
 ```
 
-```{r centroid_distances_locality_figure, comment="", message=FALSE, warning=FALSE, fig.height=3, fig.width=6, fig.fullwidth=TRUE}
+```{r centroid_distances_type_figure, comment="", message=FALSE, warning=FALSE, fig.height=3, fig.width=6, fig.fullwidth=TRUE}
 ggplot(dist_table, aes(x = group1, y = group2, fill = distance)) +
   geom_tile() +
   scale_fill_viridis_c() +

@@ -39,7 +39,7 @@ permanova-analysis
 plots
 richness
 neutral
-pcoa-locality
+pcoa-country
 pcoa-dog-type
 distance-comparison-test
 phylogenetic
@@ -62,11 +62,18 @@ mci
 type
 community-elements-differences
 community-function-differences
+important-pathways
+bile-salt-hydrolase
+urease-nitrogen-recycling-enzyme
+chitinase
+fiber-plant-polysaccharide-degradation
 amr-and-vf
 genome-size
 amr
 virulence-factors
 size-function-correlations
+vf
+fusobacteriota
 sled-dogs-differences-across-localities
 taxonomy
 phylum-relative-abundances-1
@@ -97,9 +104,3 @@ structural-zeros
 functional-differences-2
 groups-mci
 community-elements-differences-1
-taxonomy-overview-2
-phylum-relative-abundances-3
-alpha-diversity-3
-beta-diversity-3
-temporal-divergence
-do-animals-respond-differently-over-time

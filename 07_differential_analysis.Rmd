@@ -238,25 +238,6 @@ for (name in names(results_species)) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Sled dogs vs domestic dogs vs wolves
 
 ## MAG level
@@ -298,6 +279,13 @@ save(results_species,
 
 ### domestic_vs_sled_dog
 
+**Total number of enriched MAGs**
+```{r}
+results_species$domestic_vs_sled_dog %>% 
+  filter(q_dog_typesled_dog < 0.05) %>% 
+  nrow
+```
+
 **Enriched in domestic dogs**
 ```{r}
 domestic <- results_species$domestic_vs_sled_dog %>% 
@@ -333,7 +321,8 @@ perc %>%
 ```{r}
 domestic %>% 
   left_join(genome_metadata, by=join_by("taxon"=="genome"))%>% 
-  select(species, genus, family, everything())
+  select(species, genus, family, everything()) %>% 
+  arrange(lfc_dog_typesled_dog)
 ```
 
 ```{r}
@@ -446,6 +435,13 @@ sled %>%
 ```
 
 ### sled_dog vs wolves
+
+**Total number of enriched MAGs**
+```{r}
+results_species$sled_dog_vs_wolf %>% 
+  filter(q_dog_typewolf < 0.05) %>% 
+  nrow
+```
 
 **Enriched in sled dogs**
 ```{r}
